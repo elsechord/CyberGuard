@@ -1,0 +1,116 @@
+# Apply this declaratively after uploading the ZIP packages to the Controller.
+# It preserves Worker names, Matrix identities and the existing cyberguard-soc Team.
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: alert-fusion
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/alert-fusion.zip
+  skills: [alert-triage, hypothesis-testing]
+  mcpServers:
+    - name: mcp-cyberguard-readonly
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-readonly/mcp
+      transport: http
+  agents: |
+    使用 CyberGuard 证据门：先调用告警与资产 MCP，再报告真实 Evidence ID。没有工具回执时只能 PARTIAL 或 BLOCKED；不得从题面补写事实。
+---
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: threat-intel
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/threat-intel.zip
+  skills: [threat-intel-enrichment, hypothesis-testing]
+  mcpServers:
+    - name: mcp-cyberguard-readonly
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-readonly/mcp
+      transport: http
+  agents: |
+    使用 CyberGuard 证据门：只以 MCP 返回的 Evidence ID 支持当前事件结论；情报和知识库结果只能作为线索，数据不足时明确 PARTIAL 或 BLOCKED。
+---
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: network-hunter
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/network-hunter.zip
+  skills: [network-hunting, boundary-defense, hypothesis-testing]
+  mcpServers:
+    - name: mcp-cyberguard-readonly
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-readonly/mcp
+      transport: http
+  agents: |
+    必须调用网络与边界 MCP 后再报告。不得虚构 IP、端口、VPN、规则名、时间线或 Evidence ID；无遥测时返回 PARTIAL 或 BLOCKED。
+---
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: endpoint-forensics
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/endpoint-forensics.zip
+  skills: [endpoint-forensics, hypothesis-testing]
+  mcpServers:
+    - name: mcp-cyberguard-readonly
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-readonly/mcp
+      transport: http
+  agents: |
+    必须调用终端时间线 MCP 后再报告。不得把其他 Agent 的描述当成终端事实；数据不足时返回 PARTIAL 或 BLOCKED。
+---
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: response-planner
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/response-planner.zip
+  skills: [response-planning, incident-reporting]
+  mcpServers:
+    - name: mcp-cyberguard-readonly
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-readonly/mcp
+      transport: http
+    - name: mcp-cyberguard-response
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-response/mcp
+      transport: http
+  agents: |
+    作为 Team Leader，先核验 incident_id、scenario_id 和所有 Evidence ID，再调度。必须拒绝无 MCP 回执的调查报告。知识检索不是事件证据。只能提出处置，L2 必须暂停等待人工审批。
+---
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: controlled-responder
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/controlled-responder.zip
+  skills: [controlled-response]
+  mcpServers:
+    - name: mcp-cyberguard-response
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-response/mcp
+      transport: http
+  agents: |
+    只执行已批准且精确绑定 action、target、幂等键的允许动作。不得拥有、请求或伪造审批密钥；任何不一致均停止。
+---
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: recovery-verifier
+spec:
+  model: deepseek-v4-flash
+  runtime: copaw
+  package: file:///tmp/cyberguard-agent-packages/recovery-verifier.zip
+  skills: [recovery-verification, incident-reporting]
+  mcpServers:
+    - name: mcp-cyberguard-readonly
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-cyberguard-readonly/mcp
+      transport: http
+  agents: |
+    独立调用恢复验证 MCP，不接受规划者的叙述作为验证依据。无法验证时返回 INCONCLUSIVE，不得宣布成功。

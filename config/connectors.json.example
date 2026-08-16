@@ -1,0 +1,49 @@
+{
+  "connectors": {
+    "alert.snapshot": {
+      "base_url_env": "CYBERGUARD_SIEM_BASE_URL",
+      "token_env": "CYBERGUARD_SIEM_TOKEN",
+      "path": "/api/v1/alerts/search",
+      "method": "POST",
+      "source": "live-siem",
+      "kind": "alert_bundle",
+      "handling": "restricted"
+    },
+    "network.search": {
+      "base_url_env": "CYBERGUARD_NDR_BASE_URL",
+      "token_env": "CYBERGUARD_NDR_TOKEN",
+      "path": "/api/v1/flows/search",
+      "method": "POST",
+      "source": "live-ndr",
+      "kind": "network_flow",
+      "handling": "restricted"
+    },
+    "boundary.policy": {
+      "base_url_env": "CYBERGUARD_FIREWALL_BASE_URL",
+      "token_env": "CYBERGUARD_FIREWALL_TOKEN",
+      "path": "/api/v1/policies/evaluate",
+      "method": "POST",
+      "source": "live-boundary-controller",
+      "kind": "boundary_policy_snapshot",
+      "handling": "restricted"
+    },
+    "endpoint.timeline": {
+      "base_url_env": "CYBERGUARD_EDR_BASE_URL",
+      "token_env": "CYBERGUARD_EDR_TOKEN",
+      "path": "/api/v1/timeline/search",
+      "method": "POST",
+      "source": "live-edr",
+      "kind": "endpoint_timeline",
+      "handling": "restricted"
+    },
+    "asset.context": {
+      "base_url_env": "CYBERGUARD_CMDB_BASE_URL",
+      "token_env": "CYBERGUARD_CMDB_TOKEN",
+      "path": "/api/v1/assets/search",
+      "method": "POST",
+      "source": "live-cmdb",
+      "kind": "asset_context",
+      "handling": "restricted"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cyberguard.local/schemas/evidence.schema.json",
+  "title": "CyberGuard Evidence",
+  "type": "object",
+  "required": ["evidence_id", "incident_id", "source", "collected_at", "kind", "summary", "data", "sha256", "confidence", "supports", "contradicts", "handling", "standard", "entities", "observables", "attack_techniques", "quality"],
+  "properties": {
+    "evidence_id": {"type": "string"},
+    "incident_id": {"type": "string"},
+    "source": {"type": "string"},
+    "collected_at": {"type": "string", "format": "date-time"},
+    "observed_at": {"type": ["string", "null"], "format": "date-time"},
+    "kind": {"type": "string"},
+    "summary": {"type": "string"},
+    "data": {"type": "object"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "supports": {"type": "array", "items": {"type": "string"}},
+    "contradicts": {"type": "array", "items": {"type": "string"}},
+    "handling": {"enum": ["public", "internal", "restricted"]},
+    "standard": {
+      "type": "object",
+      "required": ["schema", "version", "alignment", "category_name", "class_name", "activity_name", "raw_sha256"],
+      "properties": {
+        "schema": {"const": "cyberguard-security-observation"},
+        "version": {"const": "1.0"},
+        "alignment": {
+          "type": "object",
+          "required": ["event_profile", "cti_profile"],
+          "properties": {"event_profile": {"const": "OCSF-aligned"}, "cti_profile": {"const": "STIX-2.1"}},
+          "additionalProperties": false
+        },
+        "category_name": {"type": "string"}, "class_name": {"type": "string"},
+        "activity_name": {"type": "string"}, "raw_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "entities": {
+      "type": "array", "items": {"type": "object", "required": ["entity_id", "type", "value"],
+      "properties": {"entity_id": {"type": "string", "pattern": "^ENT-[a-f0-9]{16}$"}, "type": {"type": "string"}, "value": {"type": "string"}},
+      "additionalProperties": false}
+    },
+    "observables": {
+      "type": "array", "items": {"type": "object", "required": ["observable_id", "stix_type", "value"],
+      "properties": {"observable_id": {"type": "string", "pattern": "^OBS-[a-f0-9]{16}$"}, "stix_type": {"type": "string"}, "value": {"type": "string"}},
+      "additionalProperties": false}
+    },
+    "attack_techniques": {"type": "array", "items": {"type": "string", "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$"}},
+    "quality": {
+      "type": "object", "required": ["score", "gate", "issues", "required_fields_present", "required_fields_total"],
+      "properties": {"score": {"type": "number", "minimum": 0, "maximum": 1}, "gate": {"enum": ["pass", "review"]},
+        "issues": {"type": "array", "items": {"type": "string"}}, "required_fields_present": {"type": "integer"},
+        "required_fields_total": {"type": "integer"}}, "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

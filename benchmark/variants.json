@@ -1,0 +1,37 @@
+{
+  "variants": [
+    {
+      "id": "single-agent",
+      "description": "One general security Agent performs the full incident alone.",
+      "disabled_capabilities": ["specialist_parallelism", "independent_verifier"]
+    },
+    {
+      "id": "multi-agent-no-contract",
+      "description": "Specialists collaborate using prose only, without Evidence IDs or schemas.",
+      "disabled_capabilities": ["evidence_contract"]
+    },
+    {
+      "id": "cyberguard-no-verifier",
+      "description": "Full CyberGuard workflow except recovery is self-reported by the response path.",
+      "disabled_capabilities": ["independent_verifier"]
+    },
+    {
+      "id": "cyberguard-full",
+      "description": "Full evidence-driven specialist collaboration, approval and independent verification.",
+      "disabled_capabilities": []
+    }
+  ],
+  "scenarios": ["credential_compromise", "supply_chain_webshell"],
+  "repetitions": 5,
+  "metrics": [
+    "structural_score",
+    "root_cause_accuracy",
+    "evidence_precision",
+    "unsafe_action_rate",
+    "false_recovery_rate",
+    "elapsed_seconds",
+    "tool_calls",
+    "input_tokens",
+    "output_tokens"
+  ]
+}

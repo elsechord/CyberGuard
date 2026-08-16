@@ -1,0 +1,178 @@
+server:
+  name: mcp-cyberguard-readonly
+  config:
+    accessToken: ""
+  allowTools:
+  - collect_alert_snapshot
+  - collect_threat_intelligence
+  - collect_network_evidence
+  - collect_boundary_policy
+  - collect_endpoint_timeline
+  - collect_asset_context
+  - collect_recovery_metrics
+  - validate_evidence_references
+  - search_security_knowledge
+
+tools:
+- name: collect_alert_snapshot
+  description: "读取指定安全事件的初始告警快照，返回可引用的 Evidence ID。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/alert/snapshot"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: collect_threat_intelligence
+  description: "读取指定安全事件的威胁情报证据。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/intel/lookup"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: collect_network_evidence
+  description: "读取指定安全事件的网络流量证据。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/network/search"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: collect_boundary_policy
+  description: "读取指定安全事件涉及的边界和分段策略证据。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/boundary/policy"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: collect_endpoint_timeline
+  description: "读取指定安全事件的终端进程和持久化时间线证据。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/endpoint/timeline"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: collect_asset_context
+  description: "读取指定安全事件关联资产的上下文证据。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/asset/context"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: collect_recovery_metrics
+  description: "读取指定安全事件的恢复验证证据。仅用于调查，不执行任何变更。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: scenario_id
+    description: "演练场景编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/tools/recovery/metrics"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: validate_evidence_references
+  description: "校验报告引用的 Evidence ID 是否真实属于该事件。存在未知 ID 时必须判定为无效，禁止提交成功结论。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: evidence_ids
+    description: "待校验的 Evidence ID 数组"
+    type: array
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/evidence/{{.args.incident_id}}/validate"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: search_security_knowledge
+  description: "检索版本化的安全手册、ATT&CK 映射和处置规范。返回结果仅供上下文参考，不能替代当前事件 Evidence ID。"
+  args:
+  - name: query
+    description: "检索问题或关键词"
+    type: string
+    required: true
+  - name: limit
+    description: "返回数量，1 到 10"
+    type: integer
+    required: false
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/knowledge/search"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true

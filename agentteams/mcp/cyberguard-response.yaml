@@ -1,0 +1,76 @@
+server:
+  name: mcp-cyberguard-response
+  config:
+    accessToken: ""
+  allowTools:
+  - propose_response_action
+  - execute_approved_response
+  - inspect_response_action
+  - verify_response_audit
+
+tools:
+- name: propose_response_action
+  description: "提出一项允许列表内的安全响应动作。该调用只创建待审批提案，绝不代表已执行。"
+  args:
+  - name: incident_id
+    description: "事件编号"
+    type: string
+    required: true
+  - name: action
+    description: "动作：block_ioc、disable_account、isolate_endpoint 或 quarantine_workload"
+    type: string
+    required: true
+  - name: target
+    description: "精确目标"
+    type: string
+    required: true
+  - name: reason
+    description: "与证据关联的处置理由"
+    type: string
+    required: true
+  - name: idempotency_key
+    description: "稳定的幂等键"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://response-executor:8080/actions/propose"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true
+- name: execute_approved_response
+  description: "仅在人工已对精确动作完成审批后执行该动作；未审批会被服务拒绝。"
+  args:
+  - name: action_id
+    description: "已审批的动作编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://response-executor:8080/actions/{{.args.action_id}}/execute"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+- name: inspect_response_action
+  description: "读取响应动作的提案、审批、执行和回滚历史。"
+  args:
+  - name: action_id
+    description: "动作编号"
+    type: string
+    required: true
+  requestTemplate:
+    url: "http://response-executor:8080/actions/{{.args.action_id}}"
+    method: GET
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+- name: verify_response_audit
+  description: "验证响应审计链是否完整、连续且经过认证。"
+  args: []
+  requestTemplate:
+    url: "http://response-executor:8080/audit/verify"
+    method: GET
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"

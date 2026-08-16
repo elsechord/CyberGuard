@@ -1,0 +1,106 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-build-scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: services/requirements.lock
+
+      - name: Install test dependencies
+        run: python -m pip install --disable-pip-version-check --require-hashes -r services/requirements.lock
+
+      - name: Run deterministic validation
+        run: bash scripts/test-local.sh
+
+      - name: Validate Compose contract
+        run: |
+          python deploy/init_secrets.py
+          docker compose config --quiet
+          rm -f .env
+
+      - name: Scan repository dependencies, secrets and misconfiguration
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Build gateway image
+        run: docker build --pull --file services/security-tool-gateway/Dockerfile --tag cyberguard/security-tool-gateway:ci .
+
+      - name: Build executor image
+        run: docker build --pull --file services/response-executor/Dockerfile --tag cyberguard/response-executor:ci .
+
+      - name: Scan gateway image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: cyberguard/security-tool-gateway:ci
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Scan executor image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: cyberguard/response-executor:ci
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Generate gateway SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          image: cyberguard/security-tool-gateway:ci
+          format: spdx-json
+          output-file: artifacts/sbom/gateway.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: Generate executor SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          image: cyberguard/response-executor:ci
+          format: spdx-json
+          output-file: artifacts/sbom/executor.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: Generate deterministic source SBOM
+        run: python scripts/generate-source-sbom.py --output artifacts/sbom/source.spdx.json
+
+      - name: Upload SBOM evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cyberguard-sbom-${{ github.sha }}
+          path: artifacts/sbom/*.spdx.json
+          if-no-files-found: error
+          retention-days: 30

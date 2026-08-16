@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: pip
+    directory: /services/security-tool-gateway
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /services/response-executor
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/security-tool-gateway
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/response-executor
+    schedule:
+      interval: weekly

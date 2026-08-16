@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cyberguard.local/schemas/incident.schema.json",
+  "title": "CyberGuard Incident",
+  "type": "object",
+  "required": ["incident_id", "status", "severity", "summary", "hypotheses", "evidence_refs"],
+  "properties": {
+    "incident_id": {"type": "string", "minLength": 3, "maxLength": 128},
+    "status": {"enum": ["new", "triaging", "investigating", "planning", "awaiting_approval", "responding", "verifying", "closed", "rolled_back"]},
+    "severity": {"enum": ["P0", "P1", "P2", "P3", "P4"]},
+    "summary": {"type": "string", "minLength": 1},
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["hypothesis_id", "statement", "confidence", "status"],
+        "properties": {
+          "hypothesis_id": {"type": "string"},
+          "statement": {"type": "string"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "status": {"enum": ["open", "supported", "contradicted", "confirmed", "rejected"]}
+        }
+      }
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "recommended_actions": {"type": "array", "items": {"type": "string"}},
+    "required_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "target", "risk", "requires_approval", "rollback", "verification"],
+        "properties": {
+          "action": {"enum": ["block_ioc", "disable_account", "isolate_endpoint", "quarantine_workload"]},
+          "target": {"type": "string", "minLength": 1, "maxLength": 512},
+          "risk": {"enum": ["L1", "L2", "L3"]},
+          "requires_approval": {"type": "boolean"},
+          "rollback": {"type": "string", "minLength": 1},
+          "verification": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "verification": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["verdict", "window_minutes", "verified_action_ids"],
+          "properties": {
+            "verdict": {"enum": ["verified", "failed", "inconclusive"]},
+            "window_minutes": {"type": "integer", "minimum": 0},
+            "verified_action_ids": {"type": "array", "items": {"type": "string", "pattern": "^ACT-[a-f0-9]{12}$"}, "uniqueItems": true},
+            "reason": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

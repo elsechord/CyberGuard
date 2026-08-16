@@ -1,0 +1,29 @@
+[
+  {
+    "document_id": "KB-ATTACK-T1078",
+    "version": "2026.08.16",
+    "title": "有效账户异常登录调查手册",
+    "source": "CyberGuard curated runbook / MITRE ATT&CK T1078",
+    "tags": ["T1078", "有效账户", "impossible travel", "MFA fatigue", "credential compromise"],
+    "classification": "internal",
+    "content": "先核对身份认证、MFA 拒绝和设备指纹；再调查网络会话、边界策略及终端会话。地理异常和情报命中只能作为线索，处置前必须以当前事件的 Evidence ID 交叉验证。L2 的禁用账号与隔离终端必须等待人工审批。"
+  },
+  {
+    "document_id": "KB-EVIDENCE-GATE",
+    "version": "2026.08.16",
+    "title": "证据引用与不确定性规范",
+    "source": "CyberGuard engineering policy",
+    "tags": ["evidence", "Evidence ID", "hallucination", "uncertainty", "inconclusive"],
+    "classification": "internal",
+    "content": "报告中每一项关键事实必须引用由受控工具返回且可解析的 Evidence ID。知识库条目、模型推断和其他 Agent 的口述均不能替代事件证据。缺少所需遥测时，状态只能是 PARTIAL、BLOCKED 或 INCONCLUSIVE，禁止虚构 IP、端口、规则名、时间线或 Evidence ID。"
+  },
+  {
+    "document_id": "KB-RESPONSE-L2",
+    "version": "2026.08.16",
+    "title": "最小可逆处置与恢复验证",
+    "source": "CyberGuard response policy",
+    "tags": ["approval", "rollback", "disable account", "isolate endpoint", "recovery"],
+    "classification": "internal",
+    "content": "响应计划需绑定精确的 action、target、证据依据、影响面、幂等键、回滚方法与验证指标。执行者不得自行批准 L2 动作。恢复验证必须由独立角色依据完整已执行 Action ID 集合和新的恢复遥测完成。"
+  }
+]

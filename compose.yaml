@@ -1,0 +1,104 @@
+name: cyberguard
+
+x-common: &common
+  restart: unless-stopped
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,size=64m
+  networks:
+    - cyberguard-readonly
+
+services:
+  security-tool-gateway:
+    <<: *common
+    build:
+      context: .
+      dockerfile: services/security-tool-gateway/Dockerfile
+    image: cyberguard/security-tool-gateway:0.11.0
+    environment:
+      CYBERGUARD_API_TOKEN: ${CYBERGUARD_API_TOKEN:?set CYBERGUARD_API_TOKEN in .env}
+      CYBERGUARD_LOG_LEVEL: ${CYBERGUARD_LOG_LEVEL:-INFO}
+      CYBERGUARD_DATA_DIR: /data
+      CYBERGUARD_ACTION_AUDIT_FILE: /actions/actions.jsonl
+      CYBERGUARD_AUDIT_READER_TOKEN: ${CYBERGUARD_AUDIT_READER_TOKEN:?set CYBERGUARD_AUDIT_READER_TOKEN in .env}
+      CYBERGUARD_AUDIT_VERIFY_URL: http://response-executor:8080
+      CYBERGUARD_LIVE_CONNECTORS_FILE: /app/config/connectors.json
+      CYBERGUARD_KNOWLEDGE_DIR: /app/knowledge
+      CYBERGUARD_ALLOW_INSECURE_HTTP: ${CYBERGUARD_ALLOW_INSECURE_HTTP:-0}
+      CYBERGUARD_MIN_EVIDENCE_QUALITY: ${CYBERGUARD_MIN_EVIDENCE_QUALITY:-0.7}
+      CYBERGUARD_SIEM_BASE_URL: ${CYBERGUARD_SIEM_BASE_URL:-}
+      CYBERGUARD_SIEM_TOKEN: ${CYBERGUARD_SIEM_TOKEN:-}
+      CYBERGUARD_NDR_BASE_URL: ${CYBERGUARD_NDR_BASE_URL:-}
+      CYBERGUARD_NDR_TOKEN: ${CYBERGUARD_NDR_TOKEN:-}
+      CYBERGUARD_FIREWALL_BASE_URL: ${CYBERGUARD_FIREWALL_BASE_URL:-}
+      CYBERGUARD_FIREWALL_TOKEN: ${CYBERGUARD_FIREWALL_TOKEN:-}
+      CYBERGUARD_EDR_BASE_URL: ${CYBERGUARD_EDR_BASE_URL:-}
+      CYBERGUARD_EDR_TOKEN: ${CYBERGUARD_EDR_TOKEN:-}
+      CYBERGUARD_CMDB_BASE_URL: ${CYBERGUARD_CMDB_BASE_URL:-}
+      CYBERGUARD_CMDB_TOKEN: ${CYBERGUARD_CMDB_TOKEN:-}
+      CYBERGUARD_VT_API_KEY: ${CYBERGUARD_VT_API_KEY:-}
+      CYBERGUARD_OTX_API_KEY: ${CYBERGUARD_OTX_API_KEY:-}
+      CYBERGUARD_MISP_URL: ${CYBERGUARD_MISP_URL:-}
+      CYBERGUARD_MISP_API_KEY: ${CYBERGUARD_MISP_API_KEY:-}
+    volumes:
+      - ./scenarios:/app/scenarios:ro
+      - ./config:/app/config:ro
+      - ./knowledge:/app/knowledge:ro
+      - cyberguard-evidence:/data
+      - cyberguard-actions:/actions:ro
+    ports:
+      - "127.0.0.1:18100:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      - agentteams-net
+      - cyberguard-readonly
+
+  response-executor:
+    <<: *common
+    build:
+      context: .
+      dockerfile: services/response-executor/Dockerfile
+    image: cyberguard/response-executor:0.11.0
+    environment:
+      CYBERGUARD_EXECUTOR_TOKEN: ${CYBERGUARD_EXECUTOR_TOKEN:?set CYBERGUARD_EXECUTOR_TOKEN in .env}
+      CYBERGUARD_APPROVAL_SECRET: ${CYBERGUARD_APPROVAL_SECRET:?set CYBERGUARD_APPROVAL_SECRET in .env}
+      CYBERGUARD_AUDIT_HMAC_KEY: ${CYBERGUARD_AUDIT_HMAC_KEY:?set CYBERGUARD_AUDIT_HMAC_KEY in .env}
+      CYBERGUARD_AUDIT_READER_TOKEN: ${CYBERGUARD_AUDIT_READER_TOKEN:?set CYBERGUARD_AUDIT_READER_TOKEN in .env}
+      CYBERGUARD_DATA_DIR: /data
+    volumes:
+      - cyberguard-actions:/data
+    ports:
+      - "127.0.0.1:18105:8080"
+    networks:
+      - agentteams-net
+      - cyberguard-execution
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+networks:
+  agentteams-net:
+    external: true
+    name: agentteams-net
+  cyberguard-readonly:
+    name: cyberguard-readonly
+    internal: true
+  cyberguard-execution:
+    name: cyberguard-execution
+    internal: true
+
+volumes:
+  cyberguard-evidence:
+  cyberguard-actions:

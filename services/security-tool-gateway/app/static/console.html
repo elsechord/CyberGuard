@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CyberGuard · 证据审计台</title>
+  <meta name="description" content="CyberGuard 安全事件证据、行动审批与恢复验证审计台">
+  <link rel="stylesheet" href="/assets/console.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/console" aria-label="CyberGuard 首页">
+      <span class="brand-mark" aria-hidden="true"><span></span></span>
+      <span><b>CyberGuard</b><small>Evidence Control Plane</small></span>
+    </a>
+    <div class="top-actions">
+      <span id="connection" class="connection offline"><i></i>未连接</span>
+      <button id="refresh" class="ghost-button" type="button">刷新证据</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">AGENTTEAMS · AUTONOMOUS SOC</p>
+        <h1>每个结论，都能回到证据。</h1>
+        <p class="hero-copy">跨威胁情报、网络与终端调查，追踪从假设到审批、响应和独立验证的完整安全事件链。</p>
+      </div>
+      <div class="hero-status" aria-label="安全控制">
+        <div><strong>READ</strong><span>调查面只读</span></div>
+        <div><strong>HITL</strong><span>L2 人工审批</span></div>
+        <div><strong>VERIFY</strong><span>独立恢复验证</span></div>
+      </div>
+    </section>
+
+    <section id="auth-panel" class="auth-panel">
+      <div>
+        <p class="eyebrow">LOCAL ACCESS</p>
+        <h2>连接只读审计接口</h2>
+        <p>输入 CyberGuard 只读访问令牌。令牌仅保存在当前浏览器标签页。</p>
+      </div>
+      <form id="auth-form">
+        <label for="token">只读访问令牌</label>
+        <div class="token-row">
+          <input id="token" name="token" type="password" autocomplete="off" required>
+          <button class="primary-button" type="submit">连接</button>
+        </div>
+        <p id="auth-error" class="error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="workspace" class="workspace hidden" aria-live="polite">
+      <aside class="incident-rail">
+        <div class="section-heading">
+          <div><p class="eyebrow">INCIDENT QUEUE</p><h2>事件队列</h2></div>
+          <span id="incident-count" class="count">0</span>
+        </div>
+        <div id="incident-list" class="incident-list"></div>
+      </aside>
+
+      <div class="detail">
+        <section id="empty-state" class="empty-state">
+          <span class="radar" aria-hidden="true"><i></i></span>
+          <h2>等待安全事件</h2>
+          <p>通过 AgentTeams Team 运行 Demo 后，证据、行动与验证状态会在这里自动汇聚。</p>
+        </section>
+
+        <div id="incident-detail" class="hidden">
+          <section class="incident-header">
+            <div>
+              <p class="eyebrow">ACTIVE INVESTIGATION</p>
+              <h2 id="detail-id"></h2>
+            </div>
+            <span id="detail-status" class="status-pill"></span>
+          </section>
+
+          <section class="metric-grid" aria-label="事件指标">
+            <article><span>证据</span><strong id="metric-evidence">0</strong><small>HASH-BOUND</small></article>
+            <article><span>独立来源</span><strong id="metric-sources">0</strong><small>CROSS-SENSOR</small></article>
+            <article><span>响应行动</span><strong id="metric-actions">0</strong><small>APPROVAL-GATED</small></article>
+            <article><span>证据质量</span><strong id="metric-quality">0%</strong><small>QUALITY-GATED</small></article>
+          </section>
+
+          <section class="panel workflow-panel">
+            <div class="section-heading"><div><p class="eyebrow">AGENT WORKFLOW</p><h3>会话状态与人工审批</h3></div><span id="approval-alert" class="status-pill hidden">无需审批</span></div>
+            <div id="workflow-list" class="action-list"></div>
+          </section>
+
+          <section class="panel graph-panel">
+            <div class="section-heading">
+              <div><p class="eyebrow">EVIDENCE GRAPH</p><h3>证据关系图</h3></div>
+              <div class="legend"><span class="source-dot">来源</span><span class="evidence-dot">证据</span><span class="entity-dot">实体/观测</span><span class="attack-dot">ATT&amp;CK</span><span class="hypothesis-dot">假设</span><span class="action-dot">行动</span></div>
+            </div>
+            <div class="graph-scroll"><svg id="graph" role="img" aria-label="事件证据关系图"></svg></div>
+          </section>
+
+          <div class="two-column">
+            <section class="panel">
+              <div class="section-heading"><div><p class="eyebrow">EVIDENCE LEDGER</p><h3>证据时间线</h3></div></div>
+              <div id="evidence-list" class="timeline"></div>
+            </section>
+            <section class="panel">
+              <div class="section-heading"><div><p class="eyebrow">ACTION AUDIT</p><h3>审批与响应</h3></div></div>
+              <div id="action-list" class="action-list"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><span>HDUSecLab · CyberGuard</span><span>AgentTeams v1.2.2 · Evidence-first Autonomous SOC</span></footer>
+  <script src="/assets/console.js" defer></script>
+</body>
+</html>

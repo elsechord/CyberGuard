@@ -1,0 +1,6 @@
+{
+  "single-agent": "!replace-single-agent-room:matrix.local",
+  "multi-agent-no-contract": "!replace-no-contract-room:matrix.local",
+  "cyberguard-no-verifier": "!replace-no-verifier-room:matrix.local",
+  "cyberguard-full": "!replace-full-room:matrix.local"
+}

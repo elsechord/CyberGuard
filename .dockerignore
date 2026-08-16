@@ -1,0 +1,10 @@
+.env
+.git
+.codebase-memory
+dist
+tmp
+参考资料
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+

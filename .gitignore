@@ -1,0 +1,16 @@
+.env
+*.log
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.cache/
+data/
+backups/
+deploy/agentteams/generated/
+artifacts/
+benchmark/results/
+tmp/
+dist/
+.codebase-memory/
+参考资料/

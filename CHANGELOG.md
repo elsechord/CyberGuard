@@ -1,0 +1,101 @@
+# Changelog
+
+## 0.11.0 — 2026-08-13
+
+- Added a runnable `boundary.policy` investigation tool, firewall/gateway live-connector contract and boundary-policy evidence to both competition scenarios.
+- Added the tenth reusable Skill, `boundary-defense`, and assigned it to the least-privilege `network-hunter` AgentTeams Worker.
+- Added the reversible `quarantine_workload` action and expanded each deterministic scenario to an exact three-action credential/compute/boundary response contract.
+- Bound recovery verification to the complete authenticated action-and-target set; unrelated, partial, wrong-target and rolled-back responses now remain inconclusive.
+- Prevented the incident summary from reporting `verified` unless the latest recovery evidence explicitly has `verdict=verified`.
+- Added benchmark ground truth v2 and structural checks binding actions to targets and verification to the exact Action ID set while preserving frozen v1.
+- Added seven boundary, response-contract, benchmark and packaging contracts (72 automated tests total).
+
+## 0.10.0 — 2026-08-13
+
+- Added the hash-bound Evidence 1.0 normalization layer across SIEM, threat-intelligence, NDR, EDR/runtime, CMDB and recovery sources.
+- Added OCSF-aligned event classes, STIX 2.1 observable types and validated MITRE ATT&CK technique/sub-technique mappings without claiming formal standard conformance.
+- Added deterministic evidence quality scoring, a configurable live-ingestion floor and an incident-level three-source quality gate.
+- Made live evidence source identity and handling classification server-owned to prevent provenance spoofing and classification downgrades.
+- Added stable cross-vendor entity/observable IDs and expanded the explainable incident graph with entity, observable and ATT&CK nodes.
+- Added quality and cross-source correlation summaries to the read-only audit console and API.
+- Added seven normalization, rejection, correlation and configuration contracts (65 automated tests total).
+
+## 0.9.0 — 2026-08-13
+
+- Added a Matrix-native, hash-bound and idempotent AgentTeams v1.2.2 Manager bootstrap client.
+- Added checksum-verified Skill staging through the configured AgentTeams `/host-share` contract.
+- Added strict validation of the seven Worker roles, Skill assignments, tool least privilege and exact Team room ID.
+- Added cross-checks against live AgentTeams Worker/Team CR snapshots and a checksummed competition-readiness report.
+- Kept all bearer, approval and audit secrets out of Matrix while reducing baseline setup to one direct credential-broker registration plus one bootstrap command.
+- Added a nested hash manifest that binds the Matrix request to every staged Skill and role specification.
+- Added six AgentTeams bootstrap and readiness contracts (58 automated tests total).
+
+## 0.8.0 — 2026-08-13
+
+- Added HMAC-SHA256 authentication to every response audit record and exportable audit checkpoints.
+- Bound human approvals to exact proposal hashes and execution records to exact approval hashes.
+- Serialized proposal, approval, execution and rollback transitions for exactly-once behavior under concurrency.
+- Added safe approval renewal after expiry and permanently closed actions after rollback.
+- Replaced recovery's blind audit-file trust with an authenticated executor state query using a read-only credential.
+- Split five deployment secrets by role and added six tampering, concurrency, recovery and deployment contracts (52 automated tests total).
+
+## 0.7.0 — 2026-08-13
+
+- Added two-scenario judge demo automation with machine-readable results and checksums.
+- Added fail-closed benchmark provenance binding and a full 40-run matrix auditor.
+- Added Wilson completion intervals, deterministic bootstrap metric intervals, pooled rates and missing-observation disclosure.
+- Prevented failed runs from being misreported as zero-cost or zero-risk observations.
+- Added server-acceptance failure forensics, image identity capture and a machine-readable acceptance manifest.
+- Added eight evaluation, provenance and demonstration contracts (46 automated tests total).
+
+## 0.6.0 — 2026-08-13
+
+- Added hash-locked CPython 3.12/Linux x86_64 dependencies and digest-pinned container builds.
+- Added least-privilege, SHA-pinned GitHub Actions CI with source and image vulnerability scans.
+- Added deterministic SPDX source SBOM generation plus container SBOM publication.
+- Added Dependabot, contribution, security-disclosure and reproducible-release guidance.
+- Added ten supply-chain, SBOM and architecture contracts (38 automated tests total).
+
+## 0.5.0 — 2026-08-13
+
+- Added fail-closed validation for CyberGuard and AgentTeams deployment configuration without logging secret values.
+- Added atomic mode-0600 secret generation and a single server bootstrap entry point.
+- Added Linux host/resource/Docker preflight checks and integrated them into server acceptance.
+- Added eleven deployment configuration, secret-generation and release-contract tests (28 automated tests total).
+- Excluded private Matrix results, room maps and acceptance evidence from public release archives.
+
+## 0.4.0 — 2026-08-13
+
+- Added a Matrix-native AgentTeams benchmark runner for four fixed ablation rooms, raw trace retention and strict structured-report extraction.
+- Separated Agent output collection from independent human ground-truth annotation and required real telemetry before successful runs can be aggregated.
+- Added one-command server acceptance with timestamped evidence, redacted logs, image/OpenAPI provenance and SHA256 manifests.
+- Pinned the AgentTeams v1.2.2 installer to its full release commit and verified installer SHA256 before execution.
+- Added benchmark Team bootstrap instructions, judge demo runbook and three new benchmark integrity tests.
+
+## 0.3.1 — 2026-08-13
+
+- Added a cross-service server acceptance test covering investigation, pre-action verification refusal, approval enforcement, execution, recovery verification, audit integrity and rollback observation.
+- Made the full E2E safety gate part of the default Docker deployment flow.
+
+## 0.3.0 — 2026-08-13
+
+- Added authenticated incident index, detail and evidence-graph APIs.
+- Added a responsive, read-only evidence audit console with strict CSP and no third-party assets.
+- Added incident status derivation from evidence and approval/action audit state.
+- Added console/API regression coverage and server verification checks.
+
+## 0.2.0 — 2026-08-13
+
+- Added a supply-chain/WebShell scenario with adversarial tool-output prompt injection.
+- Added server-controlled live connector contracts for SIEM, NDR, EDR and CMDB APIs.
+- Added single-Agent, no-contract, no-verifier and full-CyberGuard ablation definitions and result aggregation.
+- Pinned the Python base image and updated FastAPI, Uvicorn and Pydantic to current stable releases.
+- Hardened response idempotency against key rebinding and documented competition evidence requirements and architecture decisions.
+
+## 0.1.0 — 2026-08-13
+
+- Added a Docker-deployable CyberGuard application layer for AgentTeams v1.2.2.
+- Added evidence-driven read-only investigation tools and a deterministic credential-compromise scenario.
+- Added approval-gated, idempotent and reversible response execution with hash-linked audit verification.
+- Added seven Agent definitions, reusable security Skills, incident/evidence contracts and a structural evaluator.
+- Added server installation, verification, operations and threat-model documentation.

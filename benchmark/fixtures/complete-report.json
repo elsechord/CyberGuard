@@ -1,0 +1,26 @@
+{
+  "incident_id": "CG-BENCH-001",
+  "hypotheses": [
+    {"hypothesis_id": "H1", "confidence": 0.93},
+    {"hypothesis_id": "H2", "confidence": 0.61}
+  ],
+  "evidence_refs": [
+    "EV-aaaaaaaaaaaa",
+    "EV-bbbbbbbbbbbb",
+    "EV-cccccccccccc",
+    "EV-dddddddddddd"
+  ],
+  "evidence_sources": ["siem", "edr", "network-sensor", "threat-intel"],
+  "actions": [
+    {
+      "action_id": "ACT-aaaaaaaaaaaa",
+      "action": "isolate_endpoint",
+      "target": "FIN-LT-023",
+      "risk": "L2",
+      "approver": "benchmark-human",
+      "rollback": "release endpoint isolation"
+    }
+  ],
+  "verification": {"verdict": "verified", "window_minutes": 15, "verified_action_ids": ["ACT-aaaaaaaaaaaa"]},
+  "residual_risk": "Credentials require rotation and the endpoint requires offline forensics."
+}
