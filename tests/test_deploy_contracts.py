@@ -113,6 +113,13 @@ class DeployContractTests(unittest.TestCase):
         self.assertIn("Simplified Chinese", request)
         self.assertIn("Simplified-Chinese language policy", bootstrap)
 
+    def test_llm_verification_does_not_pass_provider_key_on_cli(self):
+        script = (ROOT / "deploy" / "verify-agentteams-llm.sh").read_text(encoding="utf-8")
+        self.assertIn('llm_preflight.py" --env', script)
+        self.assertNotIn("agt llm-preflight", script)
+        self.assertNotIn("--api-key", script)
+        self.assertIn("AGENTTEAMS_WORKER_GATEWAY_KEY", script)
+
 
 if __name__ == "__main__":
     unittest.main()

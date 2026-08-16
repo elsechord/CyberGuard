@@ -20,6 +20,8 @@ import stat
 import subprocess
 import tempfile
 
+from llm_preflight import LLMPreflightError, probe_provider
+
 
 ENV_UPDATES = {
     "AGENTTEAMS_LLM_PROVIDER": "deepseek-official",
@@ -218,6 +220,17 @@ def main() -> int:
     api_key = values.get("AGENTTEAMS_LLM_API_KEY", "")
     if len(api_key) < 8 or api_key == "replace-me":
         raise SystemExit("AGENTTEAMS_LLM_API_KEY is missing or still a placeholder")
+    base_url = ENV_UPDATES["AGENTTEAMS_OPENAI_BASE_URL"]
+    model = ENV_UPDATES["AGENTTEAMS_DEFAULT_MODEL"]
+    print(f"Preflighting provider directly: base_url={base_url} model={model}", flush=True)
+    try:
+        probe_provider(base_url, api_key, model)
+    except LLMPreflightError as exc:
+        raise SystemExit(
+            "LLM preflight failed safely; gateway was not modified: "
+            f"category={exc.category} detail={exc}"
+        ) from exc
+    print("Direct provider preflight passed", flush=True)
     configure_gateway(api_key)
     update_env(args.env)
     print("AgentTeams environment normalized for deepseek-v4-flash")

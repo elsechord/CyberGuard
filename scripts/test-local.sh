@@ -14,6 +14,7 @@ python3 tests/test_benchmark_audit.py
 python3 tests/test_agentteams_bootstrap.py
 python3 tests/test_deploy_config.py
 python3 tests/test_init_secrets.py
+python3 tests/test_llm_preflight.py
 python3 tests/test_deploy_contracts.py
 python3 tests/test_source_sbom.py
 python3 tests/test_ci_contracts.py
