@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 — 2026-08-16
+
+- Added competition-ready Agent Identity and Skill inventories aligned with the August 15 Track 1 guide.
+- Added fail-fast LLM provider preflight checks and verified the official DeepSeek route through the deployed Worker gateway without exposing credentials.
+- Hardened AgentTeams acceptance so Worker Skill and MCP bindings are read from the actual Worker resources rather than trusted Manager claims.
+- Upgraded all ten reusable security Skills to explicit input, dependency, execution, safety, failure and quality-gate contracts.
+- Verified the remote two-scenario judge demo with twelve safety/lifecycle proofs and six exact response actions, plus 83 local automated tests.
+- Refreshed the preliminary-round deck and release bundle with current deployment evidence and submission-ready materials.
+
 ## 0.11.0 — 2026-08-13
 
 - Added a runnable `boundary.policy` investigation tool, firewall/gateway live-connector contract and boundary-policy evidence to both competition scenarios.
