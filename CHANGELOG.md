@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.0 — 2026-09-03
+
+- Completed the judge-requested live evidence: one real AgentTeams task (CG-2026-0002, supply_chain_webshell) ran from creation to terminal state on AgentTeams v1.2.2 with the cyberguard-soc team — 2,992 native Matrix events, four hash-bound human-approved actions, two-round independent re-verification (inconclusive → verified) and a rollback that correctly reverted the verdict to inconclusive.
+- Packaged the run as a checksummed evidence archive (event chains, approvals, executions, re-verification, rollback, terminal state, readiness gate) attached to this release.
+- Added `scripts/capture-agentteams-task.py` (native Matrix event-chain capturer with approval-gate detection) and `docs/LIVE_TASK_EVIDENCE.md` (proven v1.2.2 registration path, including Higress single-label DNS, :443 port default and worker- consumer-name gotchas).
+- Added `docs/SEMIFINAL_PLAN.md` with the 9.4 defense schedule and 2026-09-01 rule updates.
+
 ## 0.12.0 — 2026-08-16
 
 - Added competition-ready Agent Identity and Skill inventories aligned with the August 15 Track 1 guide.
