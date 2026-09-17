@@ -116,6 +116,9 @@ jobs:
           ignore-unfixed: true
           exit-code: "1"
 
+      - name: Prepare SBOM output directory
+        run: mkdir -p artifacts/sbom
+
       - name: Generate gateway SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
         with:
