@@ -1,6 +1,13 @@
 # Changelog
 
-## Unreleased — finals engineering
+## 0.14.0 — 2026-09-18
+
+- Released the finals engineering layer (`2417da4`): the model admission guard as a service (durable run/role budgets, exact-request deduplication, restart disarming, closed ledgers), the isolated host-lab and identity labs (real `/proc` observation, version-bound persistence cleanup, receipt-bound approval/audit reconciliation), the bounded investigation pipeline with immutable run APIs, checksummed exports and a shared evaluation protocol, the Compose surface, and expanded documentation and tests.
+- Normalized `LICENSE` to the canonical Apache-2.0 text and moved copyright attribution to a new `NOTICE` file so license detection is reliable (`b60218e`).
+- Migrated the repository to the `elsechord` organization at `https://github.com/elsechord/CyberGuard`; the legacy remote stays read-only and is never pushed.
+- Packaged the 2026-09-17 validation evidence as `validation-20260917T180221Z.tar.gz` and attached it to this release: host-lab validation (3 runs, including a rejection that prevented dispatch and supervisor-real restarts with version-bound persistence cleanup), a model-guard closed ledger (0 requests, 0 consumption), investigation bundles that passed the full chain, and local AgentTeams native attempt records.
+
+### Details of the finals engineering layer
 
 - Added an exercise-only model tool loop with retained provider usage, failed attempts, validated gateway acknowledgements, local attempt uniqueness and credential-redacted artifacts; direct model execution is explicitly separate from AgentTeams.
 - Added pinned local AgentTeams Docker deployment and a documented upstream controller patch for localhost Worker consoles, narrow investigation MCP registration and native deployment snapshots.
