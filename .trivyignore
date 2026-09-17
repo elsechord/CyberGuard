@@ -1,0 +1,14 @@
+# DS-0002 (HIGH): upstream AgentTeams integration images run as root.
+#
+# This ID-only ignore file is used because the pinned trivy-action (v0.36.0)
+# merges plain-text ignores globally; per-path YAML ignores are not loaded by
+# the action. The only affected files are integration-only local builds that
+# mirror the upstream AgentTeams base images, which run as root and rely on
+# root for their managed lifecycle (controller: agentteams-embedded v1.2.2;
+# qwenpaw worker: installs Skills at runtime):
+#   - deploy/agentteams-local/controller.Dockerfile
+#   - deploy/agentteams-local/qwenpaw.Dockerfile
+# See docs/AGENTTEAMS_LOCAL.md. Service images built by this repository are
+# non-root; keep it that way — do not widen this entry.
+# Revisit by 2027-03-31 or when upstream ships non-root images.
+DS-0002
