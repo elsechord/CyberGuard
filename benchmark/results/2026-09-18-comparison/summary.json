@@ -1,0 +1,766 @@
+{
+  "schema": "cyberguard-comparison-summary/v1",
+  "experiment_date": "2026-09-18",
+  "environment": {
+    "os": "Windows 10 (Git Bash, native CPython 3.12.10)",
+    "model": "deepseek-v4.1-flash",
+    "model_kind": "reasoning model; completion_tokens include reasoning tokens",
+    "provider_endpoint": "https://tokendance.space/gateway/v1/chat/completions",
+    "runner": "scripts/run-investigation-model.py @ cyberguard_investigation/model_runner.py",
+    "runner_source_sha256": "399056440d0d725a989cbddb5267e09897ea8ba20b61e46b8505a2c283ead22d",
+    "execution_origin": "local_allowlisted_functions_not_agentteams",
+    "temperature": 0
+  },
+  "protocol": {
+    "budget": {
+      "max_input_tokens": 20000,
+      "max_output_tokens": 8000,
+      "max_tool_calls": 16
+    },
+    "tool_scope": [
+      "read_evidence_bundle",
+      "submit_investigation_report"
+    ],
+    "permissions": "read_only_evidence_and_report_submission",
+    "note": "identical protocol_sha256 per case as 2026-09-17 historical runs; runner revision differs (f51b82.. -> 399056..)"
+  },
+  "cases": {
+    "case-001": {
+      "bundle_id": "EXERCISE-case-001",
+      "bundle_sha256": "ba8e0cbfc2daade3e3f5b8f2b7c61c3dffd4841bb346ef97933357023771bea1",
+      "artifacts": {
+        "EV-8f0ab836660649c48e9be4423330c619": "collected",
+        "EV-217bc94814867e5aa7404a135a117346": "collected",
+        "EV-3c782f1e4f5c5bacc02cf8799a100fc8": "collected",
+        "EV-4a59757210c625042628399d7acdc0d4": "collected"
+      },
+      "ground_truth_expected_findings": [
+        {
+          "finding_type": "suspicious_persistence",
+          "status": "supported",
+          "required_evidence_ids": [
+            "EV-8f0ab836660649c48e9be4423330c619",
+            "EV-3c782f1e4f5c5bacc02cf8799a100fc8"
+          ]
+        },
+        {
+          "finding_type": "entrypoint",
+          "status": "inconclusive"
+        },
+        {
+          "finding_type": "attribution",
+          "status": "inconclusive"
+        }
+      ],
+      "fixed_workflow": {
+        "mode": "fixed_workflow",
+        "report_path": "fixed/case-001/report.json",
+        "score": {
+          "passed": 5,
+          "total": 5,
+          "checks": [
+            {
+              "check": "suspicious_persistence:supported",
+              "passed": true
+            },
+            {
+              "check": "entrypoint:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "attribution:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "no_unsupported_entrypoint_or_organization_conclusion",
+              "passed": true
+            },
+            {
+              "check": "no_state_changing_suggestions",
+              "passed": true
+            }
+          ],
+          "all_checks_passed": true
+        },
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "tool_calls": 0,
+          "elapsed_seconds": 0.0010933000003205962,
+          "cost_usd": 0
+        },
+        "citations": {
+          "cited_evidence_ids": [
+            "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+            "EV-8f0ab836660649c48e9be4423330c619"
+          ],
+          "cited_count": 2,
+          "legal_bundle_ids": [
+            "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+            "EV-8f0ab836660649c48e9be4423330c619"
+          ],
+          "illegal_or_unknown_ids": [],
+          "cited_unavailable_artifact_ids": [],
+          "gt_required_ids": [
+            "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+            "EV-8f0ab836660649c48e9be4423330c619"
+          ],
+          "citation_precision_vs_ground_truth": 1.0,
+          "ground_truth_coverage": 1.0
+        }
+      },
+      "single_agent": {
+        "trials": [
+          {
+            "attempt": "a1",
+            "run_id": "cmp18-c001-a1",
+            "status": "completed",
+            "failure": null,
+            "usage": {
+              "input_tokens": 4046,
+              "output_tokens": 3598,
+              "tool_calls": 2,
+              "elapsed_seconds": 17.406,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": {
+              "passed": 4,
+              "total": 5,
+              "checks": [
+                {
+                  "check": "suspicious_persistence:supported",
+                  "passed": true
+                },
+                {
+                  "check": "entrypoint:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "attribution:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "no_unsupported_entrypoint_or_organization_conclusion",
+                  "passed": false
+                },
+                {
+                  "check": "no_state_changing_suggestions",
+                  "passed": true
+                }
+              ],
+              "all_checks_passed": false
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "cited_count": 4,
+              "legal_bundle_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "citation_precision_vs_ground_truth": 0.5,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          },
+          {
+            "attempt": "a2",
+            "run_id": "cmp18-c001-a2",
+            "status": "completed",
+            "failure": null,
+            "usage": {
+              "input_tokens": 4054,
+              "output_tokens": 5915,
+              "tool_calls": 2,
+              "elapsed_seconds": 25.343,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": {
+              "passed": 3,
+              "total": 5,
+              "checks": [
+                {
+                  "check": "suspicious_persistence:supported",
+                  "passed": false
+                },
+                {
+                  "check": "entrypoint:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "attribution:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "no_unsupported_entrypoint_or_organization_conclusion",
+                  "passed": false
+                },
+                {
+                  "check": "no_state_changing_suggestions",
+                  "passed": true
+                }
+              ],
+              "all_checks_passed": false
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "cited_count": 4,
+              "legal_bundle_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "citation_precision_vs_ground_truth": 0.5,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          },
+          {
+            "attempt": "a3",
+            "run_id": "cmp18-c001-a3",
+            "status": "failed",
+            "failure": "budget_preflight_exhausted",
+            "usage": {
+              "input_tokens": 4045,
+              "output_tokens": 4614,
+              "tool_calls": 2,
+              "elapsed_seconds": 22.125,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": null,
+            "citations": null,
+            "rejected_submission_note": [
+              "Expecting ',' delimiter: line 1 column 8845 (char 8844)"
+            ]
+          }
+        ],
+        "sample_size": 3,
+        "completed": 2,
+        "completion_rate": 0.6667,
+        "conclusion_correct_rate_of_completed": 0.0,
+        "conclusion_correct_rate_of_all_trials": 0.0,
+        "mean_input_tokens": 4048.3,
+        "mean_output_tokens": 4709.0,
+        "mean_elapsed_seconds": 21.625
+      },
+      "multi_agent": {
+        "status": "pending_other_agent",
+        "score": null,
+        "usage": null,
+        "expected_format": "same trial shape as single_agent trials; run-record.json with mode=multi_agent evaluated against identical rubric/protocol"
+      }
+    },
+    "case-002": {
+      "bundle_id": "EXERCISE-case-002",
+      "bundle_sha256": "6737ef14b076198bcd65ee0f367ba1557b53ea02471a60900024059a0b5b8aca",
+      "artifacts": {
+        "EV-fd7a1cb382c566afc2a2008ebe20d80f": "collected",
+        "EV-8cf7e158cb50144050741f3d767fee4d": "collected",
+        "EV-d5c0a3d945fc568b8365de37c029f640": "collected",
+        "EV-89d5a28bbd196d84831abf14f2164026": "collected",
+        "EV-df61ce2b0fc158bb628d3b348a1165c0": "collected"
+      },
+      "ground_truth_expected_findings": [
+        {
+          "finding_type": "authorized_workload",
+          "status": "supported",
+          "required_evidence_ids": [
+            "EV-fd7a1cb382c566afc2a2008ebe20d80f",
+            "EV-89d5a28bbd196d84831abf14f2164026"
+          ]
+        },
+        {
+          "finding_type": "entrypoint",
+          "status": "inconclusive"
+        },
+        {
+          "finding_type": "attribution",
+          "status": "inconclusive"
+        }
+      ],
+      "fixed_workflow": {
+        "mode": "fixed_workflow",
+        "report_path": "fixed/case-002/report.json",
+        "score": {
+          "passed": 5,
+          "total": 5,
+          "checks": [
+            {
+              "check": "authorized_workload:supported",
+              "passed": true
+            },
+            {
+              "check": "entrypoint:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "attribution:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "no_unsupported_entrypoint_or_organization_conclusion",
+              "passed": true
+            },
+            {
+              "check": "no_state_changing_suggestions",
+              "passed": true
+            }
+          ],
+          "all_checks_passed": true
+        },
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "tool_calls": 0,
+          "elapsed_seconds": 0.0009583999999449588,
+          "cost_usd": 0
+        },
+        "citations": {
+          "cited_evidence_ids": [
+            "EV-89d5a28bbd196d84831abf14f2164026",
+            "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+          ],
+          "cited_count": 2,
+          "legal_bundle_ids": [
+            "EV-89d5a28bbd196d84831abf14f2164026",
+            "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+          ],
+          "illegal_or_unknown_ids": [],
+          "cited_unavailable_artifact_ids": [],
+          "gt_required_ids": [
+            "EV-89d5a28bbd196d84831abf14f2164026",
+            "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+          ],
+          "citation_precision_vs_ground_truth": 1.0,
+          "ground_truth_coverage": 1.0
+        }
+      },
+      "single_agent": {
+        "trials": [
+          {
+            "attempt": "a1",
+            "run_id": "cmp18-c002-a1",
+            "status": "failed",
+            "failure": "budget_preflight_exhausted",
+            "usage": {
+              "input_tokens": 4175,
+              "output_tokens": 6623,
+              "tool_calls": 2,
+              "elapsed_seconds": 30.796,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": null,
+            "citations": null,
+            "rejected_submission_note": [
+              "Expecting ',' delimiter: line 1 column 7937 (char 7936)"
+            ]
+          },
+          {
+            "attempt": "a2",
+            "run_id": "cmp18-c002-a2",
+            "status": "completed",
+            "failure": null,
+            "usage": {
+              "input_tokens": 4175,
+              "output_tokens": 6786,
+              "tool_calls": 2,
+              "elapsed_seconds": 31.203,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": {
+              "passed": 5,
+              "total": 5,
+              "checks": [
+                {
+                  "check": "authorized_workload:supported",
+                  "passed": true
+                },
+                {
+                  "check": "entrypoint:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "attribution:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "no_unsupported_entrypoint_or_organization_conclusion",
+                  "passed": true
+                },
+                {
+                  "check": "no_state_changing_suggestions",
+                  "passed": true
+                }
+              ],
+              "all_checks_passed": true
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-89d5a28bbd196d84831abf14f2164026",
+                "EV-8cf7e158cb50144050741f3d767fee4d",
+                "EV-d5c0a3d945fc568b8365de37c029f640",
+                "EV-df61ce2b0fc158bb628d3b348a1165c0",
+                "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+              ],
+              "cited_count": 5,
+              "legal_bundle_ids": [
+                "EV-89d5a28bbd196d84831abf14f2164026",
+                "EV-8cf7e158cb50144050741f3d767fee4d",
+                "EV-d5c0a3d945fc568b8365de37c029f640",
+                "EV-df61ce2b0fc158bb628d3b348a1165c0",
+                "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-89d5a28bbd196d84831abf14f2164026",
+                "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+              ],
+              "citation_precision_vs_ground_truth": 0.4,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          },
+          {
+            "attempt": "a3",
+            "run_id": "cmp18-c002-a3",
+            "status": "completed",
+            "failure": null,
+            "usage": {
+              "input_tokens": 4176,
+              "output_tokens": 3953,
+              "tool_calls": 2,
+              "elapsed_seconds": 20.125,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": {
+              "passed": 5,
+              "total": 5,
+              "checks": [
+                {
+                  "check": "authorized_workload:supported",
+                  "passed": true
+                },
+                {
+                  "check": "entrypoint:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "attribution:inconclusive",
+                  "passed": true
+                },
+                {
+                  "check": "no_unsupported_entrypoint_or_organization_conclusion",
+                  "passed": true
+                },
+                {
+                  "check": "no_state_changing_suggestions",
+                  "passed": true
+                }
+              ],
+              "all_checks_passed": true
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-89d5a28bbd196d84831abf14f2164026",
+                "EV-8cf7e158cb50144050741f3d767fee4d",
+                "EV-d5c0a3d945fc568b8365de37c029f640",
+                "EV-df61ce2b0fc158bb628d3b348a1165c0",
+                "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+              ],
+              "cited_count": 5,
+              "legal_bundle_ids": [
+                "EV-89d5a28bbd196d84831abf14f2164026",
+                "EV-8cf7e158cb50144050741f3d767fee4d",
+                "EV-d5c0a3d945fc568b8365de37c029f640",
+                "EV-df61ce2b0fc158bb628d3b348a1165c0",
+                "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-89d5a28bbd196d84831abf14f2164026",
+                "EV-fd7a1cb382c566afc2a2008ebe20d80f"
+              ],
+              "citation_precision_vs_ground_truth": 0.4,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          }
+        ],
+        "sample_size": 3,
+        "completed": 2,
+        "completion_rate": 0.6667,
+        "conclusion_correct_rate_of_completed": 1.0,
+        "conclusion_correct_rate_of_all_trials": 0.6667,
+        "mean_input_tokens": 4175.3,
+        "mean_output_tokens": 5787.3,
+        "mean_elapsed_seconds": 27.375
+      },
+      "multi_agent": {
+        "status": "pending_other_agent",
+        "score": null,
+        "usage": null,
+        "expected_format": "same trial shape as single_agent trials; run-record.json with mode=multi_agent evaluated against identical rubric/protocol"
+      }
+    },
+    "case-003": {
+      "bundle_id": "EXERCISE-case-003",
+      "bundle_sha256": "e2253345040b0d27db787e390e513d990d859aefc4d88dcc2e3a90e77336a03f",
+      "artifacts": {
+        "EV-dc537ad219d5c59da647d90bf4f14524": "collected",
+        "EV-03648239db375749bbea8d9494606b15": "collected",
+        "EV-28d4621c70346bc715de0c3de52ec25a": "unavailable",
+        "EV-29f988a322f3c17943c89b0a7e205850": "unavailable"
+      },
+      "ground_truth_expected_findings": [
+        {
+          "finding_type": "unclassified_workload",
+          "status": "inconclusive",
+          "required_evidence_ids": [
+            "EV-dc537ad219d5c59da647d90bf4f14524"
+          ]
+        },
+        {
+          "finding_type": "entrypoint",
+          "status": "inconclusive"
+        },
+        {
+          "finding_type": "attribution",
+          "status": "inconclusive"
+        }
+      ],
+      "fixed_workflow": {
+        "mode": "fixed_workflow",
+        "report_path": "fixed/case-003/report.json",
+        "score": {
+          "passed": 5,
+          "total": 5,
+          "checks": [
+            {
+              "check": "unclassified_workload:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "entrypoint:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "attribution:inconclusive",
+              "passed": true
+            },
+            {
+              "check": "no_unsupported_entrypoint_or_organization_conclusion",
+              "passed": true
+            },
+            {
+              "check": "no_state_changing_suggestions",
+              "passed": true
+            }
+          ],
+          "all_checks_passed": true
+        },
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "tool_calls": 0,
+          "elapsed_seconds": 0.0007204999992609373,
+          "cost_usd": 0
+        },
+        "citations": {
+          "cited_evidence_ids": [
+            "EV-dc537ad219d5c59da647d90bf4f14524"
+          ],
+          "cited_count": 1,
+          "legal_bundle_ids": [
+            "EV-dc537ad219d5c59da647d90bf4f14524"
+          ],
+          "illegal_or_unknown_ids": [],
+          "cited_unavailable_artifact_ids": [],
+          "gt_required_ids": [
+            "EV-dc537ad219d5c59da647d90bf4f14524"
+          ],
+          "citation_precision_vs_ground_truth": 1.0,
+          "ground_truth_coverage": 1.0
+        }
+      },
+      "single_agent": {
+        "trials": [
+          {
+            "attempt": "a1",
+            "run_id": "cmp18-c003-a1",
+            "status": "failed",
+            "failure": "budget_preflight_exhausted",
+            "usage": {
+              "input_tokens": 3938,
+              "output_tokens": 5055,
+              "tool_calls": 2,
+              "elapsed_seconds": 22.671,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": null,
+            "citations": null,
+            "rejected_submission_note": [
+              "action cites unknown or unavailable evidence"
+            ]
+          },
+          {
+            "attempt": "a2",
+            "run_id": "cmp18-c003-a2",
+            "status": "failed",
+            "failure": "budget_preflight_exhausted",
+            "usage": {
+              "input_tokens": 3937,
+              "output_tokens": 4668,
+              "tool_calls": 2,
+              "elapsed_seconds": 22.437,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": null,
+            "citations": null,
+            "rejected_submission_note": [
+              "action cites unknown or unavailable evidence"
+            ]
+          },
+          {
+            "attempt": "a3",
+            "run_id": "cmp18-c003-a3",
+            "status": "failed",
+            "failure": "budget_preflight_exhausted",
+            "usage": {
+              "input_tokens": 3946,
+              "output_tokens": 5896,
+              "tool_calls": 2,
+              "elapsed_seconds": 27.375,
+              "cost_usd": null
+            },
+            "budget_status": null,
+            "score": null,
+            "citations": null,
+            "rejected_submission_note": [
+              "action cites unknown or unavailable evidence"
+            ]
+          }
+        ],
+        "sample_size": 3,
+        "completed": 0,
+        "completion_rate": 0.0,
+        "conclusion_correct_rate_of_completed": 0.0,
+        "conclusion_correct_rate_of_all_trials": 0.0,
+        "mean_input_tokens": 3940.3,
+        "mean_output_tokens": 5206.3,
+        "mean_elapsed_seconds": 24.161
+      },
+      "multi_agent": {
+        "status": "pending_other_agent",
+        "score": null,
+        "usage": null,
+        "expected_format": "same trial shape as single_agent trials; run-record.json with mode=multi_agent evaluated against identical rubric/protocol"
+      }
+    }
+  },
+  "historical_reference": {
+    "date": "2026-09-17",
+    "location": "/d/Projects/CyberGuard/output/investigation-live-single-20260917/",
+    "model_and_endpoint": "deepseek-v4.1-flash @ tokendance.space (same)",
+    "protocol_match": "identical protocol_sha256 values per case; same 20k/8k/16 budget",
+    "runner_difference": "executed in WSL with then-uncommitted runner (source sha f51b82bc..); today's committed runner is 39905644..",
+    "full_schema_trials": [
+      {
+        "case": "case-001",
+        "status": "completed",
+        "input_tokens": 4088,
+        "output_tokens": 5812,
+        "tool_calls": 2,
+        "elapsed_seconds": 29.748
+      },
+      {
+        "case": "case-002",
+        "status": "failed",
+        "failure": "budget_preflight_exhausted after invalid tool-argument JSON",
+        "input_tokens": 4204,
+        "output_tokens": 6130,
+        "tool_calls": 2,
+        "elapsed_seconds": 33.275
+      },
+      {
+        "case": "case-003",
+        "status": "failed",
+        "failure": "budget_preflight_exhausted after action cited unavailable evidence",
+        "input_tokens": 3957,
+        "output_tokens": 4768,
+        "tool_calls": 2,
+        "elapsed_seconds": 25.479
+      }
+    ],
+    "plus_compatibility_runs": {
+      "runs": 3,
+      "input_tokens": 9747,
+      "output_tokens": 13771,
+      "note": "earlier runtime-contract revision; not mixed into success counts"
+    },
+    "case_001_rubric_result": "passed 5/5 typed checks (semantic review found two overclaims)"
+  },
+  "aggregate": {
+    "fixed_workflow": {
+      "cases": 3,
+      "all_checks_passed_cases": 3,
+      "tokens": 0,
+      "wall_clock_note": "sub-millisecond in-process analysis"
+    },
+    "single_agent": {
+      "trials": 9,
+      "completed": 4,
+      "completion_rate": 0.4444,
+      "all_checks_passed_trials": 2,
+      "mean_rubric_score_of_completed": 4.25,
+      "total_input_tokens": 36492,
+      "total_output_tokens": 47108,
+      "mean_elapsed_seconds": 24.387,
+      "failures": [
+        "case-001/a3:budget_preflight_exhausted",
+        "case-002/a1:budget_preflight_exhausted",
+        "case-003/a1:budget_preflight_exhausted",
+        "case-003/a2:budget_preflight_exhausted",
+        "case-003/a3:budget_preflight_exhausted"
+      ]
+    },
+    "multi_agent": {
+      "status": "pending_other_agent"
+    },
+    "cost_usd": null,
+    "token_note": "provider usage as returned by chat/completions; completion_tokens include reasoning tokens for this reasoning model; cost unknown (null)"
+  }
+}
