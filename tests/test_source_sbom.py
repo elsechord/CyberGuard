@@ -19,7 +19,7 @@ class SourceSbomTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(first["spdxVersion"], "SPDX-2.3")
         names = {package["name"] for package in first["packages"]}
-        self.assertTrue({"CyberGuard", "fastapi", "uvicorn", "pydantic", "starlette", "anyio", "python:3.12.13-slim-bookworm", "agentscope-ai/AgentTeams"} <= names)
+        self.assertTrue({"CyberGuard", "fastapi", "uvicorn", "pydantic", "starlette", "anyio", "python:3.12.14-slim-bookworm", "agentscope-ai/AgentTeams"} <= names)
         project = next(package for package in first["packages"] if package["name"] == "CyberGuard")
         self.assertEqual(project["versionInfo"], (ROOT / "VERSION").read_text().strip())
 
