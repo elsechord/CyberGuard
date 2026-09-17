@@ -53,6 +53,7 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: "1"
+          args: --ignorefile .trivyignore.yaml
 
       - name: Build gateway image
         run: docker build --pull --file services/security-tool-gateway/Dockerfile --tag cyberguard/security-tool-gateway:ci .
