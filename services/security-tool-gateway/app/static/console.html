@@ -74,6 +74,22 @@
             <span id="detail-status" class="status-pill"></span>
           </section>
 
+          <section class="panel run-panel" aria-label="运行证据">
+            <div class="section-heading">
+              <div><p class="eyebrow">RUN EVIDENCE</p><h3>本次运行与验证边界</h3></div>
+              <button id="export-run" class="ghost-button" type="button" disabled>导出本次证据</button>
+            </div>
+            <label for="run-select">运行编号</label>
+            <select id="run-select"></select>
+            <p id="run-notice" class="run-notice"></p>
+            <div id="run-states" class="action-list"></div>
+            <details id="export-preview" class="hidden">
+              <summary>本次运行 JSON</summary>
+              <p class="run-notice">如果浏览器没有开始下载，可选中下方内容复制保存。JSON 内含运行编号和完整性校验值。</p>
+              <textarea id="export-json" aria-label="本次运行导出 JSON" readonly spellcheck="false"></textarea>
+            </details>
+          </section>
+
           <section class="metric-grid" aria-label="事件指标">
             <article><span>证据</span><strong id="metric-evidence">0</strong><small>HASH-BOUND</small></article>
             <article><span>独立来源</span><strong id="metric-sources">0</strong><small>CROSS-SENSOR</small></article>
@@ -108,7 +124,7 @@
       </div>
     </section>
   </main>
-  <footer><span>HDUSecLab · CyberGuard</span><span>AgentTeams v1.2.2 · Evidence-first Autonomous SOC</span></footer>
+  <footer><span>Elsechord · CyberGuard</span><span>Evidence-first Autonomous SOC</span></footer>
   <script src="/assets/console.js" defer></script>
 </body>
 </html>

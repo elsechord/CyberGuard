@@ -1,0 +1,76 @@
+server:
+  name: mcp-cyberguard-investigation-report
+  config:
+    accessToken: ""
+  allowTools:
+  - submit_investigation_report
+tools:
+- name: submit_investigation_report
+  description: "提交有证据引用的调查报告。只提交建议，不执行响应，不授予导入、建run或审批权限。"
+  args:
+  - name: run_id
+    description: "与任务、证据包一致的本次运行编号"
+    type: string
+    required: true
+  - name: schema
+    description: "固定 cyberguard-investigation-report/v1"
+    type: string
+    required: true
+  - name: bundle_id
+    description: "原始证据包 ID"
+    type: string
+    required: true
+  - name: bundle_sha256
+    description: "原始证据包 SHA256"
+    type: string
+    required: true
+  - name: mode
+    description: "与 run 相同：fixed_workflow、single_agent 或 multi_agent"
+    type: string
+    required: true
+  - name: findings
+    description: "对象数组；claim/status是字符串，supporting_evidence_ids/contradicting_evidence_ids/limitations均为字符串数组，不得虚构引用"
+    type: array
+    items:
+      type: object
+      required: [finding_type, claim, status, supporting_evidence_ids, contradicting_evidence_ids, limitations]
+      properties:
+        finding_type:
+          type: string
+          description: "结论类别，如 suspicious_persistence, authorized_workload, unclassified_workload, entrypoint, attribution；类别不是标准答案"
+        claim: {type: string}
+        status: {type: string, enum: [supported, refuted, inconclusive]}
+        supporting_evidence_ids: {type: array, items: {type: string}}
+        contradicting_evidence_ids: {type: array, items: {type: string}}
+        limitations: {type: array, items: {type: string}}
+    required: true
+  - name: unknowns
+    description: "尚不能确定的事项，字符串数组"
+    type: array
+    items: {type: string}
+    required: true
+  - name: next_collection
+    description: "下一步补采证据，字符串数组"
+    type: array
+    items: {type: string}
+    required: true
+  - name: proposed_actions
+    description: "建议数组，项含 action,target,reason,evidence_ids,requires_approval=true；无建议可为空"
+    type: array
+    items:
+      type: object
+      required: [action, target, reason, evidence_ids, requires_approval]
+      properties:
+        action: {type: string}
+        target: {type: string}
+        reason: {type: string}
+        evidence_ids: {type: array, items: {type: string}}
+        requires_approval: {type: boolean, enum: [true]}
+    required: true
+  requestTemplate:
+    url: "http://security-tool-gateway:8080/investigations/runs/{{.args.run_id}}/reports"
+    method: POST
+    headers:
+    - key: Authorization
+      value: "Bearer {{.config.accessToken}}"
+    argsToJsonBody: true

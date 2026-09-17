@@ -1,0 +1,5 @@
+# Required for local Worker console privacy with this pinned upstream release.
+services:
+  controller:
+    image: cyberguard/agentteams-embedded:v1.2.2-localhost
+    pull_policy: never

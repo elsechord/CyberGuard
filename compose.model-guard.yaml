@@ -1,0 +1,36 @@
+name: cyberguard-model-guard
+services:
+  model-guard:
+    build:
+      context: .
+      dockerfile: services/model-guard/Dockerfile
+    image: cyberguard/model-guard:local
+    container_name: cyberguard-model-guard
+    env_file:
+      - path: /root/.config/cyberguard/model-guard.env
+        format: raw
+    environment:
+      CYBERGUARD_DATA_DIR: /data
+    ports:
+      - "127.0.0.1:18110:8080"
+    networks:
+      agentteams:
+        aliases: [model-guard.agentteams.local]
+    volumes:
+      - guard-data:/data
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+networks:
+  agentteams:
+    external: true
+    name: agentteams-net
+volumes:
+  guard-data:

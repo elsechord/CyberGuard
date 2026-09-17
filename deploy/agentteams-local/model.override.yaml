@@ -1,0 +1,9 @@
+# Apply with WSL Docker Compose so the 0600 Linux credential file is readable.
+# No API key is copied to the repository or interpolated into command arguments.
+services:
+  controller:
+    env_file:
+      - /root/.config/cyberguard/agentteams-llm.env
+    environment:
+      AGENTTEAMS_MANAGER_ENABLED: "true"
+      AGENTTEAMS_LLM_PROVIDER: openai-compat

@@ -1,0 +1,20 @@
+name: cyberguard-investigation
+services:
+  investigation:
+    build:
+      context: .
+      dockerfile: deploy/lab.Dockerfile
+      args:
+        SOURCE_COMMIT: "${CYBERGUARD_SOURCE_COMMIT:-unknown}"
+    image: cyberguard/investigation:local
+    command: ["python", "scripts/investigation-demo.py", "--include-live", "--output", "/artifacts"]
+    read_only: true
+    network_mode: none
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    volumes:
+      - investigation-artifacts:/artifacts
+volumes:
+  investigation-artifacts:

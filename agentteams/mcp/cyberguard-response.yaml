@@ -17,11 +17,11 @@ tools:
     type: string
     required: true
   - name: action
-    description: "动作：block_ioc、disable_account、isolate_endpoint 或 quarantine_workload"
+    description: "动作：block_ioc、disable_account、isolate_endpoint、quarantine_workload；仅 host_lab 支持 terminate_process、disable_persistence"
     type: string
     required: true
   - name: target
-    description: "精确目标"
+    description: "精确目标；host_lab 动作必须完整复制同一 run 新鲜工具回执中的原始 target_ref，不能构造 PID、路径或通配符"
     type: string
     required: true
   - name: reason
@@ -30,6 +30,14 @@ tools:
     required: true
   - name: idempotency_key
     description: "稳定的幂等键"
+    type: string
+    required: true
+  - name: run_id
+    description: "本次运行编号，必须与来源证据一致"
+    type: string
+    required: true
+  - name: model_mode
+    description: "unknown、live、replay 或 deterministic；caller 自述不是运行认证"
     type: string
     required: true
   requestTemplate:

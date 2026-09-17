@@ -1,0 +1,135 @@
+{
+  "schema": "cyberguard-evidence-bundle/v1",
+  "bundle_id": "EXERCISE-case-002",
+  "created_at": "2026-09-17T00:00:00+00:00",
+  "provenance": {
+    "kind": "exercise",
+    "description": "Authored synthetic Linux observations; no real victim, attack or mining."
+  },
+  "artifacts": [
+    {
+      "evidence_id": "EV-fd7a1cb382c566afc2a2008ebe20d80f",
+      "kind": "processes",
+      "source": "exercise:/proc sampled observations",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "processes": [
+          {
+            "pid": 423,
+            "ppid": 1,
+            "uid": 1001,
+            "comm": "task-worker",
+            "exe": "/opt/tasks/batch-worker",
+            "starttime_ticks": 412300,
+            "cpu_percent": 86.2,
+            "cpu_observation_status": "measured"
+          },
+          {
+            "pid": 512,
+            "ppid": 1,
+            "uid": 1001,
+            "comm": "web-worker",
+            "exe": "/opt/web/server",
+            "starttime_ticks": 312300,
+            "cpu_percent": 3.1,
+            "cpu_observation_status": "measured"
+          }
+        ],
+        "sample_seconds": 2,
+        "coverage": {
+          "sampled_processes": 2,
+          "complete_host_coverage": false
+        }
+      },
+      "sha256": "e982b7db2bb9c548df6ed1cf0da8e2ad87f2238c82b6a79f8747ea255bc7a8ef"
+    },
+    {
+      "evidence_id": "EV-8cf7e158cb50144050741f3d767fee4d",
+      "kind": "network",
+      "source": "exercise:/proc/net/tcp",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "connections": [
+          {
+            "protocol": "tcp",
+            "local_address": "192.0.2.10",
+            "local_port": 43892,
+            "remote_address": "198.51.100.20",
+            "remote_port": 443,
+            "state": "01",
+            "inode": "119",
+            "owner_pids": [
+              423
+            ]
+          }
+        ],
+        "coverage": {
+          "scope": "one supplied network observation",
+          "payload_collected": false
+        }
+      },
+      "sha256": "3e22e619555b3e95a39df635b7a3d9289a513658e2f6a0dcb88d7cbc38e2e93e"
+    },
+    {
+      "evidence_id": "EV-d5c0a3d945fc568b8365de37c029f640",
+      "kind": "persistence",
+      "source": "exercise:/etc/systemd/system/batch-worker.service",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "entries": [
+          {
+            "mechanism": "systemd",
+            "path": "/etc/systemd/system/batch-worker.service",
+            "command": "/opt/tasks/batch-worker",
+            "enabled": null
+          }
+        ],
+        "coverage": {
+          "scope": "one supplied configuration"
+        }
+      },
+      "sha256": "c038719029358a70cde4452c802f44774518e991397e55483a6f51afa99cdecc"
+    },
+    {
+      "evidence_id": "EV-89d5a28bbd196d84831abf14f2164026",
+      "kind": "workload_inventory",
+      "source": "exercise:asset-owner workload record",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "entries": [
+          {
+            "exe": "/opt/tasks/batch-worker",
+            "owner": "operations",
+            "purpose": "scheduled rendering workload",
+            "authorization": "approved"
+          }
+        ]
+      },
+      "sha256": "8ec9c6da91875e8197b53ba10d3ff9d8f22b828d260dff5b7bb286c3f17324d0"
+    },
+    {
+      "evidence_id": "EV-df61ce2b0fc158bb628d3b348a1165c0",
+      "kind": "auth_logs",
+      "source": "exercise:provided auth excerpt",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "events": [],
+        "coverage": {
+          "complete_window": false
+        }
+      },
+      "sha256": "66da6116ee2ed3a47797c03f70f97d7dfa9cda661bb6622cdabca345781d8cdf"
+    }
+  ],
+  "bundle_sha256": "6737ef14b076198bcd65ee0f367ba1557b53ea02471a60900024059a0b5b8aca"
+}

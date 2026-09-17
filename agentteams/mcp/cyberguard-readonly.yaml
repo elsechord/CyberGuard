@@ -25,6 +25,10 @@ tools:
     description: "演练场景编号"
     type: string
     required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
+    type: string
+    required: true
   requestTemplate:
     url: "http://security-tool-gateway:8080/tools/alert/snapshot"
     method: POST
@@ -41,6 +45,10 @@ tools:
     required: true
   - name: scenario_id
     description: "演练场景编号"
+    type: string
+    required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
     type: string
     required: true
   requestTemplate:
@@ -61,6 +69,10 @@ tools:
     description: "演练场景编号"
     type: string
     required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
+    type: string
+    required: true
   requestTemplate:
     url: "http://security-tool-gateway:8080/tools/network/search"
     method: POST
@@ -77,6 +89,10 @@ tools:
     required: true
   - name: scenario_id
     description: "演练场景编号"
+    type: string
+    required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
     type: string
     required: true
   requestTemplate:
@@ -97,6 +113,10 @@ tools:
     description: "演练场景编号"
     type: string
     required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
+    type: string
+    required: true
   requestTemplate:
     url: "http://security-tool-gateway:8080/tools/endpoint/timeline"
     method: POST
@@ -115,6 +135,10 @@ tools:
     description: "演练场景编号"
     type: string
     required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
+    type: string
+    required: true
   requestTemplate:
     url: "http://security-tool-gateway:8080/tools/asset/context"
     method: POST
@@ -131,6 +155,10 @@ tools:
     required: true
   - name: scenario_id
     description: "演练场景编号"
+    type: string
+    required: true
+  - name: run_id
+    description: "本次运行编号，所有调查调用保持一致"
     type: string
     required: true
   requestTemplate:

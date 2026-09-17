@@ -10,7 +10,8 @@ The project is designed for the GOAI “Agent Infra 新智基座” track. It in
 
 - A read-only security evidence gateway with alert, intelligence, network, boundary-policy, endpoint, asset and recovery tools.
 - Evidence 1.0 normalization with OCSF-aligned event classes, STIX 2.1 observable types, ATT&CK mappings, deterministic quality gates and cross-source entity correlation.
-- A controlled response executor with an allowlist, idempotency, proposal-bound human approval, exactly-once execution, HMAC-authenticated audit records/checkpoints and rollback.
+- A controlled response executor with an allowlist, idempotency, proposal-bound approval, HMAC-authenticated audit records/checkpoints and rollback. The lab backend persists dispatch intent and reconciles uncertain outcomes; it requires a single executor process.
+- A loopback identity laboratory with real SQLite account mutations, separate account-access probes, durable operation receipts and restart/lost-response tests.
 - Reproducible credential-compromise and supply-chain compromise scenarios, including adversarial tool output.
 - Seven Agent role definitions and ten reusable AgentTeams Skills, including explicit boundary-defense analysis.
 - Server-owned live SIEM/NDR/EDR/CMDB connector contracts that keep destinations and credentials away from Agents.
@@ -19,7 +20,37 @@ The project is designed for the GOAI “Agent Infra 新智基座” track. It in
 - AgentTeams v1.2.2 server configuration and bootstrap instructions.
 - Local unit tests and server-side Docker smoke tests.
 
-The response executor is deliberately in simulation mode. Live investigation connector contracts are implemented; vendor-specific field mappings and real mutating actions remain opt-in integrations behind the same Agent workflow.
+The response executor defaults to **simulation**. Opt-in **lab** mode really disables and restores one account in an isolated local identity service. It does not operate a production identity provider. Live investigation connector contracts are implemented; vendor-specific mutating integrations remain future work.
+
+### Reproduce the real account laboratory
+
+After installing the dependencies in [the lab runbook](docs/LAB_EXECUTION.md), run:
+
+```bash
+python scripts/lab-demo.py
+```
+
+This starts three loopback services, demonstrates proposal/approval/disable/independent verification/rollback, then stops them. A checksummed evidence directory is written under `artifacts/lab/`. The harness is deterministic and supplies its own approval credential: **it is not an AgentTeams/LLM run or evidence of actual human review**. See the runbook for failure semantics and the integration tests for response-loss recovery.
+
+For the isolated Docker version, run `docker compose -f compose.lab.yaml up --build --abort-on-container-exit --exit-code-from lab`. It uses a non-root container with no external network and a read-only root filesystem. See the runbook to copy out evidence and run fault tests. The console now supports run-scoped evidence, authenticated action snapshots, mode/probe details and JSON exports.
+
+### Reproduce incomplete cleanup and process recurrence
+
+```bash
+docker compose -f compose.host-lab.yaml up --build --abort-on-container-exit --exit-code-from host-lab
+```
+
+The [Linux process lab](docs/HOST_LAB.md) starts harmless real processes in an offline container. An approved process termination is followed by an actual supervisor restart; independent observations reject recovery. A separately approved, version-bound persistence cleanup is then checked over a bounded time window while a control workload keeps progressing. The console and run export retain both outcomes. The workflow is scripted, and automated approval is explicitly labeled; an optional interactive approval mode is available. This is not a real mining intrusion, an AgentTeams run, or proof of autonomous reasoning.
+
+### Evidence-bound investigation
+
+The [investigation pipeline](docs/INVESTIGATION_PIPELINE.md) accepts immutable evidence bundles and produces cited reports through a read-only API and a separate report-submission credential. The Linux collector records collection gaps; the fixed-rule baseline preserves uncertainty about malware, initial access and attribution. Three labeled exercise cases and a separate evaluator are included. The [model runner](docs/INVESTIGATION_EVALUATION.md) supports actual bounded single-agent tool calls and retains failed attempts, raw responses and provider usage. AgentTeams task/MCP preparation is separate; neither a direct model call nor an accepted report proves AgentTeams execution.
+
+Run `docker compose -f compose.investigation.yaml up --build --abort-on-container-exit --exit-code-from investigation` to exercise the HTTP pipeline and collect the current isolated Linux container. The image excludes exercise answer keys and performs no remediation.
+
+For actual local orchestration, see [AgentTeams on Docker Desktop](docs/AGENTTEAMS_LOCAL.md). This deployment uses a documented, locally built controller patch to bind Worker consoles to localhost. It is an integration environment; service health and Worker readiness do not establish task completion or comparative effectiveness.
+
+The experimental [model admission guard](docs/MODEL_GUARD.md) reserves per-run budgets before provider dispatch, authenticates role-bound model routes, rejects exact duplicate requests, and retains unknown usage after failures. The [fresh-Worker integration procedure](docs/AGENTTEAMS_GUARDED_LOCAL.md) verifies native tools and route isolation while the guard is disarmed. Its serial three-Worker harness tests integration; it does not establish autonomous orchestration or a multi-agent performance advantage.
 
 ## Architecture
 
@@ -124,6 +155,8 @@ The deck labels container/model runs as pending until reproduced on the target s
 ## Validation
 
 Every push and pull request runs the same deterministic tests, validates Compose, builds both images, fails on fixed HIGH/CRITICAL findings, and publishes source plus container SPDX SBOMs. Third-party Actions are pinned to full commit SHAs and repository permissions are read-only.
+
+The local suite includes real HTTP laboratory integration tests. Install service dependencies and `tests/requirements.lock` first; platform-specific instructions are in [the lab runbook](docs/LAB_EXECUTION.md). Docker smoke tests still exercise the default simulation configuration.
 
 On Windows development hosts:
 

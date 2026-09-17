@@ -1,0 +1,20 @@
+name: cyberguard-host-lab
+services:
+  host-lab:
+    build:
+      context: .
+      dockerfile: deploy/lab.Dockerfile
+      args:
+        SOURCE_COMMIT: "${CYBERGUARD_SOURCE_COMMIT:-unknown}"
+    image: cyberguard/host-lab:local
+    command: ["python", "scripts/host-lab-demo.py", "--auto-approve", "--output", "/artifacts"]
+    read_only: true
+    network_mode: none
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    volumes:
+      - host-lab-artifacts:/artifacts
+volumes:
+  host-lab-artifacts:

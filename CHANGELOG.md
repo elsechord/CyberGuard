@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased — finals engineering
+
+- Added an exercise-only model tool loop with retained provider usage, failed attempts, validated gateway acknowledgements, local attempt uniqueness and credential-redacted artifacts; direct model execution is explicitly separate from AgentTeams.
+- Added pinned local AgentTeams Docker deployment and a documented upstream controller patch for localhost Worker consoles, narrow investigation MCP registration and native deployment snapshots.
+- Added experimental pre-dispatch model admission with durable run/role budgets, exact-request deduplication, single-call concurrency, conservative unknown-usage reservations, restart disarming, and a fresh-Worker serial integration harness. Input reservation remains a tokenizer heuristic, not a guaranteed billing cap.
+- Added bounded Linux evidence bundles, fixed-workflow cited investigation reports, separate exercise answer keys and a shared evaluation protocol; absent model executions remain `not_run`.
+- Added immutable investigation-run APIs with separate intake/read/report credentials, persisted tool quotas, cross-run receipt validation and checksummed HTTP workflow exports.
+- Added three-role AgentTeams investigation configuration, task-package generation and source-mapped runtime evidence checks. These prepare integration; structural validation does not attest an actual model or AgentTeams run.
+- Added an isolated Linux process lab: real `/proc` observations, benign workload recurrence after process termination, version-bound persistence cleanup, pidfd targeting, and bounded independent verification with a progressing control workload.
+- Reuse proposal-bound approval and audit reconciliation for `host_lab`; stale objects are rejected, irreversible process actions cannot claim rollback, and a later run cannot make an earlier action appear verified.
+- Added explicit scripted/interactive approval modes, same-run failure and recovery exports, and negative tests for stale targets, missing telemetry, control failure, lost receipts and environment changes. This is not an AgentTeams/model execution or a real intrusion dataset.
+
+- Added run-scoped tool evidence with envelope hashes, authenticated executor snapshots and checksummed JSON exports. Invalid audit/evidence cannot reuse an older successful observation; rollback invalidates the current action verdict without erasing historical observations.
+- Added console run selection, mode and probe details, export download and explicit unverified AgentTeams/Skill provenance labels.
+- Added a standalone non-root, offline Docker laboratory, hash-locked Linux builds and CI evidence upload/fault tests. It does not deploy AgentTeams or switch the production Compose configuration to lab mode.
+
+- Added an opt-in loopback identity lab with real account disable/restore, SQLite-atomic operation receipts, run/environment binding and read-only access probes using separate account credentials.
+- Persist dispatch intent before lab mutations. Lost or invalid receipts produce an unknown outcome; restart reconciliation reads receipts without blindly retrying a mutation. Rollback also requires the approval credential.
+- Reject mutations when the audit chain is invalid. Require one executor process; no distributed exactly-once guarantee is claimed.
+- Label fixture recovery as simulated; generic live connectors cannot establish verified recovery without a validated verifier contract. The dedicated lab verifier checks current target and control account access.
+- Added a deterministic lab harness and checksummed evidence export, plus real HTTP tests for receipt loss, restart, audit corruption, stale state, wrong credentials, missing telemetry and simulation/lab separation.
+- Fixed local test failure propagation and added hash-locked HTTP test dependencies to CI. Secret-file creation explicitly requires POSIX mode guarantees and uses non-overwriting atomic publication.
+- Pinned Shell script line endings to LF so Windows checkouts can be validated and run by Bash/WSL.
+
 ## 0.13.0 — 2026-09-03
 
 - Completed the judge-requested live evidence: one real AgentTeams task (CG-2026-0002, supply_chain_webshell) ran from creation to terminal state on AgentTeams v1.2.2 with the cyberguard-soc team — 2,992 native Matrix events, four hash-bound human-approved actions, two-round independent re-verification (inconclusive → verified) and a rollback that correctly reverted the verdict to inconclusive.

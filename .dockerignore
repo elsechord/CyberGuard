@@ -1,4 +1,11 @@
 .env
+.env.*
+!.env.example
+.venv
+artifacts
+backups
+data
+**/*.log
 .git
 .codebase-memory
 dist

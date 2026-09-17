@@ -21,14 +21,21 @@ class InitSecretsTests(unittest.TestCase):
             if "=" in line:
                 key, value = line.split("=", 1)
                 values[key] = value
-        secrets = [values[key] for key in MODULE.SECRET_KEYS]
-        self.assertEqual(len(set(secrets)), 5)
+        keys = MODULE.SECRET_KEYS | MODULE.OPTIONAL_SECRET_KEYS
+        secrets = [values[key] for key in keys]
+        self.assertEqual(len(set(secrets)), len(keys))
         self.assertTrue(all(len(value) >= 48 for value in secrets))
         self.assertNotIn("replace-with-", rendered)
 
     def test_create_is_atomic_locked_down_and_refuses_overwrite(self):
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / ".env"
+            if os.name == "nt":
+                with self.assertRaisesRegex(OSError, "requires POSIX"):
+                    MODULE.create(ROOT / ".env.example", output)
+                self.assertFalse(output.exists())
+                self.assertEqual(list(Path(temp).iterdir()), [])
+                return
             MODULE.create(ROOT / ".env.example", output)
             if os.name != "nt":
                 self.assertEqual(output.stat().st_mode & 0o777, 0o600)

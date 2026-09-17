@@ -1,22 +1,18 @@
 $ErrorActionPreference = "Stop"
+function Invoke-Python {
+    & python @args
+    if ($LASTEXITCODE -ne 0) {
+        throw "Python validation failed (exit $LASTEXITCODE): $args"
+    }
+}
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
-python -m compileall -q services benchmark tests
-python tests/test_security_gateway.py
-python tests/test_normalization.py
-python tests/test_response_executor.py
-python tests/test_benchmark.py
-python tests/test_benchmark_runner.py
-python tests/test_benchmark_audit.py
-python tests/test_agentteams_bootstrap.py
-python tests/test_deploy_config.py
-python tests/test_init_secrets.py
-python tests/test_llm_preflight.py
-python tests/test_deploy_contracts.py
-python tests/test_source_sbom.py
-python tests/test_ci_contracts.py
-python benchmark/evaluate.py benchmark/fixtures/complete-report.json | Out-Null
+Invoke-Python -m compileall -q services cyberguard_investigation benchmark deploy tests scripts
+Get-ChildItem tests -Filter 'test_*.py' | Sort-Object Name | ForEach-Object {
+    Invoke-Python $_.FullName
+}
+Invoke-Python benchmark/evaluate.py benchmark/fixtures/complete-report.json | Out-Null
 
 Get-ChildItem contracts,scenarios -Filter *.json -Recurse | ForEach-Object {
     Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json | Out-Null

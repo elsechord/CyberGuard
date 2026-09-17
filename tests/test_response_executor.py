@@ -24,6 +24,9 @@ from app.main import app, append_event  # noqa: E402
 
 class ResponseExecutorTest(unittest.TestCase):
     def setUp(self) -> None:
+        # Each test owns an intact audit chain; tampering must not leak into
+        # another test and hide failures in mutation-time integrity checks.
+        (Path(TEMP.name) / "actions.jsonl").unlink(missing_ok=True)
         self.client = TestClient(app)
         self.headers = {"Authorization": "Bearer test-executor-token"}
 

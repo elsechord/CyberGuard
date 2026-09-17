@@ -28,10 +28,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: services/requirements.lock
+          cache-dependency-path: |
+            services/requirements.lock
+            tests/requirements.lock
 
       - name: Install test dependencies
-        run: python -m pip install --disable-pip-version-check --require-hashes -r services/requirements.lock
+        run: python -m pip install --disable-pip-version-check --require-hashes -r services/requirements.lock -r tests/requirements.lock
 
       - name: Run deterministic validation
         run: bash scripts/test-local.sh
@@ -57,6 +59,44 @@ jobs:
 
       - name: Build executor image
         run: docker build --pull --file services/response-executor/Dockerfile --tag cyberguard/response-executor:ci .
+
+      - name: Build and run isolated account lab
+        env:
+          CYBERGUARD_SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          docker compose -f compose.lab.yaml up --build --abort-on-container-exit --exit-code-from lab
+          mkdir -p artifacts/lab
+          docker compose -f compose.lab.yaml cp lab:/artifacts/. artifacts/lab/
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,noexec,nosuid,size=128m cyberguard/lab:local python tests/test_lab_execution.py
+
+      - name: Run isolated process recurrence lab
+        env:
+          CYBERGUARD_SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          docker compose -f compose.host-lab.yaml up --build --abort-on-container-exit --exit-code-from host-lab
+          mkdir -p artifacts/host-lab
+          docker compose -f compose.host-lab.yaml cp host-lab:/artifacts/. artifacts/host-lab/
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,noexec,nosuid,size=128m cyberguard/host-lab:local python tests/test_host_lab.py
+
+      - name: Run isolated investigation pipeline
+        env:
+          CYBERGUARD_SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          docker compose -f compose.investigation.yaml up --build --abort-on-container-exit --exit-code-from investigation
+          mkdir -p artifacts/investigation
+          docker compose -f compose.investigation.yaml cp investigation:/artifacts/. artifacts/investigation/
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,noexec,nosuid,size=128m cyberguard/investigation:local python tests/test_investigation_gateway.py
+
+      - name: Upload lab evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cyberguard-lab-${{ github.sha }}
+          path: |
+            artifacts/lab/
+            artifacts/host-lab/
+            artifacts/investigation/
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Scan gateway image
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0

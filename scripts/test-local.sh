@@ -4,20 +4,10 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-python3 -m compileall -q services benchmark deploy tests
-python3 tests/test_security_gateway.py
-python3 tests/test_normalization.py
-python3 tests/test_response_executor.py
-python3 tests/test_benchmark.py
-python3 tests/test_benchmark_runner.py
-python3 tests/test_benchmark_audit.py
-python3 tests/test_agentteams_bootstrap.py
-python3 tests/test_deploy_config.py
-python3 tests/test_init_secrets.py
-python3 tests/test_llm_preflight.py
-python3 tests/test_deploy_contracts.py
-python3 tests/test_source_sbom.py
-python3 tests/test_ci_contracts.py
+python3 -m compileall -q services cyberguard_investigation benchmark deploy tests scripts
+for test_file in tests/test_*.py; do
+    python3 "$test_file"
+done
 python3 benchmark/evaluate.py benchmark/fixtures/complete-report.json >/dev/null
 
 python3 - <<'PY'

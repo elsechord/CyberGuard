@@ -21,6 +21,8 @@ services:
     image: cyberguard/security-tool-gateway:0.11.0
     environment:
       CYBERGUARD_API_TOKEN: ${CYBERGUARD_API_TOKEN:?set CYBERGUARD_API_TOKEN in .env}
+      CYBERGUARD_INVESTIGATION_INGEST_TOKEN: ${CYBERGUARD_INVESTIGATION_INGEST_TOKEN:-}
+      CYBERGUARD_REPORT_TOKEN: ${CYBERGUARD_REPORT_TOKEN:-}
       CYBERGUARD_LOG_LEVEL: ${CYBERGUARD_LOG_LEVEL:-INFO}
       CYBERGUARD_DATA_DIR: /data
       CYBERGUARD_ACTION_AUDIT_FILE: /actions/actions.jsonl
@@ -59,8 +61,10 @@ services:
       retries: 10
       start_period: 10s
     networks:
-      - agentteams-net
-      - cyberguard-readonly
+      agentteams-net:
+        aliases:
+          - security-tool-gateway.agentteams.local
+      cyberguard-readonly: {}
 
   response-executor:
     <<: *common

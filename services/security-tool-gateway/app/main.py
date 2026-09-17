@@ -11,6 +11,8 @@ from .models import (EvidenceValidationRequest, KnowledgeSearchRequest, ToolRequ
 from .store import store
 from .connectors import ConnectorError, live_connectors
 from .knowledge import knowledge_store
+from . import run_view
+from .investigation import router as investigation_router
 
 app = FastAPI(
     title="CyberGuard Security Tool Gateway",
@@ -20,6 +22,7 @@ app = FastAPI(
     redoc_url=None,
 )
 STATIC_DIR = Path(__file__).parent / "static"
+app.include_router(investigation_router)
 app.mount("/assets", StaticFiles(directory=STATIC_DIR), name="assets")
 
 
@@ -36,7 +39,7 @@ async def security_headers(request, call_next):
         )
     else:
         response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
-    if request.url.path.startswith(("/incidents", "/evidence")):
+    if request.url.path.startswith(("/incidents", "/evidence", "/tools/", "/investigations/")):
         response.headers["Cache-Control"] = "no-store"
     return response
 
@@ -129,7 +132,19 @@ def incident(incident_id: str) -> dict:
         "evidence": evidence,
         "actions": actions,
         "workflow": workflow_state,
+        "runs": sorted({e["run_id"] for e in evidence if e.get("run_id")}),
     }
+
+
+@app.get("/incidents/{incident_id}/runs/{run_id}", dependencies=[Depends(authorize)])
+def incident_run(incident_id: str, run_id: str) -> dict:
+    if not 3 <= len(run_id) <= 128:
+        raise HTTPException(status_code=422, detail="invalid run_id")
+    evidence = [e for e in store.list_evidence(incident_id) if e.get("run_id") == run_id]
+    result = run_view.build(incident_id, run_id, evidence)
+    if not evidence and not result["actions"] and result["audit_status"] == "valid":
+        raise HTTPException(status_code=404, detail="run not found")
+    return result
 
 
 @app.get("/incidents/{incident_id}/graph", dependencies=[Depends(authorize)])
@@ -157,6 +172,7 @@ def invoke(namespace: str, function: str, request: ToolRequest) -> ToolResponse:
             scenario_id=request.scenario_id,
             tool=tool,
             arguments=request.arguments,
+            run_id=request.run_id,
         )
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="scenario not found") from None
@@ -164,4 +180,6 @@ def invoke(namespace: str, function: str, request: ToolRequest) -> ToolResponse:
         raise HTTPException(status_code=404, detail="tool unavailable for scenario") from None
     except ConnectorError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from None
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from None
     return ToolResponse(tool=tool, evidence=evidence)

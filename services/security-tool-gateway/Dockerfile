@@ -9,6 +9,7 @@ COPY services/requirements.lock ./
 RUN pip install --no-cache-dir --require-hashes -r requirements.lock \
     && pip check
 COPY services/security-tool-gateway/app ./app
+COPY cyberguard_investigation ./cyberguard_investigation
 COPY services/security-tool-gateway/entrypoint.py ./
 
 RUN useradd --system --uid 10001 --create-home cyberguard \

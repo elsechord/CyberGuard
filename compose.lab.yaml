@@ -1,0 +1,19 @@
+name: cyberguard-lab
+services:
+  lab:
+    build:
+      context: .
+      dockerfile: deploy/lab.Dockerfile
+      args:
+        SOURCE_COMMIT: ${CYBERGUARD_SOURCE_COMMIT:-unknown}
+    image: cyberguard/lab:local
+    read_only: true
+    network_mode: none
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    volumes:
+      - lab-artifacts:/artifacts
+volumes:
+  lab-artifacts:

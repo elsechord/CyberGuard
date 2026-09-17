@@ -12,6 +12,7 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "services" / "security-tool-gateway"))
 os.environ["CYBERGUARD_API_TOKEN"] = "test-read-token"
 os.environ["CYBERGUARD_SCENARIO_DIR"] = str(ROOT / "scenarios")
@@ -26,6 +27,9 @@ from app.main import app  # noqa: E402
 
 class SecurityGatewayTest(unittest.TestCase):
     def setUp(self) -> None:
+        proxy_env = patch.dict(os.environ, {"no_proxy": "127.0.0.1,localhost"})
+        proxy_env.start()
+        self.addCleanup(proxy_env.stop)
         self.client = TestClient(app)
         self.headers = {"Authorization": "Bearer test-read-token"}
 
@@ -250,6 +254,20 @@ class SecurityGatewayTest(unittest.TestCase):
         self.assertIn("failed quality gate", response.json()["detail"])
         evidence = self.client.get("/evidence/CG-LOW-QUALITY", headers=self.headers).json()["evidence"]
         self.assertEqual(evidence, [])
+
+    def test_live_recovery_claim_does_not_become_verified_without_probe_contract(self) -> None:
+        record = json.loads((ROOT / "scenarios/credential_compromise.json").read_text(encoding="utf-8"))["tools"]["recovery.metrics"]
+        record["data"]["verdict"] = "verified"
+        with patch("app.store.live_connectors.invoke", return_value=record):
+            response = self.client.post(
+                "/tools/recovery/metrics", headers=self.headers,
+                json={"incident_id": "CG-LIVE-RECOVERY-CLAIM", "scenario_id": "live"},
+            )
+        self.assertEqual(response.status_code, 200, response.text)
+        data = response.json()["evidence"]["data"]
+        self.assertEqual(data["reported_verdict"], "verified")
+        self.assertEqual(data["verdict"], "inconclusive")
+        self.assertEqual(data["reason"], "live_verifier_contract_not_validated")
 
     def test_incident_index_detail_graph_and_console(self) -> None:
         for tool in ("alert/snapshot", "endpoint/timeline"):

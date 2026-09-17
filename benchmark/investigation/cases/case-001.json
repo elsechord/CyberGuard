@@ -1,0 +1,124 @@
+{
+  "schema": "cyberguard-evidence-bundle/v1",
+  "bundle_id": "EXERCISE-case-001",
+  "created_at": "2026-09-17T00:00:00+00:00",
+  "provenance": {
+    "kind": "exercise",
+    "description": "Authored synthetic Linux observations; no real victim, attack or mining."
+  },
+  "artifacts": [
+    {
+      "evidence_id": "EV-8f0ab836660649c48e9be4423330c619",
+      "kind": "processes",
+      "source": "exercise:/proc sampled observations",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "processes": [
+          {
+            "pid": 423,
+            "ppid": 1,
+            "uid": 1001,
+            "comm": "task-worker",
+            "exe": "/var/tmp/task-worker",
+            "starttime_ticks": 412300,
+            "cpu_percent": 86.2,
+            "cpu_observation_status": "measured"
+          },
+          {
+            "pid": 512,
+            "ppid": 1,
+            "uid": 1001,
+            "comm": "web-worker",
+            "exe": "/opt/web/server",
+            "starttime_ticks": 312300,
+            "cpu_percent": 3.1,
+            "cpu_observation_status": "measured"
+          }
+        ],
+        "sample_seconds": 2,
+        "coverage": {
+          "sampled_processes": 2,
+          "complete_host_coverage": false
+        }
+      },
+      "sha256": "96a7d31fcddfd2b2af9faec12d9d51707e529aeb0620c490e808daff7d866486"
+    },
+    {
+      "evidence_id": "EV-217bc94814867e5aa7404a135a117346",
+      "kind": "network",
+      "source": "exercise:/proc/net/tcp",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "connections": [
+          {
+            "protocol": "tcp",
+            "local_address": "192.0.2.10",
+            "local_port": 43892,
+            "remote_address": "198.51.100.20",
+            "remote_port": 443,
+            "state": "01",
+            "inode": "119",
+            "owner_pids": [
+              423
+            ]
+          }
+        ],
+        "coverage": {
+          "scope": "one supplied network observation",
+          "payload_collected": false
+        }
+      },
+      "sha256": "da0b5a9b988043c8bf895ae18b37646075e9597091f02dda9c55a764e9e3364b"
+    },
+    {
+      "evidence_id": "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+      "kind": "persistence",
+      "source": "exercise:/etc/systemd/system/task-worker.service",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "entries": [
+          {
+            "mechanism": "systemd",
+            "path": "/etc/systemd/system/task-worker.service",
+            "command": "/var/tmp/task-worker",
+            "enabled": null,
+            "section": "Service",
+            "unit": "task-worker.service"
+          }
+        ],
+        "coverage": {
+          "scope": "one supplied configuration",
+          "scheduler_state_collected": false
+        }
+      },
+      "sha256": "18729d547d9637514efd78db9f5a32ebed2add5d4b17ea1d91f8ecd2fc907e84"
+    },
+    {
+      "evidence_id": "EV-4a59757210c625042628399d7acdc0d4",
+      "kind": "auth_logs",
+      "source": "exercise:provided auth excerpt",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "events": [
+          {
+            "line": 1,
+            "text": "Sep 17 00:00:00 host sshd: Failed publickey for user from 203.0.113.5"
+          }
+        ],
+        "coverage": {
+          "complete_window": false
+        }
+      },
+      "sha256": "b44e503c32d2bebe4edd6316e594628637f67d6fa8fea9a40f451427354600c7"
+    }
+  ],
+  "bundle_sha256": "ba8e0cbfc2daade3e3f5b8f2b7c61c3dffd4841bb346ef97933357023771bea1"
+}

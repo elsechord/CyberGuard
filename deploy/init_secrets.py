@@ -17,10 +17,11 @@ SECRET_KEYS = {
     "CYBERGUARD_AUDIT_HMAC_KEY",
     "CYBERGUARD_AUDIT_READER_TOKEN",
 }
+OPTIONAL_SECRET_KEYS = {"CYBERGUARD_INVESTIGATION_INGEST_TOKEN", "CYBERGUARD_REPORT_TOKEN"}
 
 
 def render(template: str) -> str:
-    generated = {key: secrets.token_urlsafe(48) for key in SECRET_KEYS}
+    generated = {key: secrets.token_urlsafe(48) for key in SECRET_KEYS | OPTIONAL_SECRET_KEYS}
     output: list[str] = []
     replaced: set[str] = set()
     for raw in template.splitlines():
@@ -37,6 +38,9 @@ def render(template: str) -> str:
 
 
 def create(template: Path, output: Path) -> None:
+    if os.name == "nt":
+        raise OSError("Secret initialization requires POSIX file permissions; use Linux or WSL2. "
+                      "No secrets were written. Windows chmod does not enforce a private ACL.")
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"refusing to overwrite existing configuration: {output}")
     content = render(template.read_text(encoding="utf-8-sig"))
@@ -48,8 +52,9 @@ def create(template: Path, output: Path) -> None:
             handle.write(content)
             handle.flush()
             os.fsync(handle.fileno())
-        os.replace(temporary, output)
-        os.chmod(output, 0o600)
+        # Publish without replacing a file created concurrently after the initial check.
+        os.link(temporary, output)
+        os.unlink(temporary)
     except BaseException:
         try:
             os.close(descriptor)

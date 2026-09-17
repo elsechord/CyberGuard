@@ -1,0 +1,105 @@
+{
+  "schema": "cyberguard-evidence-bundle/v1",
+  "bundle_id": "EXERCISE-case-003",
+  "created_at": "2026-09-17T00:00:00+00:00",
+  "provenance": {
+    "kind": "exercise",
+    "description": "Authored synthetic Linux observations; no real victim, attack or mining."
+  },
+  "artifacts": [
+    {
+      "evidence_id": "EV-dc537ad219d5c59da647d90bf4f14524",
+      "kind": "processes",
+      "source": "exercise:/proc sampled observations",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "processes": [
+          {
+            "pid": 423,
+            "ppid": 1,
+            "uid": 1001,
+            "comm": "task-worker",
+            "exe": "/opt/tasks/batch-worker",
+            "starttime_ticks": 412300,
+            "cpu_percent": 86.2,
+            "cpu_observation_status": "measured"
+          },
+          {
+            "pid": 512,
+            "ppid": 1,
+            "uid": 1001,
+            "comm": "web-worker",
+            "exe": "/opt/web/server",
+            "starttime_ticks": 312300,
+            "cpu_percent": 3.1,
+            "cpu_observation_status": "measured"
+          }
+        ],
+        "sample_seconds": 2,
+        "coverage": {
+          "sampled_processes": 2,
+          "complete_host_coverage": false
+        }
+      },
+      "sha256": "cc005c9f634556a098739e0bd638ee2d1ee6473e8d987c7a858c1ce94769ee9e"
+    },
+    {
+      "evidence_id": "EV-03648239db375749bbea8d9494606b15",
+      "kind": "network",
+      "source": "exercise:/proc/net/tcp",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "collected",
+      "data": {
+        "connections": [
+          {
+            "protocol": "tcp",
+            "local_address": "192.0.2.10",
+            "local_port": 43892,
+            "remote_address": "198.51.100.20",
+            "remote_port": 443,
+            "state": "01",
+            "inode": "119",
+            "owner_pids": [
+              423
+            ]
+          }
+        ],
+        "coverage": {
+          "scope": "one supplied network observation",
+          "payload_collected": false
+        }
+      },
+      "sha256": "ab659e0859aa432a23e5fa171d01554952241518399bce22ddb1703f41bae7c8"
+    },
+    {
+      "evidence_id": "EV-28d4621c70346bc715de0c3de52ec25a",
+      "kind": "persistence",
+      "source": "exercise:scheduler directory",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "unavailable",
+      "data": {
+        "reason": "collector lacked read permission",
+        "entries": []
+      },
+      "sha256": "67a80f14f48250cc12129a9e2c69503a57dda99b658e8c338d95a6ee39d4e941"
+    },
+    {
+      "evidence_id": "EV-29f988a322f3c17943c89b0a7e205850",
+      "kind": "auth_logs",
+      "source": "exercise:authentication log",
+      "collected_at": "2026-09-17T00:00:00+00:00",
+      "observed_at": "2026-09-17T00:00:00+00:00",
+      "status": "unavailable",
+      "data": {
+        "reason": "requested incident window was not retained",
+        "events": []
+      },
+      "sha256": "f8beffb74e072145526b2d2fc60c89229c52b5b14aec589757616ffd36931b9d"
+    }
+  ],
+  "bundle_sha256": "e2253345040b0d27db787e390e513d990d859aefc4d88dcc2e3a90e77336a03f"
+}

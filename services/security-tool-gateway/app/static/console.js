@@ -1,4 +1,4 @@
-const state = { token: sessionStorage.getItem("cyberguardReadToken") || "", selected: null };
+const state = { token: sessionStorage.getItem("cyberguardReadToken") || "", selected: null, detail: null, run: null, export: null, exportText: null, runRequest: 0 };
 const $ = (id) => document.getElementById(id);
 
 function node(tag, className, text) {
@@ -8,11 +8,11 @@ function node(tag, className, text) {
   return item;
 }
 
-async function api(path) {
+async function api(path, raw = false) {
   const response = await fetch(path, { headers: { Authorization: `Bearer ${state.token}` }, cache: "no-store" });
   if (response.status === 401) throw new Error("令牌无效或已失效");
   if (!response.ok) throw new Error(`接口返回 ${response.status}`);
-  return response.json();
+  return raw ? response.text() : response.json();
 }
 
 function setConnected(connected) {
@@ -50,22 +50,30 @@ function renderIncidents(incidents) {
     button.type = "button";
     button.append(node("strong", "", incident.incident_id));
     const quality = incident.quality_mean == null ? "待评估" : `质量 ${Math.round(incident.quality_mean * 100)}%`;
-    button.append(node("span", "", `${statusLabel(incident.status)} · ${incident.evidence_count} 条证据 · ${quality}`));
+    const scope = incident.run_count ? `${incident.run_count} 次运行` : statusLabel(incident.status);
+    button.append(node("span", "", `${scope} · ${incident.evidence_count} 条证据 · ${quality}`));
     button.addEventListener("click", () => selectIncident(incident.incident_id));
     list.append(button);
   });
   const available = incidents.some((item) => item.incident_id === state.selected);
-  if (!available) selectIncident(incidents[0].incident_id);
+  selectIncident(available ? state.selected : incidents[0].incident_id);
 }
 
 async function selectIncident(incidentId) {
   state.selected = incidentId;
+  ++state.runRequest;
+  state.export = null;
+  state.exportText = null;
+  $("export-run").disabled = true;
+  $("export-preview").classList.add("hidden");
+  $("export-json").value = "";
   try {
     const [detail, graph, quality] = await Promise.all([
       api(`/incidents/${encodeURIComponent(incidentId)}`),
       api(`/incidents/${encodeURIComponent(incidentId)}/graph`).catch(() => ({ nodes: [], edges: [] })),
       api(`/incidents/${encodeURIComponent(incidentId)}/quality`).catch(() => ({ quality_mean: 0, quality_min: 0, gate: "review" })),
     ]);
+    if (state.selected !== incidentId) return;
     renderDetail(detail, graph, quality);
     document.querySelectorAll(".incident-card").forEach((card) => {
       card.classList.toggle("active", card.querySelector("strong").textContent === incidentId);
@@ -76,10 +84,14 @@ async function selectIncident(incidentId) {
 }
 
 function statusLabel(status) {
+  if (status === "execution_rejected") return "对象已变化或不在允许范围，执行被拒绝";
+  const labStates = { execution_dispatched: "执行已发出，等待回执", execution_unknown: "执行结果未知，等待对账", rollback_dispatched: "回滚已发出", rollback_unknown: "回滚结果未知", inconclusive: "证据不足", verified: "观测通过", failed: "验证未通过" };
+  if (labStates[status]) return labStates[status];
   return ({ received: "已接收", investigating: "调查中", evidence_validation: "证据校验", timed_out: "会话超时", failed: "失败", rejected: "已拒绝", completed: "已完成", executing: "执行中", pending_approval: "等待审批", awaiting_approval: "等待审批", approved: "已批准", executed: "已执行", responding: "响应中", verified: "已验证", rolled_back: "已回滚", audit_error: "审计异常", audit_corruption: "审计损坏" })[status] || status;
 }
 
 function renderDetail(detail, graph, quality) {
+  state.detail = detail;
   $("empty-state").classList.add("hidden");
   $("incident-detail").classList.remove("hidden");
   $("detail-id").textContent = detail.summary.incident_id;
@@ -94,6 +106,73 @@ function renderDetail(detail, graph, quality) {
   renderActions(detail.actions);
   renderWorkflow(detail.workflow);
   renderGraph(graph);
+  const selector = $("run-select");
+  selector.replaceChildren(new Option("事件汇总 · 包含历史及未绑定运行的数据", ""));
+  (detail.runs || []).forEach((id) => selector.add(new Option(id, id)));
+  const previous = state.run;
+  state.run = (detail.runs || []).includes(previous) ? previous : detail.evidence.slice().reverse().find((e) => e.run_id)?.run_id || "";
+  selector.value = state.run;
+  renderSelectedRun();
+}
+
+async function renderSelectedRun() {
+  const request = ++state.runRequest;
+  state.export = null;
+  state.exportText = null;
+  $("export-run").disabled = true;
+  $("export-preview").classList.add("hidden");
+  $("export-json").value = "";
+  $("run-states").replaceChildren();
+  $("run-notice").className = "run-notice";
+  const detail = state.detail;
+  document.querySelector(".graph-panel").classList.toggle("hidden", Boolean(state.run));
+  document.querySelector(".workflow-panel").classList.toggle("hidden", Boolean(state.run));
+  if (!state.run) {
+    $("run-notice").textContent = "事件汇总不代表同一次任务。请选择运行编号查看关联的动作和探针；历史 fixture 结果仅用于模拟契约验证。";
+    renderEvidence(detail.evidence); renderActions(detail.actions);
+    $("metric-evidence").textContent = detail.evidence.length;
+    $("metric-actions").textContent = detail.summary.action_count;
+    $("metric-sources").textContent = detail.summary.sources.length;
+    $("metric-quality").textContent = detail.summary.quality_mean == null ? "—" : `${Math.round(detail.summary.quality_mean * 100)}%`;
+    $("detail-status").textContent = "事件汇总";
+    return;
+  }
+  $("run-notice").textContent = "正在读取本次运行的证据与认证审计快照…";
+  $("detail-status").textContent = "读取中";
+  renderEvidence([]); renderActions([]);
+  for (const metric of ["metric-evidence", "metric-actions", "metric-sources", "metric-quality"]) $(metric).textContent = "—";
+  try {
+    const exportText = await api(`/incidents/${encodeURIComponent(state.selected)}/runs/${encodeURIComponent(state.run)}`, true);
+    const data = JSON.parse(exportText);
+    if (request !== state.runRequest) return;
+    state.export = data;
+    state.exportText = exportText;
+    $("export-run").disabled = false;
+    const modes = [...new Set(data.action_states.map((a) => a.execution_mode))];
+    const models = [...new Set(data.action_states.map((a) => a.model_mode))];
+    const modeText = modes.map((m) => m === "host_lab" ? "Linux 进程实验 · 真实状态变化" : m === "lab" ? "账户隔离实验 · 真实状态变化" : "模拟执行").join(" / ") || "尚无可核验动作";
+    $("run-notice").textContent = `${modeText}。模型模式（调用方声明）：${models.join(" / ") || "未知"}。审计快照：${data.audit_status === "valid" ? "已由执行器校验" : "不可用"}；证据完整性：${data.evidence_integrity === "valid" ? "通过" : "异常"}。探针结果仅代表记录的观测时刻，页面刷新不会重测。AgentTeams 任务及 Worker/Skill 对应关系尚未核验。`;
+    if (data.audit_status !== "valid" || data.evidence_integrity !== "valid") $("run-notice").classList.add("error");
+    $("detail-status").textContent = data.audit_status !== "valid" || data.evidence_integrity !== "valid" ? "证据待核验" : "运行记录";
+    renderEvidence(data.evidence); renderActions(data.actions);
+    $("metric-evidence").textContent = data.evidence.length;
+    $("metric-actions").textContent = data.action_states.length;
+    $("metric-sources").textContent = new Set(data.evidence.map((e) => e.source)).size;
+    const scores = data.evidence.map((e) => e.quality?.score || 0);
+    $("metric-quality").textContent = scores.length ? `${Math.round(scores.reduce((a,b) => a+b, 0) / scores.length * 100)}%` : "—";
+    data.action_states.forEach((item) => {
+      const card = node("article", "action-item");
+      card.append(node("strong", "", `${item.action_id} · ${item.target}`));
+      card.append(node("p", "", `${statusLabel(item.status)} · 验证：${statusLabel(item.verification)}`));
+      if (item.observation) card.append(node("p", "probe-check", `最近观测 ${new Date(item.observation.collected_at).toLocaleString("zh-CN", {hour12: false})} · ${item.observation.evidence_id}`));
+      $("run-states").append(card);
+    });
+  } catch (error) {
+    if (request !== state.runRequest) return;
+    $("run-notice").textContent = `无法读取本次运行：${error.message}`;
+    $("run-notice").classList.add("error");
+    $("detail-status").textContent = "读取失败";
+  }
 }
 
 function renderWorkflow(workflow) {
@@ -128,6 +207,29 @@ function renderEvidence(items) {
     (item.attack_techniques || []).forEach((value) => tags.append(node("span", "tag", value)));
     [...(item.supports || []), ...(item.contradicts || [])].forEach((value) => tags.append(node("span", "tag", value)));
     article.append(tags);
+    if (item.run_id) article.append(node("p", "probe-check", `运行 ${item.run_id} · ${item.environment || "unknown"} / ${item.execution || "unknown"}`));
+    if (item.data?.verification_scope === "simulated_response_contract") article.append(node("p", "probe-check", "模拟契约结果 · 未观测真实环境恢复"));
+    if (item.environment === "lab" && item.kind === "recovery_metrics") {
+      article.append(node("p", "probe-check", `观测结论：${statusLabel(item.data?.verdict || "inconclusive")} · ${item.data?.reason || "—"}`));
+      (item.data?.checks || []).forEach((check) => {
+        if (Array.isArray(check.processes)) {
+          const target = check.processes.find((p) => p.role === "compute");
+          const control = check.processes.find((p) => p.role === "control");
+          article.append(node("p", "probe-check", `${check.observed_at} · 目标进程 ${target ? `PID ${target.pid}` : "未观测到"} · 持久化 ${check.persistence?.present ? "仍存在" : "不存在"} · 正常进程 heartbeat ${control?.heartbeat?.sequence ?? "不可用"}`));
+        } else {
+          article.append(node("p", "probe-check", `${check.account}：${check.allowed ? "允许访问" : "拒绝访问"} · HTTP ${check.http_status} · ${check.observed_at}`));
+        }
+      });
+    }
+    if (item.scenario_id === "lab_host") {
+      const detail = node("details", "probe-check");
+      detail.append(node("summary", "", "查看 Linux 实验原始观测（无害进程，不是真实入侵）"));
+      const raw = node("pre", "", JSON.stringify(item.data, null, 2));
+      raw.style.whiteSpace = "pre-wrap";
+      raw.style.overflowWrap = "anywhere";
+      detail.append(raw);
+      article.append(detail);
+    }
     list.append(article);
   });
 }
@@ -195,4 +297,19 @@ $("auth-form").addEventListener("submit", (event) => {
   event.preventDefault(); state.token = $("token").value.trim(); connect();
 });
 $("refresh").addEventListener("click", () => { if (state.token) connect(); });
+$("run-select").addEventListener("change", () => { state.run = $("run-select").value; renderSelectedRun(); });
+$("export-run").addEventListener("click", () => {
+  if (!state.export || !state.exportText) return;
+  // Preserve numeric tokens (e.g. 1.0) used by the server's integrity digest.
+  const json = state.exportText + "\n";
+  $("export-json").value = json;
+  $("export-preview").classList.remove("hidden");
+  $("export-preview").open = true;
+  const url = URL.createObjectURL(new Blob([json], {type: "application/json"}));
+  const link = document.createElement("a"); link.href = url;
+  link.download = `cyberguard-run-${state.export.run_id.replace(/[^a-zA-Z0-9_-]/g, "_")}.json`;
+  link.hidden = true;
+  document.body.append(link);
+  link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
 if (state.token) { $("token").value = state.token; connect(); }

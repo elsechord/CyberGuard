@@ -7,11 +7,18 @@ class ToolRequest(BaseModel):
     incident_id: str = Field(min_length=3, max_length=128)
     scenario_id: str = Field(min_length=3, max_length=128)
     arguments: dict[str, Any] = Field(default_factory=dict)
+    run_id: str | None = Field(default=None, min_length=3, max_length=128)
 
 
 class Evidence(BaseModel):
     evidence_id: str
     incident_id: str
+    run_id: str | None = None
+    scenario_id: str | None = None
+    tool_call_id: str | None = None
+    environment: Literal["fixture", "lab", "live", "unknown"] = "unknown"
+    execution: Literal["simulated", "real", "unknown"] = "unknown"
+    envelope_sha256: str | None = None
     source: str
     collected_at: str
     observed_at: str | None = None

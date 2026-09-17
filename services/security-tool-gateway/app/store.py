@@ -13,6 +13,7 @@ from uuid import uuid4
 from .connectors import ConnectorError, live_connectors
 from .models import Evidence
 from .normalization import normalize
+from . import lab_verification, host_lab
 
 
 class ScenarioStore:
@@ -50,8 +51,34 @@ class ScenarioStore:
         scenario_id: str,
         tool: str,
         arguments: dict[str, Any] | None = None,
+        run_id: str | None = None,
     ) -> Evidence:
-        if scenario_id == "live":
+        argument_run = (arguments or {}).get("run_id")
+        if argument_run is not None and (not isinstance(argument_run, str) or not 3 <= len(argument_run) <= 128):
+            raise ValueError("invalid run_id")
+        if run_id is not None and argument_run is not None and run_id != argument_run:
+            raise ValueError("conflicting run_id fields")
+        run_id = run_id or argument_run
+        if scenario_id == "lab_host":
+            if not run_id:
+                raise ValueError("lab_host requires run_id")
+            try:
+                if tool == "endpoint.timeline":
+                    record = host_lab.collect()
+                elif tool == "recovery.metrics":
+                    record = host_lab.verify(incident_id, {**(arguments or {}), "run_id": run_id})
+                else:
+                    raise KeyError(tool)
+            except lab_verification.ProbeError as exc:
+                raise ConnectorError(str(exc)) from None
+        elif scenario_id == "lab_identity":
+            if tool != "recovery.metrics":
+                raise KeyError(tool)
+            try:
+                record = lab_verification.verify(incident_id, {**(arguments or {}), "run_id": run_id})
+            except lab_verification.ProbeError as exc:
+                raise ConnectorError(str(exc)) from None
+        elif scenario_id == "live":
             record = live_connectors.invoke(tool, arguments or {})
         else:
             scenario = self.load(scenario_id)
@@ -59,8 +86,16 @@ class ScenarioStore:
             if tool not in tools:
                 raise KeyError(tool)
             record = tools[tool]
-        if tool == "recovery.metrics":
+        if tool == "recovery.metrics" and scenario_id not in {"live", "lab_identity", "lab_host"}:
             record = self._recovery_record(record, incident_id)
+            record["data"]["verification_scope"] = "simulated_response_contract"
+            record["data"]["execution"] = "simulated"
+        elif tool == "recovery.metrics" and scenario_id == "live":
+            # A live connector needs its own validated outcome contract. Do not
+            # overwrite observations with a fixture/action-set success verdict.
+            record["data"]["reported_verdict"] = record["data"].get("verdict")
+            record["data"]["verdict"] = "inconclusive"
+            record["data"]["reason"] = "live_verifier_contract_not_validated"
         now = datetime.now(UTC).isoformat()
         canonical = json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -75,6 +110,11 @@ class ScenarioStore:
         evidence = Evidence(
             evidence_id=f"EV-{uuid4().hex[:12]}",
             incident_id=incident_id,
+            run_id=run_id,
+            scenario_id=scenario_id,
+            tool_call_id=f"CALL-{uuid4().hex}",
+            environment="lab" if scenario_id in {"lab_identity", "lab_host"} else "live" if scenario_id == "live" else "fixture",
+            execution="real" if scenario_id in {"lab_identity", "lab_host"} else "unknown" if scenario_id == "live" else "simulated",
             source=record.get("source", tool),
             collected_at=now,
             observed_at=record.get("observed_at"),
@@ -88,6 +128,10 @@ class ScenarioStore:
             handling=record.get("handling", "internal"),
             **normalized,
         )
+        envelope = evidence.model_dump(exclude={"envelope_sha256"})
+        evidence.envelope_sha256 = hashlib.sha256(json.dumps(
+            envelope, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+        ).encode()).hexdigest()
         self._append(evidence)
         return evidence
 
@@ -224,6 +268,7 @@ class ScenarioStore:
             "incident_id": incident_id,
             "status": status,
             "evidence_count": len(evidence),
+            "run_count": len({e["run_id"] for e in evidence if e.get("run_id")}),
             "action_count": len({item.get("action_id") for item in actions if item.get("action_id")}),
             "sources": sorted({item.get("source") for item in evidence if item.get("source")}),
             "last_updated": evidence[-1].get("collected_at") if evidence else None,
