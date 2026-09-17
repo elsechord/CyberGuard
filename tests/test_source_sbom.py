@@ -35,7 +35,7 @@ class SourceSbomTests(unittest.TestCase):
         document = MODULE.build_document()
         image = next(package for package in document["packages"] if package["name"].startswith("python:"))
         purl = image["externalRefs"][0]["referenceLocator"]
-        self.assertRegex(purl, r"^pkg:docker/python@sha256:[0-9a-f]{64}\?tag=3\.12\.13-slim-bookworm$")
+        self.assertRegex(purl, r"^pkg:docker/python@sha256:[0-9a-f]{64}\?tag=3\.12\.14-slim-bookworm$")
 
 
 if __name__ == "__main__":
