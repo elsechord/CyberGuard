@@ -186,6 +186,61 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(result.json()["error"]["code"], "tool_definition_not_allowed")
         self.assertEqual(self.calls, [])
 
+    def test_tool_allowlist_denial_records_offending_names_durably(self):
+        self.config["roles"]["investigator"]["allowed_tools"] = ["read"]
+        self.make()
+        self.arm()
+        tools = [{"type": "function", "function": {"name": "read", "parameters": {"type": "object"}}},
+                 {"type": "function", "function": {"name": "mcp-other__write_evidence", "parameters": {"type": "object"}}},
+                 {"type": "function", "function": {"name": "Skill", "parameters": {"type": "object"}}}]
+        result = self.post(tools=tools)
+        self.assertEqual(result.json()["error"]["code"], "tool_definition_not_allowed")
+        # The HTTP error body must not leak the diagnostic or any schema content.
+        self.assertNotIn("mcp-other__write_evidence", result.text)
+        snapshot = self.app.state.guard.snapshot()
+        self.assertEqual(snapshot["denials"]["tool_definition_not_allowed"], 1)
+        self.assertEqual(len(snapshot["denial_details"]), 1)
+        detail = snapshot["denial_details"][0]
+        self.assertEqual(detail["code"], "tool_definition_not_allowed")
+        self.assertEqual(detail["role"], "investigator")
+        self.assertEqual(detail["offending_tool_names"], ["Skill", "mcp-other__write_evidence"])
+        self.assertEqual(detail["requested_tool_names"], ["Skill", "mcp-other__write_evidence", "read"])
+        self.assertEqual(detail["allowed_tool_names"], ["read"])
+        self.assertEqual(detail["request_tool_count"], 3)
+        self.assertEqual(detail["malformed_tool_definitions"], 0)
+        durable = list(Path(self.temp.name).glob("tool-denial-*.json"))
+        self.assertEqual(len(durable), 1)
+        recorded = json.loads(durable[0].read_text())
+        self.assertEqual(recorded["offending_tool_names"], detail["offending_tool_names"])
+        self.assertNotIn(self.config["upstream_key"], durable[0].read_text())
+        self.assertEqual(self.calls, [])
+
+    def test_tool_allowlist_denial_counts_malformed_definitions(self):
+        self.make()
+        self.arm()
+        result = self.post(tools=[{"type": "function", "function": {"parameters": {}}},
+                                  {"type": "function", "function": {"name": "read"}},
+                                  "not-a-dict"])
+        self.assertEqual(result.json()["error"]["code"], "tool_definition_not_allowed")
+        detail = self.app.state.guard.snapshot()["denial_details"][0]
+        self.assertEqual(detail["malformed_tool_definitions"], 2)
+        self.assertEqual(detail["requested_tool_names"], ["read"])
+        self.assertEqual(detail["request_tool_count"], 3)
+        self.assertEqual(self.calls, [])
+
+    def test_declaration_records_nonconforming_tool_names(self):
+        self.make()
+        result = self.post(tools=[{"type": "function", "function": {"name": "read", "parameters": {"type": "object"}}},
+                                  {"type": "function", "function": {"name": "mcp.legacy/read_evidence", "parameters": {}}},
+                                  {"type": "function", "function": {"parameters": {}}}])
+        self.assertEqual(result.json()["error"]["code"], "guard_not_armed")
+        artifact = Path(self.temp.name) / "declaration-investigator.json"
+        observed = json.loads(artifact.read_text())
+        self.assertEqual([tool["name"] for tool in observed["tools"]], ["read"])
+        self.assertIn("'mcp.legacy/read_evidence'", observed["nonconforming_tool_names"])
+        self.assertIn("malformed_name:None", observed["nonconforming_tool_names"])
+        self.assertEqual(self.calls, [])
+
     def test_close_during_last_trace_write_blocks_dispatch(self):
         self.make()
         self.arm()

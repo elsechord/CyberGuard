@@ -60,8 +60,11 @@ def validate_message(response):
 
 
 class GuardError(Exception):
-    def __init__(self, code):
+    def __init__(self, code, details=None):
         self.code = code
+        # Optional non-secret diagnostic record (e.g. offending tool names) for
+        # operator review; the HTTP response never exposes it.
+        self.details = details
         super().__init__(code)
 
 
@@ -149,6 +152,7 @@ class ModelGuard:
         self.armed = False
         self.state_lock = threading.RLock()
         self.denials = {}
+        self.denial_details = []
 
     def identity(self, authorization):
         token = authorization[7:] if authorization and authorization.startswith("Bearer ") else ""
@@ -165,14 +169,17 @@ class ModelGuard:
 
     def snapshot(self):
         return {"run": self.ledger.get_run(self.run_id), "armed": self.armed,
-                "denials": dict(self.denials), "token_reservation_method": "serialized_utf8_bytes_plus_overhead",
+                "denials": dict(self.denials), "denial_details": list(self.denial_details),
+                "token_reservation_method": "serialized_utf8_bytes_plus_overhead",
                 "limitations": ["Input reservation is conservative, not a verified provider tokenizer bound.",
                     "Already forwarded calls cannot be recalled; unknown usage keeps reservations.",
                     "Provider usage is reported, not independently metered billing."]}
 
-    def deny(self, code):
+    def deny(self, code, details=None):
         if len(self.denials) < 64 or code in self.denials:
             self.denials[code] = self.denials.get(code, 0) + 1
+        if details is not None and len(self.denial_details) < 16:
+            self.denial_details.append(details)
 
     def declaration(self, role, body):
         """No upstream request: retain only tool names and schema hashes for preflight."""
@@ -182,15 +189,56 @@ class ModelGuard:
         if not isinstance(tools, list) or len(tools) > 256:
             return
         items = []
+        nonconforming = []
         for item in tools:
             function = item.get("function") if isinstance(item, dict) else None
             if not isinstance(function, dict) or not isinstance(function.get("name"), str):
+                if isinstance(function, dict):
+                    nonconforming.append("malformed_name:" + repr(function.get("name"))[:96])
+                else:
+                    nonconforming.append("not_a_function_tool")
                 continue
             name = function["name"]
             if re.fullmatch(r"[A-Za-z0-9_-]{1,128}", name):
                 items.append({"name": name, "definition_sha256": hashlib.sha256(canonical_bytes(function)).hexdigest()})
+            else:
+                # Name-shape mismatches are the primary diagnosis target; keep a
+                # bounded repr instead of silently dropping the observation.
+                nonconforming.append(repr(name)[:128])
         self._write_trace("declaration-" + role, {"run_id": self.run_id, "role": role,
-            "kind": "disarmed_tool_schema_observation", "forwarded": False, "tools": items})
+            "kind": "disarmed_tool_schema_observation", "forwarded": False, "tools": items,
+            "nonconforming_tool_names": sorted(set(nonconforming))[:64]})
+
+    def tool_denial_detail(self, role, tool_list, allowed):
+        """Name-only diagnostic for a whitelist denial; never schemas or secrets."""
+        names, malformed = [], 0
+        if isinstance(tool_list, list):
+            for item in tool_list[:512]:
+                function = item.get("function") if isinstance(item, dict) else None
+                name = function.get("name") if isinstance(function, dict) else None
+                if isinstance(name, str):
+                    names.append(name[:128])
+                else:
+                    malformed += 1
+        allowed_names = [str(name)[:128] for name in allowed]
+        return {"run_id": self.run_id, "role": role, "code": "tool_definition_not_allowed",
+                "kind": "tool_whitelist_denial_detail",
+                "requested_tool_names": sorted(set(names)),
+                "offending_tool_names": sorted(set(names) - set(allowed_names)),
+                "allowed_tool_names": sorted(set(allowed_names)),
+                "malformed_tool_definitions": malformed,
+                "request_tool_count": len(tool_list) if isinstance(tool_list, list) else None}
+
+    def record_tool_denial(self, role, tool_list, allowed):
+        """Persist the offending names durably (trace file) before the request is refused."""
+        detail = self.tool_denial_detail(role, tool_list, allowed)
+        fingerprint = "tool-denial-" + hashlib.sha256(
+            (self.run_id + ":" + role + ":" + json.dumps(detail, sort_keys=True)).encode()).hexdigest()[:32]
+        try:
+            self._write_trace(fingerprint, detail)
+        except Exception:
+            pass  # The in-memory denial count and closed run remain authoritative.
+        return detail
 
     def prepare(self, role, body):
         if not self.armed:
@@ -232,7 +280,8 @@ class ModelGuard:
             tool_list = body.get("tools") or []
             if (not isinstance(tool_list, list) or any(not isinstance(t, dict) or t.get("type") != "function"
                     or not isinstance(t.get("function"), dict) or t["function"].get("name") not in allowed for t in tool_list)):
-                raise GuardError("tool_definition_not_allowed")
+                raise GuardError("tool_definition_not_allowed",
+                                 details=self.record_tool_denial(role, tool_list, allowed))
         if body.get("n", 1) != 1 or type(body.get("n", 1)) is not int:
             raise GuardError("multiple_completions_not_allowed")
         if repeated_tool_error(messages):
@@ -359,7 +408,7 @@ def create_app(config, directory, *, transport=None):
     @app.exception_handler(GuardError)
     @app.exception_handler(AdmissionError)
     async def reject(request, exc):
-        guard.deny(exc.code)
+        guard.deny(exc.code, getattr(exc, "details", None))
         # Avoid 409/429/5xx: common SDKs retry these automatically. No hidden paid retry.
         status = 401 if exc.code.startswith("invalid_") and "credential" in exc.code else 400
         return JSONResponse({"error": {"type": "cyberguard_admission", "code": exc.code,
