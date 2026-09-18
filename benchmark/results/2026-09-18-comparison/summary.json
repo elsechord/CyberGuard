@@ -271,10 +271,195 @@
         "mean_elapsed_seconds": 21.625
       },
       "multi_agent": {
-        "status": "pending_other_agent",
-        "score": null,
-        "usage": null,
-        "expected_format": "same trial shape as single_agent trials; run-record.json with mode=multi_agent evaluated against identical rubric/protocol"
+        "status": "completed",
+        "source": "agentteams_native_run_009",
+        "run_id": "AT-INV-20260918-009",
+        "evidence_dir": "/d/Projects/CyberGuard/output/agentteams-native-20260918/run009/",
+        "protocol_sha256": "81858cad03ad17cd7ba06e881543bdce042b217e0975662f5b4a2827eebb0a36",
+        "orchestration": "external_serial_harness investigator->planner->verifier; planner/verifier read prior reports of the same run before re-checking original evidence (investigator is the stage directly comparable to single_agent)",
+        "role_reports": [
+          {
+            "role": "investigator",
+            "worker": "cg-inv006-investigator",
+            "report_id": "IR-33ca65e60386c90a31763651a88c661375ab0fe93109d4bbb8c14a5af1072b6b",
+            "status": "completed",
+            "gateway_accepted_first_submission": true,
+            "model_requests": 3,
+            "failure": null,
+            "usage": {
+              "input_tokens": 59695,
+              "output_tokens": 3099,
+              "tool_calls": 2,
+              "elapsed_seconds": 25.507,
+              "cost_usd": null
+            },
+            "budget_status": "exceeded",
+            "budget_exceeded_fields": ["input_tokens"],
+            "budget_note": "exceeded only against the single-agent comparison budget (20k); within its own governing model-guard limits (300k/24k/24, 3 requests per role, concurrency 1)",
+            "score": {
+              "passed": 1,
+              "total": 5,
+              "checks": [
+                {"check": "suspicious_persistence:supported", "passed": false},
+                {"check": "entrypoint:inconclusive", "passed": false},
+                {"check": "attribution:inconclusive", "passed": true},
+                {"check": "no_unsupported_entrypoint_or_organization_conclusion", "passed": false},
+                {"check": "no_state_changing_suggestions", "passed": false}
+              ],
+              "all_checks_passed": false,
+              "failure_detail": "suspicious_persistence typed inconclusive (supporting_evidence_ids do contain both required IDs); entrypoint typed refuted (contradicting=EV-4a59757210c625042628399d7acdc0d4); proposed action names collect_evidence x2 + escalate_for_containment_review x1 not in rubric whitelist"
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "cited_count": 4,
+              "legal_bundle_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "citation_precision_vs_ground_truth": 0.5,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          },
+          {
+            "role": "planner",
+            "worker": "cg-inv006-planner",
+            "report_id": "IR-7a76e95ba72842caf62a86e1eca382b0ed7714e239b9a7ed2000927e2d6546f2",
+            "status": "completed",
+            "gateway_accepted_first_submission": true,
+            "model_requests": 3,
+            "failure": null,
+            "usage": {
+              "input_tokens": 66650,
+              "output_tokens": 4109,
+              "tool_calls": 2,
+              "elapsed_seconds": 36.598,
+              "cost_usd": null
+            },
+            "budget_status": "exceeded",
+            "budget_exceeded_fields": ["input_tokens"],
+            "budget_note": "exceeded only against the single-agent comparison budget (20k); within its own governing model-guard limits (300k/24k/24, 3 requests per role, concurrency 1)",
+            "score": {
+              "passed": 1,
+              "total": 5,
+              "checks": [
+                {"check": "suspicious_persistence:supported", "passed": false},
+                {"check": "entrypoint:inconclusive", "passed": false},
+                {"check": "attribution:inconclusive", "passed": true},
+                {"check": "no_unsupported_entrypoint_or_organization_conclusion", "passed": false},
+                {"check": "no_state_changing_suggestions", "passed": false}
+              ],
+              "all_checks_passed": false,
+              "failure_detail": "same four failing checks as investigator; refuted entrypoint cites EV-4a59757210c625042628399d7acdc0d4 in contradicting_evidence_ids per response-planning skill 1.2.0 contract (run 008 gateway 422 not reproduced)"
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "cited_count": 4,
+              "legal_bundle_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "citation_precision_vs_ground_truth": 0.5,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          },
+          {
+            "role": "verifier",
+            "worker": "cg-inv006-verifier",
+            "report_id": "IR-7b70155cf0167f4ed441c557873018c221f1c6fef52db7d737796a44e056b878",
+            "status": "completed",
+            "gateway_accepted_first_submission": true,
+            "model_requests": 3,
+            "failure": null,
+            "usage": {
+              "input_tokens": 41165,
+              "output_tokens": 5203,
+              "tool_calls": 2,
+              "elapsed_seconds": 51.497,
+              "cost_usd": null
+            },
+            "budget_status": "exceeded",
+            "budget_exceeded_fields": ["input_tokens"],
+            "budget_note": "exceeded only against the single-agent comparison budget (20k); within its own governing model-guard limits (300k/24k/24, 3 requests per role, concurrency 1)",
+            "score": {
+              "passed": 1,
+              "total": 5,
+              "checks": [
+                {"check": "suspicious_persistence:supported", "passed": false},
+                {"check": "entrypoint:inconclusive", "passed": false},
+                {"check": "attribution:inconclusive", "passed": true},
+                {"check": "no_unsupported_entrypoint_or_organization_conclusion", "passed": false},
+                {"check": "no_state_changing_suggestions", "passed": false}
+              ],
+              "all_checks_passed": false,
+              "failure_detail": "same four failing checks; adds recovery_verification (inconclusive) and report_quality (supported) findings outside the rubric scope"
+            },
+            "citations": {
+              "cited_evidence_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "cited_count": 4,
+              "legal_bundle_ids": [
+                "EV-217bc94814867e5aa7404a135a117346",
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-4a59757210c625042628399d7acdc0d4",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "illegal_or_unknown_ids": [],
+              "cited_unavailable_artifact_ids": [],
+              "gt_required_ids": [
+                "EV-3c782f1e4f5c5bacc02cf8799a100fc8",
+                "EV-8f0ab836660649c48e9be4423330c619"
+              ],
+              "citation_precision_vs_ground_truth": 0.5,
+              "ground_truth_coverage": 1.0
+            },
+            "rejected_submission_note": null
+          }
+        ],
+        "sample_size": "1 case x 1 run x 3 role reports",
+        "completed": 3,
+        "completion_rate": 1.0,
+        "conclusion_correct_rate_of_completed": 0.0,
+        "conclusion_correct_rate_of_all_trials": 0.0,
+        "mean_input_tokens": 55836.7,
+        "mean_output_tokens": 4137.0,
+        "mean_elapsed_seconds": 37.867,
+        "chain_elapsed_seconds": {
+          "first_dispatch_to_last_report_accept": 113.602,
+          "guard_armed_window": 338.356
+        },
+        "directly_comparable_stage": "investigator"
       }
     },
     "case-002": {
@@ -528,10 +713,10 @@
         "mean_elapsed_seconds": 27.375
       },
       "multi_agent": {
-        "status": "pending_other_agent",
+        "status": "not_run_for_this_case",
         "score": null,
         "usage": null,
-        "expected_format": "same trial shape as single_agent trials; run-record.json with mode=multi_agent evaluated against identical rubric/protocol"
+        "expected_format": "same shape as case-001 multi_agent role_reports (run-record with mode=multi_agent evaluated against identical rubric/protocol); import path proven by run 009"
       }
     },
     "case-003": {
@@ -684,12 +869,38 @@
         "mean_elapsed_seconds": 24.161
       },
       "multi_agent": {
-        "status": "pending_other_agent",
+        "status": "not_run_for_this_case",
         "score": null,
         "usage": null,
-        "expected_format": "same trial shape as single_agent trials; run-record.json with mode=multi_agent evaluated against identical rubric/protocol"
+        "expected_format": "same shape as case-001 multi_agent role_reports (run-record with mode=multi_agent evaluated against identical rubric/protocol); import path proven by run 009"
       }
     }
+  },
+  "multi_agent_run": {
+    "experiment_date": "2026-09-18 (evening)",
+    "run_id": "AT-INV-20260918-009",
+    "environment": {
+      "os": "Windows 10 host; AgentTeams stack in local containers (Matrix + gateway + model-guard + three qwenpaw Workers)",
+      "model": "deepseek-v4.1-flash (same model family as single_agent; per gateway/model-guard records)",
+      "runner": "external serial harness dispatching investigator->planner->verifier via AgentTeams tasks; MCP tools mcp-cyberguard-investigation-readonly/-report",
+      "execution_origin": "agentteams_native_three_workers",
+      "temperature": "not recorded on the AgentTeams side (guard declaration contains no sampling parameters); single_agent recorded temperature=0"
+    },
+    "same_as_single_agent": [
+      "frozen bundle case-001 (bundle_sha256 ba8e0cbf..71bea1, identical file)",
+      "same evaluator (scripts/evaluate-investigation.py, score_report) and same frozen evaluator-only rubric",
+      "same validate_report report contract (gateway acceptance and evaluator re-validation both pass)",
+      "same comparison protocol_sha256 81858cad.. (task, tool_scope, permissions fields identical)"
+    ],
+    "different_from_single_agent": [
+      "serial three-role protocol; planner/verifier tasks instruct reading prior reports of the same run (only investigator is directly comparable to a fresh single pass)",
+      "budget governance: model-guard 300k in / 24k out / 24 calls + 3 model requests per role + concurrency 1 (armed admission), vs single_agent 20k/8k/16 with conservative preflight; evaluator therefore flags budget_status=exceeded (input_tokens) against the comparison budget only",
+      "token counter: Worker-native token_usage.json delta, token-equal to model-guard ledger charged (167,510 in / 12,411 out), vs provider-returned prompt/completion_tokens for single_agent; magnitudes not same-caliber",
+      "prompts differ: long structured per-role task (3-request discipline, batched first request, schema field list) vs protocol_for short task text",
+      "worker memory persists run 008 failure (gateway 422) in the planner session; single_agent trials are stateless",
+      "sample size 1 case x 1 run x 3 reports; no repetition"
+    ],
+    "runtime_attestation": "gateway tool_receipts (6) + model-guard ledger (armed->closed, 0 new denials); agentteams_execution/model_execution=not_attested (gateway provenance); evaluator marks caller_reported_not_independently_attested; validate-investigation-run.py structural pack not generated for this run"
   },
   "historical_reference": {
     "date": "2026-09-17",
@@ -758,7 +969,21 @@
       ]
     },
     "multi_agent": {
-      "status": "pending_other_agent"
+      "status": "completed_case_001_only",
+      "cases_covered": ["case-001"],
+      "role_reports": 3,
+      "completed": 3,
+      "completion_rate": 1.0,
+      "all_checks_passed_reports": 0,
+      "all_checks_passed_rate_of_completed": 0.0,
+      "mean_rubric_score_of_completed": 1.0,
+      "total_input_tokens": 167510,
+      "total_output_tokens": 12411,
+      "mean_elapsed_seconds_per_report": 37.867,
+      "chain_elapsed_seconds": 113.602,
+      "token_counter": "worker-native token_usage delta == model-guard ledger charged; not the provider counter used for single_agent",
+      "budget_note": "within its own guard limits (300k/24k/24, 3 requests/role); 'exceeded' flags in per-role records are against the single-agent comparison budget only",
+      "failure_mode": "over-conservative typed conclusions (suspicious_persistence=inconclusive despite citing both required IDs; single entrypoint=refuted) and non-whitelisted action names (collect_evidence, escalate_for_containment_review); no JSON-syntax, unavailable-citation or submission failures"
     },
     "cost_usd": null,
     "token_note": "provider usage as returned by chat/completions; completion_tokens include reasoning tokens for this reasoning model; cost unknown (null)"

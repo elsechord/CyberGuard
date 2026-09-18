@@ -25,7 +25,7 @@ CyberGuard 的能力以 [AgentTeams](https://github.com/agentscope-ai/AgentTeams
 2. **分发**：`deploy/bootstrap-agentteams.sh` 打包并校验全部 Skills → 经 Matrix 向 Manager 发送哈希绑定的幂等请求 → 分发至七 Worker → 校验 Worker manifest（见 `agentteams/BOOTSTRAP.md` 的 Worker→Skills 映射表）。凭据不进入 Matrix 消息。
 3. **运行版本记录（诚实边界）**：
    - v0.13.0 证据包运行（CG-2026-0002，2026-08-28/29）：全套 1.1.0 版本 Skills 经上述流程分发并执行（证据：release v0.13.0，2,992 条原生 Matrix 事件）。
-   - recovery-verification 1.2.0（2026-09-18 入库）**尚未在 AgentTeams Worker 上重新分发**；其 v1.2.0 契约当前仅由本地测试（`tests/`）与隔离实验室（lab-identity）验证。下次分发后将在此登记加载与调用证据。
+   - run 009（AT-INV-20260918-009，2026-09-18）：**response-planning 1.2.0 与 recovery-verification 1.2.0 已在 AgentTeams Worker 上重新分发**（存量 Worker 经 `agt apply worker` 更新，zip 由当前仓库 skills/ 重建）。版本回读证实 Worker 加载版本与仓库一致：planner=response-planning 1.2.0、verifier=recovery-verification 1.2.0、investigator 的 endpoint-forensics/hypothesis-testing 为 1.1.0（与仓库版本表相符）。证据：`output/agentteams-native-20260918/run009/skill-version-readback-009.txt`、`skill-redistribution-009-workers.json`、`evidence-summary.md`。
 4. **复用**：Skill 契约与 CyberGuard 服务解耦——`evidence.validate`、白名单与审批门对任何 AgentTeams 团队同样适用；跨团队复用时保持 `version` 字段与本仓库 CHANGELOG 对齐。
 
 ## 目录结构
