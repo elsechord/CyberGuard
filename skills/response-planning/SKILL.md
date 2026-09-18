@@ -1,7 +1,7 @@
 ---
 name: response-planning
 description: 设计最小、可逆、可审批且可验证的安全响应计划。
-version: 1.1.0
+version: 1.2.0
 ---
 
 # 响应规划（Response Planning）
@@ -25,6 +25,22 @@ version: 1.1.0
 ## 输出契约
 
 输出 `plan_id`、`actions[]`（含 level、target、justification、evidence_ids、risk、rollback、verification、approval_required）、`preconditions[]`、`residual_risk`、`status`。
+
+引用与状态一致性（网关强校验，违反将 422 拒绝整份报告）：finding 的状态决定证据引用字段——`confirmed` 的引用写入 `supporting_evidence_ids`；**`refuted` 的引用必须写入 `contradicting_evidence_ids`，不得放入 `supporting_evidence_ids`**；`inconclusive` 引用可留空并用 prose 说明缺口。
+
+示例（正确）：
+
+```json
+{
+  "finding_id": "F-3",
+  "claim": "离岸登录来自合法管理员出差",
+  "status": "refuted",
+  "supporting_evidence_ids": [],
+  "contradicting_evidence_ids": ["EV-0091", "EV-0104"]
+}
+```
+
+错误写法：把 EV-0091/EV-0104 放入 `supporting_evidence_ids`（refuted 却声称"支持"）——网关以 "invalid investigation report: refuted claim requires collected evidence" 拒绝。
 
 ## 失败处理、复用与质量
 

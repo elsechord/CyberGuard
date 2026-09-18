@@ -5,9 +5,13 @@
 
 格式遵循 Keep a Changelog；日期为提交进入本仓库的日期。
 
-## [1.2.0] — 2026-09-18（决赛工程层，commit `2417da4`）
+## [1.2.0] — 2026-09-18（决赛工程层）
 
-### recovery-verification 1.1.0 → 1.2.0
+### response-planning 1.1.0 → 1.2.0
+- 新增 refuted 引用位置规则（输出契约）：状态为 `refuted` 的 finding，其证据引用必须写入 `contradicting_evidence_ids`，不得放入 `supporting_evidence_ids`（网关校验将 422 拒绝），并附 mini 示例。
+- 修复 run 008 发现的 planner 报告网关校验 422（"invalid investigation report: refuted claim requires collected evidence"）。随 run 009 重新分发至 AgentTeams Worker。
+
+### recovery-verification 1.1.0 → 1.2.0（commit `2417da4`）
 - 新增「执行模式与实验室适配器」一节：`lab_identity` 适配器要求 `run_id` + `action_id` 绑定，仅验证隔离身份服务中的目标账号禁用。
 - 明确 `verification_scope` 语义：`simulated_response_contract` 只证明模拟契约；`point_in_time_lab_access` 仅表示观测时刻访问状态，不代表持续恢复或生产 SLO。
 - 判定细则：执行回执 `applied` 不等于 `verified`；缺失探针 / 凭据错误 / 运行绑定不符 → `inconclusive`；真实观测与目标相反 → `failed`；通用 live connector 无专用核验契约时保持 `inconclusive`。

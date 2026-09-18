@@ -12,7 +12,7 @@ CyberGuard 的能力以 [AgentTeams](https://github.com/agentscope-ai/AgentTeams
 | endpoint-forensics | 1.1.0 | 终端取证 | endpoint-forensics |
 | boundary-defense | 1.1.0 | 边界策略分析（出站面/放行面） | network-hunter |
 | hypothesis-testing | 1.1.0 | 竞争性假设检验 | team-leader / 各调查 Worker |
-| response-planning | 1.1.0 | 处置提案（只提案不执行） | response-planner |
+| response-planning | **1.2.0** | 处置提案（只提案不执行；refuted 引用须入 contradicting_evidence_ids） | response-planner |
 | controlled-response | 1.1.0 | 白名单受控执行（审批绑定） | controlled-responder |
 | recovery-verification | **1.2.0** | 独立恢复核验（含实验室适配器） | recovery-verifier |
 | incident-reporting | 1.1.0 | 证据引用化结案报告 | team-leader |
