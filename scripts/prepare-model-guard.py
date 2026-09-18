@@ -31,7 +31,14 @@ def main():
         "upstream_endpoint": env["AGENTTEAMS_OPENAI_BASE_URL"].rstrip("/") + "/chat/completions",
         "upstream_key": env["AGENTTEAMS_LLM_API_KEY"], "admin_token": secrets.token_urlsafe(48),
         "roles": {role: {"token": secrets.token_urlsafe(48), "model_alias": args.name_prefix + "-" + role + "-model",
-                    "allowed_tools": ["Skill", "mcp-cyberguard-investigation-readonly__read_investigation_evidence",
+                    # memory_search is injected by the QwenPaw Matrix task channel itself
+                    # (2026-09-18 disarmed probe, declaration-investigator.json): it is not
+                    # part of builtin_tools and cannot be disabled through the native
+                    # runtime policy. It only searches the Worker's own local memory store
+                    # (fresh identities start empty), so admitting it is the minimal
+                    # channel-level addition; every other tool stays default-deny.
+                    "allowed_tools": ["Skill", "memory_search",
+                        "mcp-cyberguard-investigation-readonly__read_investigation_evidence",
                         "mcp-cyberguard-investigation-readonly__read_investigation_reports",
                         "mcp-cyberguard-investigation-report__submit_investigation_report"]}
                   for role in ("investigator", "planner", "verifier")},
