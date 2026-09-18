@@ -20,6 +20,45 @@ The project is designed for the GOAI “Agent Infra 新智基座” track. It in
 
 *The read-only audit console: incident queue with evidence metrics and approvals pending human review.*
 
+## Three steps to run
+
+**Path A — Docker Compose (recommended):**
+
+```bash
+git clone https://github.com/elsechord/CyberGuard.git && cd CyberGuard
+python deploy/init_secrets.py      # writes .env with role-separated random secrets (stdlib only)
+docker compose up -d --build       # gateway 127.0.0.1:18100, response executor 127.0.0.1:18105
+```
+
+**Path B — Python venv, no Docker** (Windows Git Bash verified):
+
+```bash
+git clone https://github.com/elsechord/CyberGuard.git && cd CyberGuard
+python -m venv .venv
+.venv/Scripts/python -m pip install -r services/security-tool-gateway/requirements.txt \
+  -r services/response-executor/requirements.txt httpx
+export PYTHONPATH="$PWD" CYBERGUARD_API_TOKEN=dev-read-token \
+       CYBERGUARD_SCENARIO_DIR="$PWD/scenarios" CYBERGUARD_DATA_DIR="$PWD/tmp/data" \
+       CYBERGUARD_KNOWLEDGE_DIR="$PWD/knowledge" && mkdir -p tmp/data
+.venv/Scripts/python -m uvicorn app.main:app --app-dir services/security-tool-gateway \
+  --host 127.0.0.1 --port 18100
+```
+
+Then open **http://127.0.0.1:18100/console**. The incident list starts empty; collect the first fixture evidence with `POST /tools/alert/snapshot` and the `Authorization: Bearer <CYBERGUARD_API_TOKEN from .env>` header (see the quickstart for the exact curl). Services bind to loopback only.
+
+Measured on a fresh clone (2026-09-18): venv to first evidence in the console in **6 min 07 s**, including the full 23-file test suite. Full walkthrough, timings and troubleshooting: **[docs/QUICKSTART.md](docs/QUICKSTART.md)**.
+
+### Prebuilt container images
+
+Both services are built and pushed to GHCR by CI on every published release and on manual dispatch ([`publish-images.yml`](.github/workflows/publish-images.yml), `linux/amd64`):
+
+```bash
+docker pull ghcr.io/elsechord/cyberguard-gateway:sha-3b34e4c
+docker pull ghcr.io/elsechord/cyberguard-executor:sha-3b34e4c
+```
+
+`sha-3b34e4c` is the tag pushed by the first verified dispatch run; release tags (`vX.Y.Z`) and `latest` are attached automatically on the next published release. The GHCR packages currently require a GitHub login with access to pull — flip visibility to public in the package settings if you are a maintainer.
+
 > **GOAI 复赛（v0.13.0）**：真实 AgentTeams 原生任务证据包已发布 —— 一条 WebShell 供应链投毒事件（CG-2026-0002）从任务创建、四线并行调查、提案、人工审批（哈希绑定）、执行、双轮独立复测（inconclusive→verified）到回滚演示的完整闭环，含 2,992 条原生 Matrix 事件与 14 条 HMAC 链式审计记录。见 [release v0.13.0](https://github.com/armaygooser/CyberGuard/releases/tag/v0.13.0) 与 [复现手册](docs/LIVE_TASK_EVIDENCE.md)。
 
 ## What is runnable today
@@ -125,28 +164,16 @@ The governance core below is domain-agnostic by construction — security is sim
 
 Running CyberGuard on real AgentTeams v1.2.2 deployments surfaced three issues that received substantive maintainer replies: MCP tool-service registration friction ([#1284](https://github.com/agentscope-ai/AgentTeams/issues/1284)), cumulative Worker input-token budgets ([#1285](https://github.com/agentscope-ai/AgentTeams/issues/1285)) and driver-policy denial plus Worker console port exposure ([#1286](https://github.com/agentscope-ai/AgentTeams/issues/1286)). The console-binding patch offered in #1286 became [PR #1287](https://github.com/agentscope-ai/AgentTeams/pull/1287), which a maintainer approved and merged into AgentTeams main on 2026-09-18. In #1285 the maintainers confirmed that per-request context limits cannot enforce a cumulative run budget — admission plus reservation, the mechanism CyberGuard's model admission guard already implements, is required.
 
-## Local quickstart (Windows, no Docker)
+## Local development without Docker
 
-Verified on Windows Git Bash with Python 3.12. The hash lock is generated for Linux x86_64, so on Windows expect to fall back to the unhashed service requirements.
-
-```bash
-python -m venv .venv
-.venv/Scripts/python -m pip install -r services/requirements.lock -r tests/requirements.lock \
-  || .venv/Scripts/python -m pip install -r services/security-tool-gateway/requirements.txt \
-       -r services/response-executor/requirements.txt httpx
-for f in tests/test_*.py; do .venv/Scripts/python "$f" || break; done      # ~2 min, includes real loopback HTTP labs
-export PYTHONPATH="$PWD" CYBERGUARD_API_TOKEN=dev-read-token
-export CYBERGUARD_SCENARIO_DIR="$PWD/scenarios" CYBERGUARD_DATA_DIR="$PWD/tmp/data" CYBERGUARD_KNOWLEDGE_DIR="$PWD/knowledge"
-mkdir -p tmp/data
-.venv/Scripts/python -m uvicorn app.main:app --app-dir services/security-tool-gateway --host 127.0.0.1 --port 18100
-# then open http://127.0.0.1:18100/console (tool calls need "Authorization: Bearer dev-read-token")
-```
-
-Notes:
-
-- Run test files one per interpreter as above (or `scripts/test-local.ps1` / `scripts/test-local.sh`). Both services expose an `app` package, so collecting the whole suite in a single `pytest tests/` process is not supported.
-- The response executor starts the same way with `--app-dir services/response-executor` and its own executor/approval tokens; see [the lab runbook](docs/LAB_EXECUTION.md).
-- Ports mirror the Compose files: 18100 gateway, 18105 response executor, 18110 model admission guard (`compose.model-guard.yaml`).
+The step-by-step quickstart for the Python-only path — venv, dependency install
+(the hash lock targets Linux x86_64; Windows falls back to the unhashed service
+requirements), the one-file-per-interpreter test suite, gateway/executor startup
+on loopback and port map — lives in **[docs/QUICKSTART.md](docs/QUICKSTART.md)**.
+On Windows you can also run `powershell -ExecutionPolicy Bypass -File
+scripts/test-local.ps1`; on Linux `bash scripts/test-local.sh`. Run test files
+one per interpreter: both services expose an `app` package, so collecting the
+whole suite in a single `pytest tests/` process is not supported.
 
 ## Fast server deployment
 
