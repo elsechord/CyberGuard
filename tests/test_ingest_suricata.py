@@ -10,6 +10,15 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "services" / "security-tool-gateway"))
+# Importing app.store instantiates a module-level store that mkdirs the
+# CYBERGUARD_DATA_DIR default ("/data"); point it at a writable temp dir before
+# any import happens (mirrors tests/test_security_gateway.py).
+os.environ.setdefault("CYBERGUARD_DATA_DIR",
+                      str(Path(tempfile.gettempdir()) / "cyberguard-ingest-test-data"))
+os.environ.setdefault("CYBERGUARD_ACTION_AUDIT_FILE",
+                      str(Path(tempfile.gettempdir()) / "cyberguard-ingest-test-actions.jsonl"))
+os.environ.setdefault("CYBERGUARD_LIVE_CONNECTORS_FILE",
+                      str(Path(tempfile.gettempdir()) / "cyberguard-ingest-test-connectors.json"))
 SCRIPT = ROOT / "scripts" / "ingest-suricata.py"
 SAMPLE = ROOT / "samples" / "suricata" / "eve-sample.jsonl"
 
