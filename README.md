@@ -1,8 +1,24 @@
 # CyberGuard
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/elsechord-horizontal-light.png">
+  <img src="docs/assets/elsechord-horizontal-dark.png" alt="CyberGuard" width="280">
+</picture>
+
+[![CI](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/elsechord/CyberGuard)](https://github.com/elsechord/CyberGuard/releases/latest)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
+
+**60-second demo (console walk-through):** [cyberguard-demo-60s.mp4](https://github.com/elsechord/CyberGuard/releases/download/v0.14.0/cyberguard-demo-60s.mp4) — release asset of [v0.14.0](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.0).
+
 CyberGuard is an evidence-driven autonomous security operations team built on [AgentTeams](https://github.com/agentscope-ai/AgentTeams). It coordinates specialized Agents for alert fusion, threat intelligence, network hunting, endpoint forensics, response planning, controlled execution and independent recovery verification.
 
 The project is designed for the GOAI “Agent Infra 新智基座” track. It intentionally reuses AgentTeams for orchestration, Matrix collaboration, Skill distribution, shared storage and credential brokering, while CyberGuard provides the security-domain application layer.
+
+![Audit console overview](docs/assets/console-01-overview.png)
+
+*The read-only audit console: incident queue with evidence metrics and approvals pending human review.*
 
 > **GOAI 复赛（v0.13.0）**：真实 AgentTeams 原生任务证据包已发布 —— 一条 WebShell 供应链投毒事件（CG-2026-0002）从任务创建、四线并行调查、提案、人工审批（哈希绑定）、执行、双轮独立复测（inconclusive→verified）到回滚演示的完整闭环，含 2,992 条原生 Matrix 事件与 14 条 HMAC 链式审计记录。见 [release v0.13.0](https://github.com/armaygooser/CyberGuard/releases/tag/v0.13.0) 与 [复现手册](docs/LIVE_TASK_EVIDENCE.md)。
 
@@ -21,6 +37,18 @@ The project is designed for the GOAI “Agent Infra 新智基座” track. It in
 - Local unit tests and server-side Docker smoke tests.
 
 The response executor defaults to **simulation**. Opt-in **lab** mode really disables and restores one account in an isolated local identity service. It does not operate a production identity provider. Live investigation connector contracts are implemented; vendor-specific mutating integrations remain future work.
+
+### Audit console
+
+The bundled web console is read-only and requires no AgentTeams runtime: it renders incident status, evidence graphs, approvals, action history and verification from the gateway's HTTP API.
+
+![Evidence relationship graph](docs/assets/console-02-evidence-graph.png)
+
+*Cross-source entity and observable correlation rendered per incident.*
+
+![Approval waiting](docs/assets/console-04-approval.png)
+
+*A proposed response action held until the human-controlled approval secret is supplied.*
 
 ### Reproduce the real account laboratory
 
@@ -81,6 +109,44 @@ AgentTeams Team Leader
 AgentTeams: orchestration, Matrix, MinIO, Higress, Skills, lifecycle
 CyberGuard: security tools, evidence model, response policy, scenarios, evaluation
 ```
+
+## Agent Infra Primitives
+
+The governance core below is domain-agnostic by construction — security is simply its first tenant. Each layer is reusable for any agent workload that needs controlled side effects, normalized evidence, model budgets or run-bound verification.
+
+| Primitive | What it does | Where |
+|---|---|---|
+| Controlled side-effect execution kernel | Proposal → human approval → idempotent allowlisted dispatch → HMAC-chained audit records and checkpoints → rollback, with reconciliation of uncertain outcomes | `services/response-executor/app/main.py` |
+| Observation / Evidence contract layer | OCSF/STIX-aligned normalization, deterministic quality gates and cross-source entity correlation behind one read-only tool surface | `services/security-tool-gateway/app/normalization.py`, `contracts/` |
+| Model admission guard | Reserves per-run token budgets before provider dispatch, authenticates role-bound model routes, rejects exact duplicate requests, retains unknown usage after failures | `cyberguard_investigation/model_guard.py` |
+| Run-bound verification harness | Deterministic scenario fixtures, independent recovery probes and repeatable benchmark runs inside isolated Compose labs | `benchmark/`, `compose.lab.yaml`, `compose.host-lab.yaml` |
+
+## Upstream
+
+Running CyberGuard on real AgentTeams v1.2.2 deployments surfaced three issues that received substantive maintainer replies: MCP tool-service registration friction ([#1284](https://github.com/agentscope-ai/AgentTeams/issues/1284)), cumulative Worker input-token budgets ([#1285](https://github.com/agentscope-ai/AgentTeams/issues/1285)) and driver-policy denial plus Worker console port exposure ([#1286](https://github.com/agentscope-ai/AgentTeams/issues/1286)). The console-binding patch offered in #1286 became [PR #1287](https://github.com/agentscope-ai/AgentTeams/pull/1287), which a maintainer approved and merged into AgentTeams main on 2026-09-18. In #1285 the maintainers confirmed that per-request context limits cannot enforce a cumulative run budget — admission plus reservation, the mechanism CyberGuard's model admission guard already implements, is required.
+
+## Local quickstart (Windows, no Docker)
+
+Verified on Windows Git Bash with Python 3.12. The hash lock is generated for Linux x86_64, so on Windows expect to fall back to the unhashed service requirements.
+
+```bash
+python -m venv .venv
+.venv/Scripts/python -m pip install -r services/requirements.lock -r tests/requirements.lock \
+  || .venv/Scripts/python -m pip install -r services/security-tool-gateway/requirements.txt \
+       -r services/response-executor/requirements.txt httpx
+for f in tests/test_*.py; do .venv/Scripts/python "$f" || break; done      # ~2 min, includes real loopback HTTP labs
+export PYTHONPATH="$PWD" CYBERGUARD_API_TOKEN=dev-read-token
+export CYBERGUARD_SCENARIO_DIR="$PWD/scenarios" CYBERGUARD_DATA_DIR="$PWD/tmp/data" CYBERGUARD_KNOWLEDGE_DIR="$PWD/knowledge"
+mkdir -p tmp/data
+.venv/Scripts/python -m uvicorn app.main:app --app-dir services/security-tool-gateway --host 127.0.0.1 --port 18100
+# then open http://127.0.0.1:18100/console (tool calls need "Authorization: Bearer dev-read-token")
+```
+
+Notes:
+
+- Run test files one per interpreter as above (or `scripts/test-local.ps1` / `scripts/test-local.sh`). Both services expose an `app` package, so collecting the whole suite in a single `pytest tests/` process is not supported.
+- The response executor starts the same way with `--app-dir services/response-executor` and its own executor/approval tokens; see [the lab runbook](docs/LAB_EXECUTION.md).
+- Ports mirror the Compose files: 18100 gateway, 18105 response executor, 18110 model admission guard (`compose.model-guard.yaml`).
 
 ## Fast server deployment
 
@@ -162,6 +228,12 @@ On Windows development hosts:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/test-local.ps1
+```
+
+Run test files one per interpreter (both services expose an `app` package, so a single `pytest tests/` collection is not supported):
+
+```bash
+for f in tests/test_*.py; do .venv/Scripts/python "$f" || break; done
 ```
 
 On the Linux server, `deploy/deploy-cyberguard.sh` validates Compose, builds all images, starts the stack and runs a cross-service incident. The E2E gate proves that recovery is inconclusive before action, unapproved execution is rejected, approved execution changes verification state, the audit chain is valid, and rollback is observed.
