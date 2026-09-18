@@ -1,0 +1,79 @@
+name: publish-images
+
+# Publishes the two product images to GHCR on every release and on demand.
+#   gateway  <- services/security-tool-gateway/Dockerfile
+#   executor <- services/response-executor/Dockerfile
+# Images are linux/amd64 only: services/requirements.lock pins linux x86_64
+# wheels, so arm64 builds cannot resolve hashes today.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Log in to GHCR
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # Release events tag with the release tag (vX.Y.Z), the source SHA and
+      # latest; manual dispatches only tag with the source SHA so they cannot
+      # shadow a release.
+      - name: Compute image tags
+        id: vars
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          short_sha="${GITHUB_SHA::7}"
+          if [ "${{ github.event_name }}" = "release" ]; then
+            versions=("${GITHUB_REF_NAME}" "sha-${short_sha}" "latest")
+          else
+            versions=("sha-${short_sha}")
+          fi
+          {
+            echo "owner=${owner}"
+            for service in gateway executor; do
+              echo "${service}_tags<<EOF"
+              for version in "${versions[@]}"; do
+                echo "ghcr.io/${owner}/cyberguard-${service}:${version}"
+              done
+              echo "EOF"
+            done
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build and push gateway image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: services/security-tool-gateway/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.vars.outputs.gateway_tags }}
+
+      - name: Build and push executor image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: services/response-executor/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.vars.outputs.executor_tags }}
