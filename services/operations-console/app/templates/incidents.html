@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "_queue.html" as queue %}
+{% block title %}事件队列 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Incident queue</p>
+    <h1>安全事件</h1>
+  </div>
+</div>
+{% if incidents is none %}
+<div class="card"><div class="empty">
+  <h2>事件服务不可达</h2>
+  <p>无法连接 security-tool-gateway，请稍后重试。</p>
+</div></div>
+{% else %}
+<nav class="tabs" aria-label="状态过滤" hx-boost="false">
+  {% for tab in tabs %}
+  <a href="/incidents{% if tab %}?status={{ tab }}{% endif %}"
+     class="{{ 'active' if active_status == tab else '' }}"
+     hx-get="/incidents/fragment{% if tab %}?status={{ tab }}{% endif %}"
+     hx-target="#queue" hx-swap="outerHTML" hx-push-url="/incidents{% if tab %}?status={{ tab }}{% endif %}">
+    {{ tab or '全部' }}</a>
+  {% endfor %}
+</nav>
+<div id="queue">
+  {% if incidents %}
+  {{ queue.queue_list(incidents) }}
+  {% else %}
+  <div class="card"><div class="empty">
+    <h2>没有匹配的事件</h2>
+    <p>当前过滤条件下队列为空。</p>
+    <a class="button" href="/incidents">清除过滤</a>
+  </div></div>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

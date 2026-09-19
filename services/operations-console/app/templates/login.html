@@ -1,0 +1,26 @@
+{% extends "auth_base.html" %}
+{% block title %}登录 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>登录</h1>
+  {% if error %}<div class="error-banner" role="alert">{{ error }}</div>{% endif %}
+  {% if notice == 'admin-created' %}<div class="hint">管理员已创建，请登录。</div>{% endif %}
+  <form method="post" action="/login" class="stack">
+    <input type="hidden" name="login_csrf" value="{{ csrf }}">
+    <div class="field">
+      <label for="username">用户名</label>
+      <input type="text" id="username" name="username" autocomplete="username"
+             required minlength="3" maxlength="64"
+             {% if error %}aria-invalid="true" aria-describedby="login-error"{% endif %}>
+    </div>
+    <div class="field">
+      <label for="password">密码</label>
+      <input type="password" id="password" name="password"
+             autocomplete="current-password" required
+             {% if error %}aria-invalid="true" aria-describedby="login-error"{% endif %}>
+    </div>
+    {% if error %}<p class="field-error" id="login-error">{{ error }}</p>{% endif %}
+    <button type="submit" class="primary">登录</button>
+  </form>
+</div>
+{% endblock %}

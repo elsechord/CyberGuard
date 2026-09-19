@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}API Keys · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Settings · API keys</p>
+    <h1>API Keys</h1>
+  </div>
+  <div class="nav-spacer"></div>
+  <a class="button" href="/settings/members">成员管理</a>
+</div>
+
+{% if new_secret %}
+<section class="card secret-panel">
+  <p class="eyebrow">API key created — 仅此一次显示</p>
+  <p class="hint">完整明文只在创建时展示一次；服务端只保存 sha256。请立即复制保存：</p>
+  <code id="secret-value">{{ new_secret }}</code>
+  <div class="actions">
+    <button type="button" id="copy-secret" class="primary">复制到剪贴板</button>
+    <a class="button" href="/settings/keys">我已保存，关闭</a>
+  </div>
+</section>
+{% endif %}
+{% if notice == 'invalid-scopes' %}<div class="error-banner" role="alert">无效的 scope 列表，请重新选择。</div>{% endif %}
+{% if notice == 'key-revoked' %}<div class="hint">API key 已吊销。</div>{% endif %}
+
+<div class="layout-2col">
+  <section class="card">
+    <p class="eyebrow">Create key</p>
+    <form method="post" action="/settings/keys" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+      <div class="field">
+        <label for="k-name">名称</label>
+        <input type="text" id="k-name" name="name" required maxlength="128"
+               placeholder="例如：automation-bot">
+      </div>
+      <div class="field">
+        <label for="k-scopes">Scopes（逗号分隔）</label>
+        <input type="text" id="k-scopes" name="scopes" required
+               value="incidents:read" aria-describedby="k-scopes-help">
+        <p class="hint" id="k-scopes-help">可选：{{ scopes | join(', ') }}</p>
+      </div>
+      <div class="field">
+        <label for="k-expires">有效期（天，留空为永不过期）</label>
+        <input type="text" id="k-expires" name="expires_in_days" inputmode="numeric"
+               pattern="[0-9]*" placeholder="90">
+      </div>
+      <button type="submit" class="primary">创建 API key</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">Keys</p>
+    {% if keys %}
+    <table class="grid">
+      <thead><tr><th>ID</th><th>名称</th><th>前缀</th><th>Scopes</th><th>创建者</th><th>最近使用</th><th>状态</th><th>操作</th></tr></thead>
+      <tbody>
+        {% for key in keys %}
+        <tr>
+          <td class="mono">{{ key.id }}</td>
+          <td>{{ key.name }}</td>
+          <td class="mono">{{ key.prefix }}…</td>
+          <td class="mono">{{ key.scopes | join(', ') }}</td>
+          <td>{{ key.created_by }}</td>
+          <td class="mono">{{ key.last_used_at or '从未' }}</td>
+          <td>
+            {% if key.revoked_at %}<span class="badge danger">revoked</span>
+            {% elif key.expires_at %}<span class="badge warn">expires {{ key.expires_at[:10] }}</span>
+            {% else %}<span class="badge success">active</span>{% endif %}
+          </td>
+          <td>
+            {% if not key.revoked_at %}
+            <form method="post" action="/settings/keys/{{ key.id }}/revoke">
+              <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+              <button type="submit" class="danger">吊销</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+      <h2>还没有 API key</h2>
+      <p>创建一个 key 即可通过 Bearer 认证调用 API v1。</p>
+    </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}{{ incident_id }} · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Incident detail</p>
+    <h1 class="mono">{{ incident_id }}</h1>
+  </div>
+  {% if detail %}
+  <span class="badge {{ 'warn' if detail.summary.status == 'awaiting_approval' else 'info' }}">
+    {{ detail.summary.status }}</span>
+  {% endif %}
+</div>
+
+{% if detail is none %}
+<div class="card"><div class="empty">
+  <h2>事件详情不可用</h2>
+  <p>security-tool-gateway 暂时不可达，或该事件不存在。</p>
+  <a class="button" href="/incidents">返回队列</a>
+</div></div>
+{% else %}
+<div class="layout-2col">
+  <div>
+    <section class="card">
+      <p class="eyebrow">Summary</p>
+      <dl class="kv">
+        <dt>状态</dt><dd>{{ detail.summary.status }}</dd>
+        <dt>证据</dt><dd>{{ detail.summary.evidence_count }}</dd>
+        <dt>行动</dt><dd>{{ detail.summary.action_count }}</dd>
+        <dt>攻击技术</dt><dd>{{ detail.summary.attack_techniques | join(', ') or '—' }}</dd>
+        <dt>质量均值</dt><dd>{{ detail.summary.quality_mean if detail.summary.quality_mean is not none else '—' }}</dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <p class="eyebrow">Workflow</p>
+      {% set wf_state = detail.workflow.state if detail.workflow and detail.workflow.state else '（未开始）' %}
+      <p>当前状态：<span class="badge info">{{ wf_state }}</span></p>
+      {% if detail.workflow and detail.workflow.awaiting_approval %}
+      <p class="hint">该事件有会话处于 awaiting_approval。</p>
+      {% endif %}
+      {% if principal.has_role('analyst') %}
+      <form method="post" action="/incidents/{{ incident_id }}/workflow" class="stack">
+        <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+        <div class="field">
+          <label for="wf-state">工作流变迁</label>
+          <select id="wf-state" name="state" required>
+            {% for state in workflow_states %}<option value="{{ state }}">{{ state }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="wf-message">备注（可选）</label>
+          <textarea id="wf-message" name="message" maxlength="1024"></textarea>
+        </div>
+        <button type="submit">提交变迁</button>
+      </form>
+      {% else %}
+      <p class="hint">需要 analyst 及以上角色才能变更工作流。</p>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <p class="eyebrow">Comments</p>
+      {% if principal.has_role('analyst') %}
+      <form method="post" action="/incidents/{{ incident_id }}/comments" class="stack">
+        <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+        <div class="field">
+          <label for="comment-body">发表评论</label>
+          <textarea id="comment-body" name="body" required maxlength="4000"></textarea>
+        </div>
+        <button type="submit">发表</button>
+      </form>
+      {% else %}
+      <p class="hint">需要 analyst 及以上角色才能评论。</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <div>
+    <section class="card">
+      <p class="eyebrow">Timeline</p>
+      {% if timeline %}
+      <ul class="timeline">
+        {% for item in timeline %}
+        <li class="kind-{{ item.kind }}">
+          <div class="ts mono">{{ item.ts }} · {{ item.kind }}</div>
+          <div class="body">{{ item.text }}</div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="empty"><h2>暂无时间线</h2><p>该事件还没有证据或工作流记录。</p></div>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <p class="eyebrow">Evidence</p>
+      {% if detail.evidence %}
+      <table class="grid">
+        <thead><tr><th>Evidence ID</th><th>类型</th><th>来源</th><th>置信度</th><th>时间</th></tr></thead>
+        <tbody>
+          {% for item in detail.evidence %}
+          <tr>
+            <td class="mono">{{ item.evidence_id }}</td>
+            <td>{{ item.kind }}</td>
+            <td>{{ item.source }}</td>
+            <td class="mono">{{ '%.2f' | format(item.confidence) }}</td>
+            <td class="mono">{{ item.collected_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty"><h2>暂无证据</h2><p>该事件还没有证据记录。</p></div>
+      {% endif %}
+    </section>
+
+    {% if detail.actions %}
+    <section class="card">
+      <p class="eyebrow">Response actions</p>
+      <table class="grid">
+        <thead><tr><th>Action ID</th><th>行动</th><th>目标</th><th>状态</th></tr></thead>
+        <tbody>
+          {% for item in detail.actions %}
+          <tr>
+            <td class="mono">{{ item.action_id or '—' }}</td>
+            <td>{{ item.action or item.status }}</td>
+            <td class="mono">{{ item.target or '—' }}</td>
+            <td><span class="badge {{ 'warn' if item.status == 'pending_approval' else '' }}">{{ item.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

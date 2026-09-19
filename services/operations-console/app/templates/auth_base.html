@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CyberGuard · 运营控制台{% endblock %}</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <p class="eyebrow">CyberGuard · Operations Console</p>
+    {% block content %}{% endblock %}
+  </div>
+</div>
+</body>
+</html>

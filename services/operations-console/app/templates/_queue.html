@@ -1,0 +1,22 @@
+{% macro queue_list(incidents) %}
+<ul class="queue">
+  {% for incident in incidents %}
+  <li><a href="/incidents/{{ incident.incident_id }}">
+    <span class="row-1">
+      <span class="incident-id">{{ incident.incident_id }}</span>
+      <span class="badge {{ 'warn' if incident.status == 'awaiting_approval' else
+        ('success' if incident.status in ('verified', 'completed') else
+        ('danger' if incident.status in ('audit_error', 'failed') else 'info')) }}">
+        {{ incident.status }}</span>
+    </span>
+    <span class="meta">
+      <span>证据 {{ incident.evidence_count }}</span>
+      <span>行动 {{ incident.action_count }}</span>
+      <span>运行 {{ incident.run_count }}</span>
+      <span>跨源实体 {{ incident.cross_source_entity_count }}</span>
+      {% if incident.last_updated %}<span class="mono">{{ incident.last_updated }}</span>{% endif %}
+    </span>
+  </a></li>
+  {% endfor %}
+</ul>
+{% endmacro %}

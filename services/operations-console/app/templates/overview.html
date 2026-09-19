@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}概览 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Overview</p>
+    <h1>运营概览</h1>
+  </div>
+</div>
+<div class="metric-grid">
+  <div class="metric">
+    <div class="value {{ 'warn' if open_count else '' }}">{{ open_count }}</div>
+    <div class="label">开放事件</div>
+  </div>
+  <div class="metric">
+    <div class="value {{ 'danger' if pending_count else '' }}">{{ pending_count }}</div>
+    <div class="label">待审批行动</div>
+  </div>
+  <div class="metric">
+    <div class="value info">{{ evidence_total }}</div>
+    <div class="label">证据总数</div>
+  </div>
+  <div class="metric">
+    {% if usage.available %}
+    <div class="value">{{ usage.consumption.requests if usage.consumption else 0 }}</div>
+    <div class="label">模型请求（guard 账本）</div>
+    {% else %}
+    <div class="value muted">—</div>
+    <div class="label">预算账本不可用</div>
+    {% endif %}
+  </div>
+</div>
+
+<section class="card section">
+  <p class="eyebrow">Recent incidents</p>
+  {% if incidents %}
+  <ul class="queue">
+    {% for incident in incidents %}
+    <li><a href="/incidents/{{ incident.incident_id }}">
+      <span class="row-1">
+        <span class="incident-id">{{ incident.incident_id }}</span>
+        <span class="badge {{ 'warn' if incident.status == 'awaiting_approval' else
+          ('success' if incident.status == 'verified' else 'info') }}">{{ incident.status }}</span>
+      </span>
+      <span class="meta">
+        <span>证据 {{ incident.evidence_count }}</span>
+        <span>行动 {{ incident.action_count }}</span>
+        {% if incident.last_updated %}<span>{{ incident.last_updated }}</span>{% endif %}
+      </span>
+    </a></li>
+    {% endfor %}
+  </ul>
+  <p class="hint"><a href="/incidents">查看全部事件 →</a></p>
+  {% else %}
+  <div class="empty">
+    <h2>暂无安全事件</h2>
+    <p>通过调查管线产出证据后，事件会在这里汇聚。</p>
+    <a class="button" href="/incidents">前往事件队列</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

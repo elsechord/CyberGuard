@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}审批 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Approvals</p>
+    <h1>待审批响应行动</h1>
+  </div>
+</div>
+{% if proposals %}
+{% for proposal in proposals %}
+<section class="card">
+  <div class="actions">
+    <span class="mono">{{ proposal.action_id }}</span>
+    <span class="badge warn">{{ proposal.action }}</span>
+    <span class="badge">风险 {{ proposal.risk or '—' }}</span>
+    {% if proposal.incident_id %}<a href="/incidents/{{ proposal.incident_id }}">{{ proposal.incident_id }}</a>{% endif %}
+  </div>
+  <dl class="kv">
+    <dt>目标</dt><dd>{{ proposal.target }}</dd>
+    <dt>理由</dt><dd>{{ proposal.reason }}</dd>
+    <dt>可回滚</dt><dd>{{ '是' if proposal.reversible else '否' }}</dd>
+    <dt>提出时间</dt><dd>{{ proposal.recorded_at }}</dd>
+  </dl>
+  {% if proposal.decisions %}
+  <p class="eyebrow">已记录的决策</p>
+  <ul>
+    {% for decision in proposal.decisions %}
+    <li class="hint">{{ decision.created_at }} · {{ decision.actor }} ·
+      {{ decision.action }} · {{ decision.classification }} — {{ decision.comment }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if principal.has_role('approver') %}
+  <form method="post" action="/approvals/{{ proposal.action_id }}/decision" class="stack">
+    <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+    <div class="field">
+      <label for="classification-{{ loop.index }}">结案分类（必选）</label>
+      <select id="classification-{{ loop.index }}" name="classification" required>
+        <option value="">— 选择分类 —</option>
+        {% for classification in classifications %}
+        <option value="{{ classification }}">{{ classification }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="comment-{{ loop.index }}">备注（必填，最少 4 个字符）</label>
+      <textarea id="comment-{{ loop.index }}" name="comment" required minlength="4"
+                maxlength="4000"></textarea>
+    </div>
+    <div class="actions">
+      <button type="submit" name="action" value="approve" class="primary">批准</button>
+      <button type="submit" name="action" value="deny" class="danger">拒绝</button>
+    </div>
+  </form>
+  {% else %}
+  <p class="hint">需要 approver 及以上角色才能做出决策。</p>
+  {% endif %}
+</section>
+{% endfor %}
+{% else %}
+<div class="card"><div class="empty">
+  <h2>没有待审批行动</h2>
+  <p>所有响应提案都已处理。</p>
+  <a class="button" href="/incidents">前往事件队列</a>
+</div></div>
+{% endif %}
+{% endblock %}

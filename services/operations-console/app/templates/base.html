@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CyberGuard · 运营控制台{% endblock %}</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/htmx.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<header class="topnav">
+  <a class="brand" href="/"><b>CyberGuard</b><small>Operations Console</small></a>
+  <nav class="nav-links" aria-label="主导航">
+    <a href="/" {% if request.url.path == '/' %}aria-current="page"{% endif %}>概览</a>
+    <a href="/incidents" {% if request.url.path.startswith('/incidents') %}aria-current="page"{% endif %}>事件</a>
+    <a href="/approvals" {% if request.url.path.startswith('/approvals') %}aria-current="page"{% endif %}>审批</a>
+    <a href="/ledger" {% if request.url.path.startswith('/ledger') %}aria-current="page"{% endif %}>预算账本</a>
+    {% if nav_principal and nav_principal.role == 'admin' %}
+    <a href="/audit" {% if request.url.path.startswith('/audit') %}aria-current="page"{% endif %}>审计</a>
+    <a href="/settings/members" {% if request.url.path.startswith('/settings') %}aria-current="page"{% endif %}>设置</a>
+    {% endif %}
+  </nav>
+  <div class="nav-spacer"></div>
+  {% if nav_principal %}
+  <span class="user-chip mono">{{ nav_principal.username }} <span class="role-badge">{{ nav_principal.role }}</span></span>
+  <form method="post" action="/logout" class="actions">
+    <input type="hidden" name="csrf_token" value="{{ nav_principal.csrf }}">
+    <button type="submit" class="ghost">退出</button>
+  </form>
+  {% endif %}
+</header>
+<main class="shell">
+  {% if toast %}
+  <div id="toast" data-autoshow="1" data-message="{{ toast }}" aria-live="polite" hidden></div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

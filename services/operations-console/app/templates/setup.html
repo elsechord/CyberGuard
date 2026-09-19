@@ -1,0 +1,37 @@
+{% extends "auth_base.html" %}
+{% block title %}初始化 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>创建首个管理员</h1>
+  <p class="hint">本页面只在首次启动时开放。Setup token 已打印在服务启动日志中
+  （形如 <span class="mono">{{ masked }}</span>），请输入完整 token 以证明你控制该部署。</p>
+  {% if error %}<div class="error-banner" role="alert">{{ error }}</div>{% endif %}
+  <form method="post" action="/setup" class="stack">
+    <input type="hidden" name="login_csrf" value="{{ csrf }}">
+    <div class="field">
+      <label for="setup_token">Setup token</label>
+      <input type="password" id="setup_token" name="setup_token" required
+             autocomplete="one-time-code"
+             {% if error %}aria-invalid="true" aria-describedby="setup-error"{% endif %}>
+    </div>
+    <div class="field">
+      <label for="username">管理员用户名</label>
+      <input type="text" id="username" name="username" required minlength="3"
+             maxlength="64" autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="password">密码（至少 12 个字符）</label>
+      <input type="password" id="password" name="password" required minlength="12"
+             autocomplete="new-password">
+    </div>
+    <div class="field">
+      <label for="password_confirm">确认密码</label>
+      <input type="password" id="password_confirm" name="password_confirm" required
+             minlength="12" autocomplete="new-password">
+    </div>
+    {% if error %}<p class="field-error" id="setup-error">{{ error }}</p>{% endif %}
+    <button type="submit" class="primary">创建管理员</button>
+  </form>
+  <p class="hint">也可以在容器内运行 CLI：<span class="mono">python -m app.bootstrap admin &lt;username&gt;</span></p>
+</div>
+{% endblock %}

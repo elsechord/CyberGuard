@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}预算账本 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Model admission ledger</p>
+    <h1>预算与消耗</h1>
+  </div>
+</div>
+{% if usage.available %}
+<div class="metric-grid">
+  <div class="metric">
+    <div class="value">{{ usage.consumption.requests if usage.consumption else 0 }}</div>
+    <div class="label">请求总数</div>
+  </div>
+  <div class="metric">
+    <div class="value info">{{ usage.consumption.charged_input if usage.consumption else 0 }}</div>
+    <div class="label">输入 token（含预留）</div>
+  </div>
+  <div class="metric">
+    <div class="value info">{{ usage.consumption.charged_output if usage.consumption else 0 }}</div>
+    <div class="label">输出 token（含预留）</div>
+  </div>
+  <div class="metric">
+    <div class="value {{ 'success' if usage.armed else 'warn' }}">{{ 'armed' if usage.armed else 'disarmed' }}</div>
+    <div class="label">Guard 状态</div>
+  </div>
+</div>
+<section class="card section">
+  <p class="eyebrow">Run</p>
+  <dl class="kv">
+    <dt>run_id</dt><dd>{{ usage.run_id or '—' }}</dd>
+    <dt>model</dt><dd>{{ usage.model or '—' }}</dd>
+    <dt>run 状态</dt><dd>{{ usage.run_status or '—' }}</dd>
+    <dt>剩余请求</dt><dd>{{ usage.budgets.remaining.requests if usage.budgets and usage.budgets.remaining else '—' }}</dd>
+    <dt>剩余输入 token</dt><dd>{{ usage.budgets.remaining.input_tokens if usage.budgets and usage.budgets.remaining else '—' }}</dd>
+    <dt>剩余输出 token</dt><dd>{{ usage.budgets.remaining.output_tokens if usage.budgets and usage.budgets.remaining else '—' }}</dd>
+  </dl>
+</section>
+{% else %}
+<div class="card"><div class="empty">
+  <h2>预算账本不可用</h2>
+  <p>未配置 CYBERGUARD_GUARD_URL，或 model-guard 当前不可达。</p>
+  <a class="button" href="/ledger">重试</a>
+</div></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}成员管理 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Settings · Members</p>
+    <h1>成员与角色</h1>
+  </div>
+  <div class="nav-spacer"></div>
+  <a class="button" href="/settings/keys">API Keys</a>
+</div>
+{% if error == 'weak-password' %}<div class="error-banner" role="alert">密码至少需要 12 个字符。</div>{% endif %}
+{% if error == 'invalid-username' %}<div class="error-banner" role="alert">用户名无效（3-64 字符，不得与现有成员重复）。</div>{% endif %}
+
+<div class="layout-2col">
+  <section class="card">
+    <p class="eyebrow">Create member</p>
+    <form method="post" action="/settings/members" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+      <div class="field">
+        <label for="m-username">用户名</label>
+        <input type="text" id="m-username" name="username" required minlength="3" maxlength="64">
+      </div>
+      <div class="field">
+        <label for="m-password">初始密码（至少 12 字符）</label>
+        <input type="password" id="m-password" name="password" required minlength="12">
+      </div>
+      <div class="field">
+        <label for="m-role">角色</label>
+        <select id="m-role" name="role" required>
+          {% for role in roles %}<option value="{{ role }}">{{ role }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="primary">创建成员</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">Members</p>
+    <table class="grid">
+      <thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>创建时间</th><th>状态</th><th>操作</th></tr></thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td class="mono">{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>
+            <form method="post" action="/settings/members/{{ user.id }}/role" class="actions">
+              <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+              <label for="role-{{ user.id }}" class="sr-only" hidden>角色</label>
+              <select id="role-{{ user.id }}" name="role">
+                {% for role in roles %}
+                <option value="{{ role }}" {{ 'selected' if user.role == role else '' }}>{{ role }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit">更新角色</button>
+            </form>
+          </td>
+          <td class="mono">{{ user.created_at }}</td>
+          <td>{% if user.disabled %}<span class="badge danger">disabled</span>{% else %}<span class="badge success">active</span>{% endif %}</td>
+          <td>
+            <form method="post" action="/settings/members/{{ user.id }}/disable" class="actions">
+              <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+              {% if user.disabled %}
+              <input type="hidden" name="disabled" value="0">
+              <button type="submit" class="ghost">启用</button>
+              {% else %}
+              <input type="hidden" name="disabled" value="1">
+              <button type="submit" class="danger">禁用</button>
+              {% endif %}
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="hint">角色为累积制：viewer（只读）→ analyst（评论与工作流）→ approver（审批）→ admin（全部）。
+    角色变更会使该用户的所有会话立即失效。</p>
+  </section>
+</div>
+{% endblock %}

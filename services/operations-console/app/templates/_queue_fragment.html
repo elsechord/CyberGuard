@@ -1,0 +1,12 @@
+{% import "_queue.html" as queue %}
+<div id="queue">
+  {% if incidents %}
+  {{ queue.queue_list(incidents) }}
+  {% else %}
+  <div class="card"><div class="empty">
+    <h2>没有匹配的事件</h2>
+    <p>当前过滤条件下队列为空。</p>
+    <a class="button" href="/incidents">清除过滤</a>
+  </div></div>
+  {% endif %}
+</div>

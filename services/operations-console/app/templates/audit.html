@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}审计 · CyberGuard 运营控制台{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Auth audit trail</p>
+    <h1>认证与决策审计</h1>
+  </div>
+  <div class="nav-spacer"></div>
+  <a class="button" href="/audit/export.csv">导出 CSV</a>
+</div>
+{% if events %}
+<section class="card">
+  <table class="grid">
+    <thead>
+      <tr><th>ID</th><th>时间</th><th>事件</th><th>操作者</th><th>结果</th><th>原因/目标</th><th>IP</th></tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+      <tr>
+        <td class="mono">{{ event.id }}</td>
+        <td class="mono">{{ event.ts }}</td>
+        <td><span class="badge {{ 'danger' if event.result in ('failure', 'locked') else 'info' }}">{{ event.event }}</span></td>
+        <td>{{ event.actor or '—' }}</td>
+        <td>{{ event.result or '—' }}</td>
+        <td class="mono">{{ event.reason or event.target or '—' }}</td>
+        <td class="mono">{{ event.ip or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% else %}
+<div class="card"><div class="empty">
+  <h2>暂无审计事件</h2>
+  <p>登录、决策与密钥操作会记录在这里。</p>
+</div></div>
+{% endif %}
+{% endblock %}
