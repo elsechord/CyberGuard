@@ -182,11 +182,21 @@ async def setup_submit(request: Request):
     return response
 
 
+
+def page_session(request: Request) -> auth.Principal:
+    """Pages redirect anonymous browsers to /login; API keeps 401 semantics."""
+    try:
+        return auth.require_session(request)
+    except HTTPException as exc:
+        if exc.status_code == 401:
+            raise HTTPException(status_code=303, headers={"Location": "/login"}) from None
+        raise
+
 # ---------------------------------------------------------------- overview
 
 @router.get("/")
 def overview(request: Request):
-    auth.require_session(request)
+    page_session(request)
     incidents = _safe(lambda: clients.gateway_incidents(), [])
     open_count = sum(1 for item in incidents
                      if item.get("status") not in {"completed", "rejected", "verified"})
@@ -210,7 +220,7 @@ def _safe(call, fallback):
 
 @router.get("/incidents")
 def incidents_page(request: Request, status: str | None = None):
-    auth.require_session(request)
+    page_session(request)
     incidents = _safe(lambda: clients.gateway_incidents(), None)
     if incidents is not None and status:
         incidents = [item for item in incidents if item.get("status") == status]
@@ -221,7 +231,7 @@ def incidents_page(request: Request, status: str | None = None):
 
 @router.get("/incidents/fragment")
 def incidents_fragment(request: Request, status: str | None = None):
-    auth.require_session(request)
+    page_session(request)
     incidents = _safe(lambda: clients.gateway_incidents(), [])
     if status:
         incidents = [item for item in incidents if item.get("status") == status]
@@ -231,7 +241,7 @@ def incidents_fragment(request: Request, status: str | None = None):
 
 @router.get("/incidents/{incident_id}")
 def incident_detail(request: Request, incident_id: str):
-    principal = auth.require_session(request)
+    principal = page_session(request)
     try:
         detail = clients.gateway_incident(incident_id)
     except clients.UpstreamError as exc:
@@ -268,7 +278,7 @@ def incident_detail(request: Request, incident_id: str):
 
 @router.post("/incidents/{incident_id}/workflow")
 async def workflow_submit(request: Request, incident_id: str):
-    principal = auth.require_session(request)
+    principal = page_session(request)
     if not principal.has_role("analyst"):
         raise HTTPException(status_code=403, detail="insufficient role")
     form = await form_of(request)
@@ -291,7 +301,7 @@ async def workflow_submit(request: Request, incident_id: str):
 
 @router.post("/incidents/{incident_id}/comments")
 async def comment_submit(request: Request, incident_id: str):
-    principal = auth.require_session(request)
+    principal = page_session(request)
     if not principal.has_role("analyst"):
         raise HTTPException(status_code=403, detail="insufficient role")
     form = await form_of(request)
@@ -311,7 +321,7 @@ async def comment_submit(request: Request, incident_id: str):
 
 @router.get("/approvals")
 def approvals_page(request: Request):
-    principal = auth.require_session(request)
+    principal = page_session(request)
     proposals = _safe(lambda: clients.executor_pending_proposals(), [])
     enriched = []
     for proposal in proposals:
@@ -327,7 +337,7 @@ def approvals_page(request: Request):
 
 @router.post("/approvals/{action_id}/decision")
 async def decision_submit(request: Request, action_id: str):
-    principal = auth.require_session(request)
+    principal = page_session(request)
     if not principal.has_role("approver"):
         raise HTTPException(status_code=403, detail="insufficient role")
     form = await form_of(request)
@@ -360,7 +370,7 @@ async def decision_submit(request: Request, action_id: str):
 
 @router.get("/ledger")
 def ledger_page(request: Request):
-    auth.require_session(request)
+    page_session(request)
     usage = clients.usage_summary()
     return render(request, "ledger.html", principal=None, usage=usage)
 

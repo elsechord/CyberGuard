@@ -65,7 +65,9 @@ class OperationsConsoleTest(unittest.TestCase):
         response = fresh.post("/logout", data={"csrf_token": csrf},
                               follow_redirects=False)
         self.assertEqual(response.status_code, 303)
-        self.assertEqual(fresh.get("/").status_code, 401)
+        bounced = fresh.get("/", follow_redirects=False)
+        self.assertEqual(bounced.status_code, 303)
+        self.assertEqual(bounced.headers["location"], "/login")
 
     def test_login_failure_uses_unified_message(self) -> None:
         fresh = TestClient(app)
@@ -134,7 +136,9 @@ class OperationsConsoleTest(unittest.TestCase):
         self.assertEqual(session.get("/").status_code, 200)
         target = auth.get_user("promote-me")
         auth.set_user_role(target["id"], "analyst")
-        self.assertEqual(session.get("/").status_code, 401)
+        bounced = session.get("/", follow_redirects=False)
+        self.assertEqual(bounced.status_code, 303)
+        self.assertEqual(bounced.headers["location"], "/login")
 
     # ------------------------------------------------ RBAC matrix
 
@@ -228,10 +232,14 @@ class OperationsConsoleTest(unittest.TestCase):
         self.assertEqual(response.headers["x-content-type-options"], "nosniff")
         self.assertEqual(response.headers["cache-control"], "no-store")
 
-    def test_unauthorized_has_www_authenticate(self) -> None:
-        response = TestClient(app).get("/")
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.headers["www-authenticate"], "Cookie")
+    def test_unauthorized_page_redirects_and_api_keeps_401(self) -> None:
+        client = TestClient(app)
+        bounced = client.get("/", follow_redirects=False)
+        self.assertEqual(bounced.status_code, 303)
+        self.assertEqual(bounced.headers["location"], "/login")
+        api = client.get("/api/v1/incidents")
+        self.assertEqual(api.status_code, 401)
+        self.assertEqual(api.headers["www-authenticate"], "Bearer")
 
     # ------------------------------------------------ API keys
 
