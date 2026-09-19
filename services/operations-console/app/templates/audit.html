@@ -19,11 +19,11 @@
       {% for event in events %}
       <tr>
         <td class="mono">{{ event.id }}</td>
-        <td class="mono">{{ event.ts }}</td>
+        <td class="mono">{{ event.ts | ts }}</td>
         <td><span class="badge {{ 'danger' if event.result in ('failure', 'locked') else 'info' }}">{{ event.event }}</span></td>
         <td>{{ event.actor or '—' }}</td>
         <td>{{ event.result or '—' }}</td>
-        <td class="mono">{{ event.reason or event.target or '—' }}</td>
+        <td class="mono">{% if event.reason and event.target %}{{ event.reason }} · {{ event.target }}{% else %}{{ event.reason or event.target or '—' }}{% endif %}</td>
         <td class="mono">{{ event.ip or '—' }}</td>
       </tr>
       {% endfor %}

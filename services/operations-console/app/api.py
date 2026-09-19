@@ -216,6 +216,19 @@ def decide(request: Request, action_id: str, body: DecisionBody):
             upstream = upstream_guard(lambda: clients.executor_approve(
                 action_id, principal.username, body.expires_minutes))
             incident_id = upstream.get("incident_id") if upstream else None
+        if incident_id is None:
+            try:
+                incident_id = clients.executor_incident_for_action(action_id)
+            except clients.UpstreamError:
+                incident_id = None
+        workflow = None
+        if incident_id:
+            try:
+                workflow = clients.advance_after_decision(
+                    incident_id, body.action, principal.username,
+                    f"{body.classification}: {body.comment}")
+            except clients.UpstreamError:
+                workflow = None
         audit.record_decision(action_id=action_id, incident_id=incident_id,
                               actor=principal.username, action=body.action,
                               classification=body.classification,
@@ -224,7 +237,7 @@ def decide(request: Request, action_id: str, body: DecisionBody):
         return 200, {"data": {
             "action_id": action_id, "decision": body.action,
             "classification": body.classification, "actor": principal.username,
-            "executor": upstream, "recorded": True,
+            "executor": upstream, "workflow": workflow, "recorded": True,
         }}
 
     return run_idempotent(request, principal,

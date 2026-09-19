@@ -14,7 +14,7 @@
       <span>行动 {{ incident.action_count }}</span>
       <span>运行 {{ incident.run_count }}</span>
       <span>跨源实体 {{ incident.cross_source_entity_count }}</span>
-      {% if incident.last_updated %}<span class="mono">{{ incident.last_updated }}</span>{% endif %}
+      {% if incident.last_updated %}<span class="mono">{{ incident.last_updated | ts }}</span>{% endif %}
     </span>
   </a></li>
   {% endfor %}

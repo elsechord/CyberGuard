@@ -20,13 +20,13 @@
     <dt>目标</dt><dd>{{ proposal.target }}</dd>
     <dt>理由</dt><dd>{{ proposal.reason }}</dd>
     <dt>可回滚</dt><dd>{{ '是' if proposal.reversible else '否' }}</dd>
-    <dt>提出时间</dt><dd>{{ proposal.recorded_at }}</dd>
+    <dt>提出时间</dt><dd>{{ proposal.recorded_at | ts }}</dd>
   </dl>
   {% if proposal.decisions %}
   <p class="eyebrow">已记录的决策</p>
   <ul>
     {% for decision in proposal.decisions %}
-    <li class="hint">{{ decision.created_at }} · {{ decision.actor }} ·
+    <li class="hint">{{ decision.created_at | ts }} · {{ decision.actor }} ·
       {{ decision.action }} · {{ decision.classification }} — {{ decision.comment }}</li>
     {% endfor %}
   </ul>

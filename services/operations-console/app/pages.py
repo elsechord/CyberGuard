@@ -249,8 +249,14 @@ def incident_detail(request: Request, incident_id: str):
             raise HTTPException(status_code=404, detail="incident not found") from None
         detail = None
     timeline = []
+    wf_state = ""
+    actions_view = []
     if detail:
-        for event in (detail.get("workflow") or {}).get("events", []):
+        wf_events = (detail.get("workflow") or {}).get("events") or []
+        if wf_events:
+            latest = max(wf_events, key=lambda event: event.get("recorded_at") or "")
+            wf_state = latest.get("state") or ""
+        for event in wf_events:
             timeline.append({"ts": event.get("recorded_at"), "kind": "workflow",
                              "text": f'{event.get("state")} — {event.get("actor")}: '
                                      f'{event.get("message") or "(无备注)"}'})
@@ -258,11 +264,24 @@ def incident_detail(request: Request, incident_id: str):
             timeline.append({"ts": item.get("collected_at"), "kind": "evidence",
                              "text": f'{item.get("source")} · {item.get("kind")} — '
                                      f'{item.get("summary")}'})
+        latest_actions: dict[str, dict] = {}
+        action_names: dict[str, str] = {}
         for action in detail.get("actions", []):
+            action_id = action.get("action_id")
+            if not action_id:
+                continue
+            # audit file is append-ordered; merge so latest non-null field wins
+            merged = {**latest_actions.get(action_id, {}),
+                      **{k: v for k, v in action.items() if v is not None}}
+            latest_actions[action_id] = merged
+            if merged.get("action"):
+                action_names[action_id] = merged["action"]
             if action.get("status"):
                 timeline.append({"ts": action.get("recorded_at"), "kind": "action",
-                                 "text": f'{action.get("action_id")} · {action.get("action")}'
+                                 "text": f'{action_id} · '
+                                         f'{action_names.get(action_id) or "?"}'
                                          f' → {action.get("status")}'})
+        actions_view = list(latest_actions.values())
     rows = db.connection().execute(
         "SELECT * FROM comment WHERE incident_id = ? ORDER BY id DESC", (incident_id,)
     ).fetchall()
@@ -273,6 +292,7 @@ def incident_detail(request: Request, incident_id: str):
     timeline.sort(key=lambda item: item["ts"], reverse=True)
     return render(request, "incident.html", principal=principal,
                   incident_id=incident_id, detail=detail, timeline=timeline,
+                  wf_state=wf_state, actions_view=actions_view,
                   workflow_states=WORKFLOW_STATES)
 
 
@@ -288,8 +308,10 @@ async def workflow_submit(request: Request, incident_id: str):
     if state not in WORKFLOW_STATES:
         raise HTTPException(status_code=422, detail="invalid state")
     try:
+        session_id = await run_in_threadpool(clients.gateway_latest_session, incident_id)
         await run_in_threadpool(clients.gateway_transition, incident_id, state,
-                                principal.username, message)
+                                principal.username, message,
+                                session_id or "console")
     except clients.UpstreamError:
         return RedirectResponse(f"/incidents/{incident_id}?notice=workflow-failed",
                                 status_code=303)
@@ -359,7 +381,20 @@ async def decision_submit(request: Request, action_id: str):
         except clients.UpstreamError:
             return RedirectResponse("/approvals?notice=upstream-failed",
                                     status_code=303)
-    audit.record_decision(action_id=action_id, incident_id=None,
+    incident_id = None
+    try:
+        incident_id = await run_in_threadpool(clients.executor_incident_for_action,
+                                              action_id)
+    except clients.UpstreamError:
+        incident_id = None
+    if incident_id:
+        try:
+            await run_in_threadpool(clients.advance_after_decision, incident_id,
+                                    action, principal.username,
+                                    f"{classification}: {comment}")
+        except clients.UpstreamError:
+            pass
+    audit.record_decision(action_id=action_id, incident_id=incident_id,
                           actor=principal.username, action=action,
                           classification=classification, comment=comment,
                           executor_status=200 if upstream else None)

@@ -45,7 +45,7 @@
       <span class="meta">
         <span>证据 {{ incident.evidence_count }}</span>
         <span>行动 {{ incident.action_count }}</span>
-        {% if incident.last_updated %}<span>{{ incident.last_updated }}</span>{% endif %}
+        {% if incident.last_updated %}<span>{{ incident.last_updated | ts }}</span>{% endif %}
       </span>
     </a></li>
     {% endfor %}

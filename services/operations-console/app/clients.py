@@ -108,6 +108,12 @@ def executor_action(action_id: str) -> dict:
                   token=config.executor_token())
 
 
+def executor_incident_for_action(action_id: str) -> str | None:
+    """Incident an executor action belongs to, from its propose event."""
+    events = (executor_action(action_id) or {}).get("events") or []
+    return events[0].get("incident_id") if events else None
+
+
 def executor_approve(action_id: str, approver: str,
                      expires_minutes: int = 15) -> dict:
     return _fetch(
@@ -118,12 +124,56 @@ def executor_approve(action_id: str, approver: str,
     )
 
 
+def gateway_awaiting_session(incident_id: str) -> str | None:
+    """Session currently holding the incident at awaiting_approval, if any."""
+    aggregate = gateway_workflow(incident_id) or {}
+    for item in aggregate.get("awaiting_approval", []):
+        return item.get("session_id")
+    return None
+
+
+def gateway_latest_session(incident_id: str) -> str | None:
+    """Session of the most recent workflow event, for manual transitions."""
+    events = (gateway_workflow(incident_id) or {}).get("events") or []
+    if not events:
+        return None
+    latest = max(events, key=lambda event: event.get("recorded_at") or "")
+    return latest.get("session_id")
+
+
+def advance_after_decision(incident_id: str, decision: str, actor: str,
+                           message: str) -> str | None:
+    """Mirror an approve/deny onto the gateway workflow (best-effort).
+
+    Returns the follow-up state ("approved"/"rejected") on success, None when
+    the gateway is unreachable or rejects the transition — the decision itself
+    stays recorded either way.
+    """
+    followup = "approved" if decision == "approve" else "rejected"
+    try:
+        session_id = gateway_awaiting_session(incident_id)
+        gateway_transition(incident_id, followup, actor, message[:1024],
+                           session_id or "console")
+    except UpstreamError:
+        return None
+    return followup
+
+
 def executor_pending_proposals() -> list[dict]:
-    """Pending proposals are derived from gateway incident action audits."""
+    """Pending proposals are derived from gateway incident action audits.
+
+    The audit file is append-ordered; only the newest record per action_id
+    counts, so approved/executed proposals leave the queue.
+    """
     proposals = []
     for summary in gateway_incidents():
         detail = gateway_incident(summary.get("incident_id", ""))
+        latest: dict[str, dict] = {}
         for action in detail.get("actions", []):
+            action_id = action.get("action_id")
+            if action_id:
+                latest[action_id] = action
+        for action in latest.values():
             if action.get("status") == "pending_approval":
                 item = dict(action)
                 item["incident_status"] = detail.get("summary", {}).get("status")

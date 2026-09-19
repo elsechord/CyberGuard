@@ -412,6 +412,68 @@ class OperationsConsoleTest(unittest.TestCase):
         self.assertEqual([item["action_id"] for item in body["data"]], ["ACT-P1"])
         self.assertFalse(body["has_more"])
 
+    def test_executor_incident_resolution_from_action_events(self) -> None:
+        record = {"action_id": "ACT-9", "events": [
+            {"action_id": "ACT-9", "incident_id": "CG-900", "status": "pending_approval"},
+            {"action_id": "ACT-9", "incident_id": "CG-900", "status": "approved"},
+        ]}
+        with patch.object(clients, "executor_action", return_value=record):
+            self.assertEqual(clients.executor_incident_for_action("ACT-9"), "CG-900")
+        with patch.object(clients, "executor_action", return_value={"events": []}):
+            self.assertIsNone(clients.executor_incident_for_action("ACT-9"))
+
+    def test_proposal_listing_dedupes_action_audit_history(self) -> None:
+        # The gateway action audit is append-ordered: an approved record for the
+        # same action_id supersedes the earlier pending_approval record.
+        incidents = [{"incident_id": "CG-778", "status": "awaiting_approval"}]
+        detail = {"summary": {"status": "awaiting_approval"}, "actions": [
+            {"action_id": "ACT-P9", "status": "pending_approval", "action": "disable_account"},
+            {"action_id": "ACT-P9", "status": "approved", "action": "disable_account"},
+        ]}
+        with patch.object(clients, "gateway_incidents", return_value=incidents), \
+             patch.object(clients, "gateway_incident", return_value=detail):
+            response = self.client.get("/api/v1/proposals", headers=api_headers())
+        self.assertEqual(response.json()["data"], [])
+
+    def test_decision_approve_advances_gateway_workflow(self) -> None:
+        with patch.object(clients, "executor_approve",
+                          return_value={"incident_id": "CG-779"}), \
+             patch.object(clients, "executor_incident_for_action",
+                          return_value="CG-779"), \
+             patch.object(clients, "advance_after_decision",
+                          return_value="approved") as advanced:
+            response = self.client.post("/api/v1/proposals/ACT-77/decision", json={
+                "action": "approve", "classification": "approved_true_positive",
+                "comment": "verified against evidence chain"}, headers=api_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["data"]["workflow"], "approved")
+        advanced.assert_called_once()
+        call_args = advanced.call_args.args
+        self.assertEqual(call_args[0], "CG-779")
+        self.assertEqual(call_args[1], "approve")
+        self.assertIn("approved_true_positive", call_args[3])
+        events = self.client.get("/api/v1/audit-events?event=decision",
+                                 headers=api_headers()).json()
+        self.assertEqual(events["data"][0]["target"], "ACT-77")
+
+    def test_decision_survives_gateway_outage(self) -> None:
+        # advance_after_decision raising must not lose the recorded decision.
+        with patch.object(clients, "executor_approve",
+                          return_value={"incident_id": "CG-780"}), \
+             patch.object(clients, "executor_incident_for_action",
+                          return_value="CG-780"), \
+             patch.object(clients, "advance_after_decision",
+                          side_effect=clients.UpstreamError("gateway down")):
+            response = self.client.post("/api/v1/proposals/ACT-81/decision", json={
+                "action": "approve", "classification": "approved_with_caution",
+                "comment": "decision recorded even if gateway is offline"},
+                headers=api_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.json()["data"]["workflow"])
+        events = self.client.get("/api/v1/audit-events?event=decision",
+                                 headers=api_headers()).json()
+        self.assertEqual(events["data"][0]["result"], "approve")
+
     def test_decision_deny_without_executor_call(self) -> None:
         with patch.object(clients, "executor_approve") as mocked:
             response = self.client.post("/api/v1/proposals/ACT-55/decision", json={

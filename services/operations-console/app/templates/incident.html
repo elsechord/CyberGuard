@@ -34,8 +34,8 @@
 
     <section class="card">
       <p class="eyebrow">Workflow</p>
-      {% set wf_state = detail.workflow.state if detail.workflow and detail.workflow.state else '（未开始）' %}
-      <p>当前状态：<span class="badge info">{{ wf_state }}</span></p>
+      {% set shown_state = wf_state or '（未开始）' %}
+      <p>当前状态：<span class="badge info">{{ shown_state }}</span></p>
       {% if detail.workflow and detail.workflow.awaiting_approval %}
       <p class="hint">该事件有会话处于 awaiting_approval。</p>
       {% endif %}
@@ -45,7 +45,7 @@
         <div class="field">
           <label for="wf-state">工作流变迁</label>
           <select id="wf-state" name="state" required>
-            {% for state in workflow_states %}<option value="{{ state }}">{{ state }}</option>{% endfor %}
+            {% for state in workflow_states %}<option value="{{ state }}" {% if state == wf_state %}selected{% endif %}>{{ state }}</option>{% endfor %}
           </select>
         </div>
         <div class="field">
@@ -83,7 +83,7 @@
       <ul class="timeline">
         {% for item in timeline %}
         <li class="kind-{{ item.kind }}">
-          <div class="ts mono">{{ item.ts }} · {{ item.kind }}</div>
+          <div class="ts mono">{{ item.ts | ts }} · {{ item.kind }}</div>
           <div class="body">{{ item.text }}</div>
         </li>
         {% endfor %}
@@ -105,7 +105,7 @@
             <td>{{ item.kind }}</td>
             <td>{{ item.source }}</td>
             <td class="mono">{{ '%.2f' | format(item.confidence) }}</td>
-            <td class="mono">{{ item.collected_at }}</td>
+            <td class="mono">{{ item.collected_at | ts }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -115,13 +115,13 @@
       {% endif %}
     </section>
 
-    {% if detail.actions %}
+    {% if actions_view %}
     <section class="card">
       <p class="eyebrow">Response actions</p>
       <table class="grid">
         <thead><tr><th>Action ID</th><th>行动</th><th>目标</th><th>状态</th></tr></thead>
         <tbody>
-          {% for item in detail.actions %}
+          {% for item in actions_view %}
           <tr>
             <td class="mono">{{ item.action_id or '—' }}</td>
             <td>{{ item.action or item.status }}</td>

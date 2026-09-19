@@ -1,4 +1,5 @@
 """Jinja2 rendering with auto-escaping. All templates live in app/templates."""
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi.templating import Jinja2Templates
@@ -9,6 +10,21 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 templates.env.trim_blocks = True
 templates.env.lstrip_blocks = True
+
+
+def _fmt_ts(value):
+    """Render ISO timestamps as 'YYYY-MM-DD HH:MM UTC'; pass through anything else."""
+    if not value:
+        return "—"
+    text = str(value)
+    try:
+        moment = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return text
+    return moment.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+
+templates.env.filters["ts"] = _fmt_ts
 
 NOTICES = {
     "admin-created": "管理员已创建，请登录。",

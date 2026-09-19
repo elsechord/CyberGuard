@@ -56,7 +56,7 @@
               <button type="submit">更新角色</button>
             </form>
           </td>
-          <td class="mono">{{ user.created_at }}</td>
+          <td class="mono">{{ user.created_at | ts }}</td>
           <td>{% if user.disabled %}<span class="badge danger">disabled</span>{% else %}<span class="badge success">active</span>{% endif %}</td>
           <td>
             <form method="post" action="/settings/members/{{ user.id }}/disable" class="actions">
