@@ -13,8 +13,10 @@ by [docs/OPERATIONS_CONSOLE.md](OPERATIONS_CONSOLE.md).
   16 GB RAM, 100 GB SSD, Docker Engine with the compose plugin. The hash-locked
   Python wheel set targets Linux x86_64.
 - The console adds less than 256 MB RAM and negligible disk beyond its SQLite
-  database; it requires no outbound Internet access (internal Docker networks
-  `cyberguard-readonly` + `cyberguard-execution` only).
+  database; it makes no outbound Internet calls (it reaches the gateway and
+  executor over the internal `cyberguard-readonly`/`cyberguard-execution`
+  networks, and rides `agentteams-net` only because Docker activates published
+  ports through a non-internal network).
 - Access is host-loopback only. Use an SSH tunnel or private VPN, exactly like
   ports 18100/18105; never expose 18120 to the Internet.
 
@@ -110,16 +112,18 @@ Recovery drill — rehearse these six steps on a lab host before relying on them
 
 ## Optional model-guard integration
 
-Set `CYBERGUARD_GUARD_URL` and `CYBERGUARD_GUARD_ADMIN_TOKEN` in `.env` (the
-token must match the admin token inside the model-guard's private env file,
-see [docs/MODEL_GUARD.md](MODEL_GUARD.md)). The console must then have a route
-to the guard: either attach it to the shared `agentteams-net` network via a
-compose override or point `CYBERGUARD_GUARD_URL` at an address reachable from
-`cyberguard-readonly`. Leave both empty to keep the integration disabled.
+Set `CYBERGUARD_GUARD_URL=http://model-guard.agentteams.local:8080` (the
+compose.model-guard.yaml service alias; the console already shares that
+network) and `CYBERGUARD_GUARD_ADMIN_TOKEN` in `.env` — the token must match
+the admin token inside the model-guard's private env file, see
+[docs/MODEL_GUARD.md](MODEL_GUARD.md). Leave both empty to keep the
+integration disabled.
 
 ## Hardening summary (as deployed in compose.yaml)
 
 `read_only` root filesystem, `cap_drop: ALL`, `no-new-privileges`, tmpfs
 `/tmp` (`noexec,nosuid`, 64 MB), `init: true` for PID-1 signal handling,
 non-root uid 10003, loopback-only published port, healthcheck on `/healthz`,
-`depends_on` healthy gateway and executor, internal networks only.
+`depends_on` healthy gateway and executor, internal networks
+(`cyberguard-readonly`, `cyberguard-execution`) plus the shared
+`agentteams-net` attachment required for the loopback port mapping.
