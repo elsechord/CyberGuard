@@ -1,8 +1,8 @@
 # CyberGuard
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/elsechord-horizontal-light.png">
-  <img src="docs/assets/elsechord-horizontal-dark.png" alt="CyberGuard" width="280">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/elsechord-wordmark-on-dark.svg">
+  <img src="docs/assets/elsechord-wordmark-on-light.svg" alt="Elsechord" width="280">
 </picture>
 
 [![CI](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml)
