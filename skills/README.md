@@ -1,5 +1,7 @@
 # CyberGuard Skills（10 个可复用安全运营 Skill）
 
+若要在 Codex、Claude Code 或其他外部 Agent 中直接使用，请看[外部调查 Skill 接入指南](../docs/EXTERNAL_AGENT_SKILL.md)。该独立包位于 `integrations/agent-skills/cyberguard/`；本目录继续保留 AgentTeams 的十个角色 Skill，不将两种宿主的工具与部署要求混为一谈。
+
 CyberGuard 的能力以 [AgentTeams](https://github.com/agentscope-ai/AgentTeams) Skill 形式交付：每个 Skill 是一个自包含的 `SKILL.md` 制品，定义**适用条件、输入、执行与安全边界、输出契约、失败语义**，由 Worker 按角色加载执行。领域无关的治理约束（只读面、审批门、独立复测）内嵌在 Skill 契约中，而不是依赖提示词自律。
 
 ## 版本总表（当前发布）

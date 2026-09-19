@@ -3,7 +3,6 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Auth audit trail</p>
     <h1>认证与决策审计</h1>
   </div>
   <div class="nav-spacer"></div>
@@ -11,7 +10,7 @@
 </div>
 {% if events %}
 <section class="card">
-  <table class="grid">
+  <div class="table-scroll" role="region" aria-label="数据表格" tabindex="0"><table class="grid">
     <thead>
       <tr><th>ID</th><th>时间</th><th>事件</th><th>操作者</th><th>结果</th><th>原因/目标</th><th>IP</th></tr>
     </thead>
@@ -28,7 +27,7 @@
       </tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
 </section>
 {% else %}
 <div class="card"><div class="empty">

@@ -3,7 +3,6 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Settings · Members</p>
     <h1>成员与角色</h1>
   </div>
   <div class="nav-spacer"></div>
@@ -14,7 +13,7 @@
 
 <div class="layout-2col">
   <section class="card">
-    <p class="eyebrow">Create member</p>
+    <h2 class="section-title">添加成员</h2>
     <form method="post" action="/settings/members" class="stack">
       <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
       <div class="field">
@@ -36,8 +35,8 @@
   </section>
 
   <section class="card">
-    <p class="eyebrow">Members</p>
-    <table class="grid">
+    <h2 class="section-title">现有成员</h2>
+    <div class="table-scroll" role="region" aria-label="数据表格" tabindex="0"><table class="grid">
       <thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>创建时间</th><th>状态</th><th>操作</th></tr></thead>
       <tbody>
         {% for user in users %}
@@ -73,7 +72,7 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table></div>
     <p class="hint">角色为累积制：viewer（只读）→ analyst（评论与工作流）→ approver（审批）→ admin（全部）。
     角色变更会使该用户的所有会话立即失效。</p>
   </section>

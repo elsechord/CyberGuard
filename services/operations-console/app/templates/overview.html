@@ -3,14 +3,13 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Overview</p>
-    <h1>运营概览</h1>
+    <h1>调查工作台</h1>
   </div>
 </div>
 <div class="metric-grid">
   <div class="metric">
     <div class="value {{ 'warn' if open_count else '' }}">{{ open_count }}</div>
-    <div class="label">开放事件</div>
+    <div class="label">未结事件</div>
   </div>
   <div class="metric">
     <div class="value {{ 'danger' if pending_count else '' }}">{{ pending_count }}</div>
@@ -23,7 +22,7 @@
   <div class="metric">
     {% if usage.available %}
     <div class="value">{{ usage.consumption.requests if usage.consumption else 0 }}</div>
-    <div class="label">模型请求（guard 账本）</div>
+    <div class="label">模型请求</div>
     {% else %}
     <div class="value muted">—</div>
     <div class="label">预算账本不可用</div>
@@ -31,8 +30,8 @@
   </div>
 </div>
 
-<section class="card section">
-  <p class="eyebrow">Recent incidents</p>
+<section class="section incident-register">
+  <div class="section-head"><h2>最近事件</h2><a href="/incidents">全部事件</a></div>
   {% if incidents %}
   <ul class="queue">
     {% for incident in incidents %}
@@ -40,7 +39,7 @@
       <span class="row-1">
         <span class="incident-id">{{ incident.incident_id }}</span>
         <span class="badge {{ 'warn' if incident.status == 'awaiting_approval' else
-          ('success' if incident.status == 'verified' else 'info') }}">{{ incident.status }}</span>
+          ('success' if incident.status == 'verified' else 'info') }}" title="{{ incident.status }}">{{ incident.status | status_label }}</span>
       </span>
       <span class="meta">
         <span>证据 {{ incident.evidence_count }}</span>
@@ -50,11 +49,10 @@
     </a></li>
     {% endfor %}
   </ul>
-  <p class="hint"><a href="/incidents">查看全部事件 →</a></p>
   {% else %}
   <div class="empty">
     <h2>暂无安全事件</h2>
-    <p>通过调查管线产出证据后，事件会在这里汇聚。</p>
+    <p>接入告警或导入事件后，在这里查看证据与调查进度。</p>
     <a class="button" href="/incidents">前往事件队列</a>
   </div>
   {% endif %}

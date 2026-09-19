@@ -26,6 +26,17 @@ def _fmt_ts(value):
 
 templates.env.filters["ts"] = _fmt_ts
 
+# Presentation only: API values, submitted form values and unknown states stay intact.
+STATUS_LABELS = {
+    "received": "已接收", "investigating": "调查中",
+    "evidence_validation": "证据核验中", "awaiting_approval": "待审批",
+    "pending_approval": "待审批", "approved": "已批准", "rejected": "已拒绝",
+    "executing": "执行中", "responding": "处置中", "completed": "已完成",
+    "verified": "已核验", "rolled_back": "已回滚", "failed": "失败",
+    "timed_out": "超时", "audit_error": "审计异常",
+}
+templates.env.filters["status_label"] = lambda value: STATUS_LABELS.get(value, value)
+
 NOTICES = {
     "admin-created": "管理员已创建，请登录。",
     "workflow-ok": "工作流状态已更新。",

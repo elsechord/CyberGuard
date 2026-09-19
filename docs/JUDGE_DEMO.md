@@ -1,14 +1,19 @@
 # Judge demo runbook
 
-## 90-second path
+## Prepared deterministic service check
 
-1. Open the AgentTeams Matrix room and the read-only audit console through the prepared SSH tunnels.
-2. Show seven role lanes, Evidence IDs and competing hypotheses in Matrix.
-3. Run `sudo bash deploy/judge-demo.sh` on the server. It does not rebuild or alter configuration.
-4. In the console, select each new incident and show evidence provenance, approval history, independent verification and rollback.
-5. Open `artifacts/demo/<timestamp>/demo-summary.json` and `SHA256SUMS` as the machine-verifiable result.
+Prerequisite: a Linux/Bash host with Python 3, curl and GNU coreutils, a generated `.env`, and the baseline `compose.yaml` services already healthy. Follow [QUICKSTART.md](QUICKSTART.md) first, including creation of the external `agentteams-net` network. No model key or running AgentTeams/Matrix deployment is needed for this script.
 
-The script runs both fixed scenarios. Each collects boundary-policy evidence and executes the three exact actions declared by that scenario's recovery contract. It proves that recovery is inconclusive before the complete response set, every unapproved execution is rejected, the approved reversible action set changes independent recovery evidence, the audit chain remains valid, and rolling back any required action returns recovery to inconclusive.
+1. Open the read-only audit view at `http://127.0.0.1:18100/console` (SSH-forward this loopback port when using a server).
+2. Run `bash deploy/judge-demo.sh` as a user able to read the local `.env`. It does not rebuild or alter configuration, but creates test incidents and response records.
+3. Select the newly generated `E2E-*` incidents in the audit view and inspect evidence, approval records, recovery results and rollback.
+4. Open `artifacts/demo/<timestamp>/demo-summary.json` and `SHA256SUMS` as the machine-readable result. Check with `(cd artifacts/demo/<timestamp> && sha256sum -c SHA256SUMS)`.
+
+The script runs both fixed scenarios with **simulation execution** in the baseline Compose deployment. Each collects fixture evidence and executes the three exact actions declared by that scenario's recovery contract. It checks recovery before the response set, rejects unapproved execution, verifies the complete approved set, validates the audit chain, and checks that rollback invalidates recovery. The harness supplies the approval credential itself (`server-e2e-test`); this is not actual human review or an Agent/LLM investigation.
+
+The current script does **not** check recovery between the first and third actions and does **not** demonstrate a failed post-execution verification followed by a revised proposal. Do not present it as that full exception-handling storyline. The separately retained [live AgentTeams task evidence](LIVE_TASK_EVIDENCE.md) records a wrong-target proposal and subsequent correction; its recovery contract is deterministic too. The [host laboratory](HOST_LAB.md) independently observes harmless real processes restarting after termination and is the separate entry point for an actual-state failure demonstration. Neither is a production intrusion remediation claim.
+
+The multi-user operations console is a separate surface on port **18120**, with first-admin setup and session requirements described in [OPERATIONS_DEPLOY.md](OPERATIONS_DEPLOY.md). Matrix role lanes belong to a separately running AgentTeams task; the deterministic script does not generate them.
 
 ## Run correlation one-pager
 

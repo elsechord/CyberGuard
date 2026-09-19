@@ -1,8 +1,8 @@
 # CyberGuard
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/elsechord-wordmark-on-dark.svg">
-  <img src="docs/assets/elsechord-wordmark-on-light.svg" alt="Elsechord" width="280">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/cyberguard-full-reverse.svg">
+  <img src="docs/assets/cyberguard-full.svg" alt="CyberGuard from Elsechord" width="340">
 </picture>
 
 [![CI](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml)
@@ -29,8 +29,11 @@ The project is designed for the GOAI “Agent Infra 新智基座” track. It in
 ```bash
 git clone https://github.com/elsechord/CyberGuard.git && cd CyberGuard
 python deploy/init_secrets.py      # writes .env with role-separated random secrets (stdlib only)
+docker network inspect agentteams-net >/dev/null 2>&1 || docker network create agentteams-net
 docker compose up -d --build       # gateway 127.0.0.1:18100, response executor 127.0.0.1:18105
 ```
+
+The network command above uses Bash (Linux/macOS or Windows Git Bash). It creates the external network required by Compose without installing AgentTeams. The read-only audit view is on port **18100**; the multi-user operations console is on **18120** and requires first-admin setup. Follow [operations console deployment](docs/OPERATIONS_DEPLOY.md) for setup and HTTPS/session configuration. The baseline executor uses simulation, not production remediation.
 
 **Path B — Python venv, no Docker** (Windows Git Bash verified):
 

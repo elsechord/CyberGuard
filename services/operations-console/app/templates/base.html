@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}CyberGuard · 运营控制台{% endblock %}</title>
   <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f3f0e9">
+  <link rel="icon" href="/static/elsechord-symbol.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/app.css">
   <script src="/static/htmx.min.js" defer></script>
   <script src="/static/app.js" defer></script>
 </head>
 <body>
+<a class="skip" href="#workspace">跳到工作区</a>
 <header class="topnav">
-  <a class="brand" href="/"><b>CyberGuard</b><small>Operations Console</small></a>
+  <a class="brand" href="/" aria-label="CyberGuard 首页"><img src="/static/elsechord-symbol.svg" alt="" width="36" height="36"><b>CyberGuard</b></a>
   <nav class="nav-links" aria-label="主导航">
     <a href="/" {% if request.url.path == '/' %}aria-current="page"{% endif %}>概览</a>
     <a href="/incidents" {% if request.url.path.startswith('/incidents') %}aria-current="page"{% endif %}>事件</a>
@@ -31,11 +34,12 @@
   </form>
   {% endif %}
 </header>
-<main class="shell">
+<main class="shell" id="workspace" tabindex="-1">
   {% if toast %}
   <div id="toast" data-autoshow="1" data-message="{{ toast }}" aria-live="polite" hidden></div>
   {% endif %}
   {% block content %}{% endblock %}
 </main>
+<footer class="workspace-footer"><a href="https://elsechord.com/" target="_blank" rel="noopener noreferrer" aria-label="Elsechord 官网"><img src="/static/elsechord-wordmark.svg" width="112" height="26" alt="elsechord"></a></footer>
 </body>
 </html>

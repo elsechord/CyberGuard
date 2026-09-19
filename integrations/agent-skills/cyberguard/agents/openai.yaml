@@ -1,0 +1,3 @@
+interface:
+  display_name: "CyberGuard"
+  short_description: "Investigate CyberGuard incidents with traceable evidence"

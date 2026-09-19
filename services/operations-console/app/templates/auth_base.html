@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}CyberGuard · 运营控制台{% endblock %}</title>
   <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f3f0e9">
+  <link rel="icon" href="/static/elsechord-symbol.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
 <div class="auth-wrap">
+  <a class="auth-brand" href="https://elsechord.com/" aria-label="Elsechord 官网"><img src="/static/elsechord-wordmark.svg" width="160" height="36" alt="elsechord"></a>
   <div class="auth-card">
-    <p class="eyebrow">CyberGuard · Operations Console</p>
+    <p class="auth-product">CyberGuard</p>
     {% block content %}{% endblock %}
   </div>
 </div>

@@ -3,12 +3,11 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Incident detail</p>
     <h1 class="mono">{{ incident_id }}</h1>
   </div>
   {% if detail %}
   <span class="badge {{ 'warn' if detail.summary.status == 'awaiting_approval' else 'info' }}">
-    {{ detail.summary.status }}</span>
+    {{ detail.summary.status | status_label }}</span>
   {% endif %}
 </div>
 
@@ -22,9 +21,9 @@
 <div class="layout-2col">
   <div>
     <section class="card">
-      <p class="eyebrow">Summary</p>
+      <h2 class="section-title">事件摘要</h2>
       <dl class="kv">
-        <dt>状态</dt><dd>{{ detail.summary.status }}</dd>
+        <dt>状态</dt><dd>{{ detail.summary.status | status_label }}</dd>
         <dt>证据</dt><dd>{{ detail.summary.evidence_count }}</dd>
         <dt>行动</dt><dd>{{ detail.summary.action_count }}</dd>
         <dt>攻击技术</dt><dd>{{ detail.summary.attack_techniques | join(', ') or '—' }}</dd>
@@ -33,26 +32,26 @@
     </section>
 
     <section class="card">
-      <p class="eyebrow">Workflow</p>
+      <h2 class="section-title">调查进度</h2>
       {% set shown_state = wf_state or '（未开始）' %}
-      <p>当前状态：<span class="badge info">{{ shown_state }}</span></p>
+      <p>当前状态：<span class="badge info">{{ shown_state | status_label }}</span></p>
       {% if detail.workflow and detail.workflow.awaiting_approval %}
-      <p class="hint">该事件有会话处于 awaiting_approval。</p>
+      <p class="hint">该事件有调查任务等待审批。</p>
       {% endif %}
       {% if principal.has_role('analyst') %}
       <form method="post" action="/incidents/{{ incident_id }}/workflow" class="stack">
         <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
         <div class="field">
-          <label for="wf-state">工作流变迁</label>
+          <label for="wf-state">更新调查状态</label>
           <select id="wf-state" name="state" required>
-            {% for state in workflow_states %}<option value="{{ state }}" {% if state == wf_state %}selected{% endif %}>{{ state }}</option>{% endfor %}
+            {% for state in workflow_states %}<option value="{{ state }}" {% if state == wf_state %}selected{% endif %}>{{ state | status_label }}</option>{% endfor %}
           </select>
         </div>
         <div class="field">
           <label for="wf-message">备注（可选）</label>
           <textarea id="wf-message" name="message" maxlength="1024"></textarea>
         </div>
-        <button type="submit">提交变迁</button>
+        <button type="submit">更新状态</button>
       </form>
       {% else %}
       <p class="hint">需要 analyst 及以上角色才能变更工作流。</p>
@@ -60,7 +59,7 @@
     </section>
 
     <section class="card">
-      <p class="eyebrow">Comments</p>
+      <h2 class="section-title">调查备注</h2>
       {% if principal.has_role('analyst') %}
       <form method="post" action="/incidents/{{ incident_id }}/comments" class="stack">
         <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
@@ -78,7 +77,7 @@
 
   <div>
     <section class="card">
-      <p class="eyebrow">Timeline</p>
+      <h2 class="section-title">调查记录</h2>
       {% if timeline %}
       <ul class="timeline">
         {% for item in timeline %}
@@ -94,9 +93,9 @@
     </section>
 
     <section class="card">
-      <p class="eyebrow">Evidence</p>
+      <h2 class="section-title">证据</h2>
       {% if detail.evidence %}
-      <table class="grid">
+      <div class="table-scroll" role="region" aria-label="数据表格" tabindex="0"><table class="grid">
         <thead><tr><th>Evidence ID</th><th>类型</th><th>来源</th><th>置信度</th><th>时间</th></tr></thead>
         <tbody>
           {% for item in detail.evidence %}
@@ -109,7 +108,7 @@
           </tr>
           {% endfor %}
         </tbody>
-      </table>
+      </table></div>
       {% else %}
       <div class="empty"><h2>暂无证据</h2><p>该事件还没有证据记录。</p></div>
       {% endif %}
@@ -117,8 +116,8 @@
 
     {% if actions_view %}
     <section class="card">
-      <p class="eyebrow">Response actions</p>
-      <table class="grid">
+      <h2 class="section-title">响应行动</h2>
+      <div class="table-scroll" role="region" aria-label="数据表格" tabindex="0"><table class="grid">
         <thead><tr><th>Action ID</th><th>行动</th><th>目标</th><th>状态</th></tr></thead>
         <tbody>
           {% for item in actions_view %}
@@ -126,11 +125,11 @@
             <td class="mono">{{ item.action_id or '—' }}</td>
             <td>{{ item.action or item.status }}</td>
             <td class="mono">{{ item.target or '—' }}</td>
-            <td><span class="badge {{ 'warn' if item.status == 'pending_approval' else '' }}">{{ item.status }}</span></td>
+            <td><span class="badge {{ 'warn' if item.status == 'pending_approval' else '' }}">{{ item.status | status_label }}</span></td>
           </tr>
           {% endfor %}
         </tbody>
-      </table>
+      </table></div>
     </section>
     {% endif %}
   </div>

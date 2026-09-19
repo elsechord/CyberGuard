@@ -4,7 +4,6 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Incident queue</p>
     <h1>安全事件</h1>
   </div>
 </div>
@@ -20,7 +19,7 @@
      class="{{ 'active' if active_status == tab else '' }}"
      hx-get="/incidents/fragment{% if tab %}?status={{ tab }}{% endif %}"
      hx-target="#queue" hx-swap="outerHTML" hx-push-url="/incidents{% if tab %}?status={{ tab }}{% endif %}">
-    {{ tab or '全部' }}</a>
+    {{ (tab | status_label) if tab else '全部' }}</a>
   {% endfor %}
 </nav>
 <div id="queue">

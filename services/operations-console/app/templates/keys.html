@@ -3,8 +3,7 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Settings · API keys</p>
-    <h1>API Keys</h1>
+    <h1>API 密钥</h1>
   </div>
   <div class="nav-spacer"></div>
   <a class="button" href="/settings/members">成员管理</a>
@@ -12,7 +11,7 @@
 
 {% if new_secret %}
 <section class="card secret-panel">
-  <p class="eyebrow">API key created — 仅此一次显示</p>
+  <h2 class="section-title">密钥已创建，仅显示一次</h2>
   <p class="hint">完整明文只在创建时展示一次；服务端只保存 sha256。请立即复制保存：</p>
   <code id="secret-value">{{ new_secret }}</code>
   <div class="actions">
@@ -26,7 +25,7 @@
 
 <div class="layout-2col">
   <section class="card">
-    <p class="eyebrow">Create key</p>
+    <h2 class="section-title">创建密钥</h2>
     <form method="post" action="/settings/keys" class="stack">
       <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
       <div class="field">
@@ -50,9 +49,9 @@
   </section>
 
   <section class="card">
-    <p class="eyebrow">Keys</p>
+    <h2 class="section-title">现有密钥</h2>
     {% if keys %}
-    <table class="grid">
+    <div class="table-scroll" role="region" aria-label="数据表格" tabindex="0"><table class="grid">
       <thead><tr><th>ID</th><th>名称</th><th>前缀</th><th>Scopes</th><th>创建者</th><th>最近使用</th><th>状态</th><th>操作</th></tr></thead>
       <tbody>
         {% for key in keys %}
@@ -79,7 +78,7 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table></div>
     {% else %}
     <div class="empty">
       <h2>还没有 API key</h2>

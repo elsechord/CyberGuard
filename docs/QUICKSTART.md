@@ -43,8 +43,12 @@ Requires Docker Engine or Docker Desktop. Both images build from the repository
 3. **Build and start the stack**
 
    ```bash
+   docker network inspect agentteams-net >/dev/null 2>&1 || docker network create agentteams-net
    docker compose up -d --build
    ```
+
+   These commands use Bash. `agentteams-net` is an external Compose network;
+   create it on a clean Docker host even when AgentTeams is not installed.
 
    The gateway binds to `127.0.0.1:18100` and the response executor to
    `127.0.0.1:18105` — loopback only, never on all interfaces. Containers run

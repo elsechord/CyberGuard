@@ -7,7 +7,7 @@
       <span class="badge {{ 'warn' if incident.status == 'awaiting_approval' else
         ('success' if incident.status in ('verified', 'completed') else
         ('danger' if incident.status in ('audit_error', 'failed') else 'info')) }}">
-        {{ incident.status }}</span>
+        {{ incident.status | status_label }}</span>
     </span>
     <span class="meta">
       <span>证据 {{ incident.evidence_count }}</span>
