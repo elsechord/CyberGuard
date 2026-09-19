@@ -16,9 +16,9 @@ CyberGuard is an evidence-driven autonomous security operations team built on [A
 
 The project is designed for the GOAI “Agent Infra 新智基座” track. It intentionally reuses AgentTeams for orchestration, Matrix collaboration, Skill distribution, shared storage and credential brokering, while CyberGuard provides the security-domain application layer.
 
-![Audit console overview](docs/assets/console-01-overview.png)
+![Console overview](docs/assets/console-v2-overview.png)
 
-*The read-only audit console: incident queue with evidence metrics and approvals pending human review.*
+*Signed-in overview: open incidents, actions awaiting approval, evidence volume and guard budget usage.*
 
 ## Three steps to run
 
@@ -77,17 +77,25 @@ docker pull ghcr.io/elsechord/cyberguard-executor:sha-3b34e4c
 
 The response executor defaults to **simulation**. Opt-in **lab** mode really disables and restores one account in an isolated local identity service. It does not operate a production identity provider. Live investigation connector contracts are implemented; vendor-specific mutating integrations remain future work.
 
-### Audit console
+### Operations console
 
-The bundled web console is read-only and requires no AgentTeams runtime: it renders incident status, evidence graphs, approvals, action history and verification from the gateway's HTTP API.
+The bundled operations console turns CyberGuard into a deployable multi-user product surface rather than a demo page: server-side sessions with PBKDF2 password hashing, four-tier RBAC (viewer / analyst / approver / admin, deny-by-default), API keys with scoped Bearer access to a versioned JSON API, and an append-only decision audit with CSV export. It ships as a hardened container in the same `compose.yaml` as the rest of the stack.
 
-![Evidence relationship graph](docs/assets/console-02-evidence-graph.png)
+![Incident detail](docs/assets/console-v2-incident.png)
 
-*Cross-source entity and observable correlation rendered per incident.*
+*Per-incident workflow timeline interleaving agent events, evidence records and response-action state, with the current workflow state derived from the audit trail.*
 
-![Approval waiting](docs/assets/console-04-approval.png)
+![Approval](docs/assets/console-v2-approvals.png)
 
-*A proposed response action held until the human-controlled approval secret is supplied.*
+*A proposed response action held until an approver records a mandatory closure classification and written justification; approving also advances the gateway workflow so the incident leaves `awaiting_approval`.*
+
+![Audit trail](docs/assets/console-v2-audit.png)
+
+*Authentication and decision audit trail: setup, logins, approvals (with action id) and key management, exportable as CSV.*
+
+![API keys](docs/assets/console-v2-key-created.png)
+
+*Scoped API keys: `cg_live_` secrets shown once, stored as sha256, with expiry and revocation.*
 
 ### Reproduce the real account laboratory
 
