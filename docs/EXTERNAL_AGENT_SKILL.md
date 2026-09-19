@@ -6,41 +6,27 @@ CyberGuard 的外部 Skill 让你保留现有 Agent 和模型，在当前对话�
 
 ## 复制这段提示词
 
-以下提示词用于**已经包含本接入包的本地源码目录**。把两个路径替换成实际路径后，粘贴到支持文件与命令执行的 Agent 中：
+把下面的提示词粘贴到支持文件访问与命令执行的 Agent 中。源码会放在独立目录，Skill 安装到你已有的项目。
 
 ```text
-请把 CyberGuard 的外部调查 Skill 安装到我当前项目，并完成一次首次使用演练。
+请把 CyberGuard 调查 Skill 安装到我当前项目，并完成一次离线首次使用演练。
 
-CyberGuard 源码目录：<包含本接入包的源码绝对路径>
-安装目标项目：<当前项目绝对路径>
+从 https://github.com/elsechord/CyberGuard 获取源码到独立目录，保留已有文件，
+记录实际检出的提交版本。先阅读 docs/EXTERNAL_AGENT_SKILL.md 和
+integrations/agent-skills/cyberguard/SKILL.md，检查 scripts/install-agent-skill.py。
 
-先阅读源码中的 docs/EXTERNAL_AGENT_SKILL.md 和
-integrations/agent-skills/cyberguard/SKILL.md，检查随附脚本。
-使用 Python 3.10+ 执行 scripts/install-agent-skill.py：
 Codex 使用 --agent codex，Claude Code 使用 --agent claude，
-其他兼容 .agents/skills 的宿主使用 --agent generic；
---project 指向上面的目标项目。已有安装时停止覆盖，说明现有版本。
+其他兼容宿主使用 --agent generic；--project 指向我已有的项目目录。
+不要覆盖已安装的 Skill。
 
-安装后读取实际安装位置的 SKILL.md，生成一份新的离线演练快照，
-读取完整证据，回答：CPU 占用高是否足以认定挖矿？下一步最值得查什么？
-给出 evidence_id 引用，并说明这是合成演练，分析由当前 Agent 完成。
-不要部署服务、索要模型密钥或执行任何处置。
-如果宿主不支持安装 Skill 或运行工具，请说明缺少什么，不要宣称安装成功。
+安装后读取实际安装位置的 SKILL.md，生成新的离线演练快照，分析：
+仅凭 CPU 占用高，能否认定挖矿？引用 evidence_id，说明还缺什么证据，
+并给出下一步最值得做的观察。注明输入为合成演练，分析由当前 Agent 完成。
+不要部署服务、索要模型密钥或执行处置。
+如果宿主无法运行此流程，请说明缺少的能力。
 ```
 
-当前开发工作区的源码路径为 `D:/Projects/CyberGuard/research-source`；对外分享时必须换成接收方自己的路径。自动发现可能需要宿主重新加载会话；首次演练可以直接读取已安装的 `SKILL.md` 执行，不能以“文件已复制”代替“宿主已发现”的验证。
-
-### 面向公开仓库的提示词（发布后使用）
-
-仅在包含这些文件的提交已推送后使用，并把 `<发布提交 SHA>` 换成实际值。已有旧版公开仓库或旧版 Release 不等于包含此外部 Skill。
-
-```text
-请从 https://github.com/elsechord/CyberGuard 获取提交 <发布提交 SHA>，
-保留我现有项目与已有安装，不执行远程下载的 shell 一行脚本。
-阅读 docs/EXTERNAL_AGENT_SKILL.md，检查外部 Skill 的代码，
-按其中“复制这段提示词”的流程，将 Skill 安装到当前项目并完成离线演练。
-如果该提交没有文档或安装脚本，请停止并报告版本不匹配。
-```
+需要固定版本时，可指定包含本接入包的提交 SHA，并记录安装来源。自动发现可能需要宿主重新加载会话；首次演练可以直接读取已安装的 `SKILL.md` 执行，不能以“文件已复制”代替“宿主已发现”的验证。
 
 ## 不使用安装提示词时
 

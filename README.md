@@ -1,283 +1,183 @@
-# CyberGuard
+<p align="center">
+  <img src="docs/assets/cyberguard-readme-en.png" alt="CyberGuard from Elsechord — Look again. Evidence, approval, verification." width="100%">
+</p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/cyberguard-full-reverse.svg">
-  <img src="docs/assets/cyberguard-full.svg" alt="CyberGuard from Elsechord" width="340">
-</picture>
+<p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
+<p align="center">
+  <a href="https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml"><img src="https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache 2.0"></a>
+  <a href="https://github.com/elsechord/CyberGuard/releases"><img src="https://img.shields.io/github/v/release/elsechord/CyberGuard" alt="Latest release"></a>
+</p>
 
-[![CI](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/elsechord/CyberGuard/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/elsechord/CyberGuard)](https://github.com/elsechord/CyberGuard/releases/latest)
-[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
+**CyberGuard brings evidence, approval and outcome verification to Agent-assisted security operations.** Investigate an incident in your existing Agent, review response proposals in the console, and connect tools through the evidence gateway and response executor. [AgentTeams](https://github.com/agentscope-ai/AgentTeams) provides the multi-Agent collaboration foundation.
 
-**Handling one attack end-to-end (82 s, fresh recording):** [cyberguard-demo-final.mp4](https://github.com/elsechord/CyberGuard/releases/download/v0.14.1/cyberguard-demo-final.mp4) — release asset of [v0.14.1](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.1), together with a fresh judge-demo evidence bundle ([validation-final-20260919T145335Z.tar.gz](https://github.com/elsechord/CyberGuard/releases/download/v0.14.1/validation-final-20260919T145335Z.tar.gz)).
+[Use with your Agent](#use-with-your-agent) · [Deploy the console](#deploy-the-console) · [See a complete example](#execution-succeeded-recovery-did-not) · [Integrate](#connect-your-existing-systems) · [Documentation](#documentation)
 
-CyberGuard is an evidence-driven autonomous security operations team built on [AgentTeams](https://github.com/agentscope-ai/AgentTeams). It coordinates specialized Agents for alert fusion, threat intelligence, network hunting, endpoint forensics, response planning, controlled execution and independent recovery verification.
+## What you can do
 
-The project is designed for the GOAI “Agent Infra 新智基座” track. It intentionally reuses AgentTeams for orchestration, Matrix collaboration, Skill distribution, shared storage and credential brokering, while CyberGuard provides the security-domain application layer.
+| Your task | CyberGuard provides | Start here |
+| --- | --- | --- |
+| Understand an incident in an existing Agent | Read-only incident access and a workflow for evidence-cited analysis | [Portable investigation Skill](docs/EXTERNAL_AGENT_SKILL.md) |
+| Review a proposed response | A console for targets, reasons, approval decisions and incident history | [Operations console](docs/OPERATIONS_CONSOLE.md) |
+| Check whether a response worked | Run-linked observations, execution records and verification results | [Real process laboratory](docs/HOST_LAB.md) |
+| Bring existing security telemetry | Suricata file ingest and configurable read-only HTTP connectors | [Ingest](docs/INGEST.md) · [Connectors](docs/LIVE_CONNECTORS.md) |
 
-![Console overview](docs/assets/console-v2-overview.png)
+## Use with your Agent
 
-*Signed-in overview: open incidents, actions awaiting approval, evidence volume and guard budget usage.*
+Keep your current Agent and model. The portable Skill reads CyberGuard incident exports or an authorized console API; the calling Agent performs the analysis. It needs file access and Python 3.10+, not a separate AgentTeams deployment.
 
-## Three steps to run
+**Copy this into your coding Agent:**
 
-**Use CyberGuard inside your existing Agent:** the [portable investigation Skill](docs/EXTERNAL_AGENT_SKILL.md) can be installed into a Codex or Claude Code project. It includes a copyable setup prompt, an offline first-use exercise, and a read-only client for existing CyberGuard incidents. The calling Agent performs the analysis; this path does not require AgentTeams or execute remediation. See the guide for host requirements and validation limits.
+```text
+Install the CyberGuard investigation Skill into my current project and complete
+the offline first-use exercise.
 
-**Path A — Docker Compose (recommended):**
+Get https://github.com/elsechord/CyberGuard into a separate source directory,
+preserve existing files, and record the checked-out commit. Read
+docs/EXTERNAL_AGENT_SKILL.md and integrations/agent-skills/cyberguard/SKILL.md,
+then inspect scripts/install-agent-skill.py before running it.
+
+Use --agent codex for Codex, --agent claude for Claude Code, or --agent generic
+for a compatible host; set --project to my existing project directory.
+Do not overwrite an existing Skill installation.
+
+Read the installed SKILL.md, create a new offline exercise snapshot, and analyze
+whether high CPU usage alone establishes cryptomining. Cite evidence IDs,
+explain what is still unknown, and suggest the next observation.
+Label the input as synthetic and the analysis as performed by this Agent.
+Do not deploy services, request a model key or execute remediation.
+If the host cannot run this workflow, report the missing capability.
+```
+
+Or install from a checkout containing the package:
 
 ```bash
-git clone https://github.com/elsechord/CyberGuard.git && cd CyberGuard
-python deploy/init_secrets.py      # writes .env with role-separated random secrets (stdlib only)
+python scripts/install-agent-skill.py --agent codex --project /absolute/path/to/project
+# For Claude Code, use --agent claude. The target project must already exist.
+```
+
+**First result:** an analysis that distinguishes observations from conclusions and cites the supplied evidence. The included exercise deliberately pairs high CPU usage with an authorized-workload inventory; the CLI creates and inspects the snapshot, while your Agent writes the analysis.
+
+This entry point is **read-only**. It does not parse arbitrary log/PDF files, collect new host telemetry or execute a response. Installation layout and client behavior are tested; automatic discovery in each Agent application still needs host-specific verification. [Connect a real incident and check host requirements →](docs/EXTERNAL_AGENT_SKILL.md)
+
+## Deploy the console
+
+For analysts and teams who need an incident queue, approval screens, roles, API keys and an audit history.
+
+![CyberGuard operations console](docs/assets/console-v2-overview.png)
+
+With Git, Python 3.12+ and Docker Compose, run the following in Bash (Linux/macOS or Windows Git Bash):
+
+```bash
+git clone https://github.com/elsechord/CyberGuard.git
+cd CyberGuard
+python deploy/init_secrets.py
 docker network inspect agentteams-net >/dev/null 2>&1 || docker network create agentteams-net
-docker compose up -d --build       # gateway 127.0.0.1:18100, response executor 127.0.0.1:18105
+docker compose up -d --build
 ```
 
-The network command above uses Bash (Linux/macOS or Windows Git Bash). It creates the external network required by Compose without installing AgentTeams. The read-only audit view is on port **18100**; the multi-user operations console is on **18120** and requires first-admin setup. Follow [operations console deployment](docs/OPERATIONS_DEPLOY.md) for setup and HTTPS/session configuration. The baseline executor uses simulation, not production remediation.
+| Local entry | Purpose | Next step |
+| --- | --- | --- |
+| `http://127.0.0.1:18120` | Multi-user operations console | [Create the first administrator and configure HTTPS/sessions](docs/OPERATIONS_DEPLOY.md) |
+| `http://127.0.0.1:18100/console` | Read-only evidence audit view | [Collect the first fixture evidence](docs/QUICKSTART.md) |
 
-**Path B — Python venv, no Docker** (Windows Git Bash verified):
+The queue starts empty. The default response backend is **simulation**; installing the stack does not grant it access to production equipment. Secure cookies are enabled by default, so complete the session configuration before using the operations console. [Full installation and troubleshooting →](docs/QUICKSTART.md)
 
-```bash
-git clone https://github.com/elsechord/CyberGuard.git && cd CyberGuard
-python -m venv .venv
-.venv/Scripts/python -m pip install -r services/security-tool-gateway/requirements.txt \
-  -r services/response-executor/requirements.txt httpx
-export PYTHONPATH="$PWD" CYBERGUARD_API_TOKEN=dev-read-token \
-       CYBERGUARD_SCENARIO_DIR="$PWD/scenarios" CYBERGUARD_DATA_DIR="$PWD/tmp/data" \
-       CYBERGUARD_KNOWLEDGE_DIR="$PWD/knowledge" && mkdir -p tmp/data
-.venv/Scripts/python -m uvicorn app.main:app --app-dir services/security-tool-gateway \
-  --host 127.0.0.1 --port 18100
-```
+## Execution succeeded. Recovery did not.
 
-Then open **http://127.0.0.1:18100/console**. The incident list starts empty; collect the first fixture evidence with `POST /tools/alert/snapshot` and the `Authorization: Bearer <CYBERGUARD_API_TOKEN from .env>` header (see the quickstart for the exact curl). Services bind to loopback only.
+The Linux process lab demonstrates why an execution receipt is not an outcome check:
 
-Measured on a fresh clone (2026-09-18): venv to first evidence in the console in **6 min 07 s**, including the full 23-file test suite. Full walkthrough, timings and troubleshooting: **[docs/QUICKSTART.md](docs/QUICKSTART.md)**.
-
-### Prebuilt container images
-
-Both services are built and pushed to GHCR by CI on every published release and on manual dispatch ([`publish-images.yml`](.github/workflows/publish-images.yml), `linux/amd64`):
-
-```bash
-docker pull ghcr.io/elsechord/cyberguard-gateway:sha-3b34e4c
-docker pull ghcr.io/elsechord/cyberguard-executor:sha-3b34e4c
-```
-
-`sha-3b34e4c` is the tag pushed by the first verified dispatch run; release tags (`vX.Y.Z`) and `latest` are attached automatically on the next published release. The GHCR packages currently require a GitHub login with access to pull — flip visibility to public in the package settings if you are a maintainer.
-
-> **GOAI 复赛（v0.13.0）**：真实 AgentTeams 原生任务证据包已发布 —— 一条 WebShell 供应链投毒事件（CG-2026-0002）从任务创建、四线并行调查、提案、人工审批（哈希绑定）、执行、双轮独立复测（inconclusive→verified）到回滚演示的完整闭环，含 2,992 条原生 Matrix 事件与 14 条 HMAC 链式审计记录。见 [release v0.13.0](https://github.com/elsechord/CyberGuard/releases/tag/v0.13.0) 与 [复现手册](docs/LIVE_TASK_EVIDENCE.md)。
-
-## What is runnable today
-
-- A read-only security evidence gateway with alert, intelligence, network, boundary-policy, endpoint, asset and recovery tools.
-- Evidence 1.0 normalization with OCSF-aligned event classes, STIX 2.1 observable types, ATT&CK mappings, deterministic quality gates and cross-source entity correlation.
-- A controlled response executor with an allowlist, idempotency, proposal-bound approval, HMAC-authenticated audit records/checkpoints and rollback. The lab backend persists dispatch intent and reconciles uncertain outcomes; it requires a single executor process.
-- A loopback identity laboratory with real SQLite account mutations, separate account-access probes, durable operation receipts and restart/lost-response tests.
-- Reproducible credential-compromise and supply-chain compromise scenarios, including adversarial tool output.
-- Seven Agent role definitions and ten reusable AgentTeams Skills, including explicit boundary-defense analysis.
-- Server-owned live SIEM/NDR/EDR/CMDB connector contracts that keep destinations and credentials away from Agents.
-- A read-only evidence audit console for incident status, evidence graphs, approvals, action history and verification.
-- Evidence and incident JSON contracts.
-- AgentTeams v1.2.2 server configuration and bootstrap instructions.
-- Local unit tests and server-side Docker smoke tests.
-
-The response executor defaults to **simulation**. Opt-in **lab** mode really disables and restores one account in an isolated local identity service. It does not operate a production identity provider. Live investigation connector contracts are implemented; vendor-specific mutating integrations remain future work.
-
-### Operations console
-
-The bundled operations console turns CyberGuard into a deployable multi-user product surface rather than a demo page: server-side sessions with PBKDF2 password hashing, four-tier RBAC (viewer / analyst / approver / admin, deny-by-default), API keys with scoped Bearer access to a versioned JSON API, and an append-only decision audit with CSV export. It ships as a hardened container in the same `compose.yaml` as the rest of the stack.
-
-![Incident detail](docs/assets/console-v2-incident.png)
-
-*Per-incident workflow timeline interleaving agent events, evidence records and response-action state, with the current workflow state derived from the audit trail.*
-
-![Approval](docs/assets/console-v2-approvals.png)
-
-*A proposed response action held until an approver records a mandatory closure classification and written justification; approving also advances the gateway workflow so the incident leaves `awaiting_approval`.*
-
-![Audit trail](docs/assets/console-v2-audit.png)
-
-*Authentication and decision audit trail: setup, logins, approvals (with action id) and key management, exportable as CSV.*
-
-![API keys](docs/assets/console-v2-key-created.png)
-
-*Scoped API keys: `cg_live_` secrets shown once, stored as sha256, with expiry and revocation.*
-
-### Reproduce the real account laboratory
-
-After installing the dependencies in [the lab runbook](docs/LAB_EXECUTION.md), run:
-
-```bash
-python scripts/lab-demo.py
-```
-
-This starts three loopback services, demonstrates proposal/approval/disable/independent verification/rollback, then stops them. A checksummed evidence directory is written under `artifacts/lab/`. The harness is deterministic and supplies its own approval credential: **it is not an AgentTeams/LLM run or evidence of actual human review**. See the runbook for failure semantics and the integration tests for response-loss recovery.
-
-For the isolated Docker version, run `docker compose -f compose.lab.yaml up --build --abort-on-container-exit --exit-code-from lab`. It uses a non-root container with no external network and a read-only root filesystem. See the runbook to copy out evidence and run fault tests. The console now supports run-scoped evidence, authenticated action snapshots, mode/probe details and JSON exports.
-
-### Reproduce incomplete cleanup and process recurrence
+| Step | What happens |
+| --- | --- |
+| Observe | Collect a harmless experiment process and its persistence configuration. |
+| Propose and approve | Bind approval to a specific process target. |
+| Execute | The executor terminates that process successfully. |
+| Verify | The supervisor restarts it. Independent observations return **failed**. |
+| Propose again | A new proposal targets the persistence configuration and receives a new approval. |
+| Verify again | The experiment process and persistence are absent during the observation window; the control workload continues. Result: **verified**. |
 
 ```bash
 docker compose -f compose.host-lab.yaml up --build --abort-on-container-exit --exit-code-from host-lab
 ```
 
-The [Linux process lab](docs/HOST_LAB.md) starts harmless real processes in an offline container. An approved process termination is followed by an actual supervisor restart; independent observations reject recovery. A separately approved, version-bound persistence cleanup is then checked over a bounded time window while a control workload keeps progressing. The console and run export retain both outcomes. The workflow is scripted, and automated approval is explicitly labeled; an optional interactive approval mode is available. This is not a real mining intrusion, an AgentTeams run, or proof of autonomous reasoning.
+This is a real, isolated Linux process/file experiment with **scripted decisions and automated test approval**. It does not establish autonomous AI investigation or production recovery. An interactive operator-approval mode and evidence-export instructions are available in the [lab guide](docs/HOST_LAB.md).
 
-### Evidence-bound investigation
+Other ways to inspect the project:
 
-The [investigation pipeline](docs/INVESTIGATION_PIPELINE.md) accepts immutable evidence bundles and produces cited reports through a read-only API and a separate report-submission credential. The Linux collector records collection gaps; the fixed-rule baseline preserves uncertainty about malware, initial access and attribution. Three labeled exercise cases and a separate evaluator are included. The [model runner](docs/INVESTIGATION_EVALUATION.md) supports actual bounded single-agent tool calls and retains failed attempts, raw responses and provider usage. AgentTeams task/MCP preparation is separate; neither a direct model call nor an accepted report proves AgentTeams execution.
+- [Account lab](docs/LAB_EXECUTION.md): disable an isolated account, probe access independently, then restore it.
+- [Recorded AgentTeams task](docs/LIVE_TASK_EVIDENCE.md): inspect native collaboration, proposals, approval records and target correction in a supply-chain exercise. Its execution/verification uses the scenario contract.
+- [82-second service demo](https://github.com/elsechord/CyberGuard/releases/download/v0.14.1/cyberguard-demo-final.mp4): the published deterministic walkthrough. [Evidence bundle](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.1). This is distinct from the process-recurrence lab above.
 
-Run `docker compose -f compose.investigation.yaml up --build --abort-on-container-exit --exit-code-from investigation` to exercise the HTTP pipeline and collect the current isolated Linux container. The image excludes exercise answer keys and performs no remediation.
+## Connect your existing systems
 
-For actual local orchestration, see [AgentTeams on Docker Desktop](docs/AGENTTEAMS_LOCAL.md). This deployment uses a documented, locally built controller patch to bind Worker consoles to localhost. It is an integration environment; service health and Worker readiness do not establish task completion or comparative effectiveness.
+Start with the interface that matches your workflow:
 
-The experimental [model admission guard](docs/MODEL_GUARD.md) reserves per-run budgets before provider dispatch, authenticates role-bound model routes, rejects exact duplicate requests, and retains unknown usage after failures. The [fresh-Worker integration procedure](docs/AGENTTEAMS_GUARDED_LOCAL.md) verifies native tools and route isolation while the guard is disarmed. Its serial three-Worker harness tests integration; it does not establish autonomous orchestration or a multi-agent performance advantage.
+| Integration | Input → output | Available today |
+| --- | --- | --- |
+| Existing Agent | CyberGuard incident JSON / authorized API → evidence for Agent analysis | Portable read-only Skill |
+| IDS export | Suricata EVE JSON/JSONL → normalized evidence | [File ingest adapter](docs/INGEST.md) |
+| SIEM / EDR / NDR / CMDB | Configured upstream HTTP response → incident evidence | [Server-owned connector configuration](docs/LIVE_CONNECTORS.md); vendor mappings need adaptation |
+| Internal application | Scoped API request → incident, evidence and proposal data | [Console API v1](docs/OPERATIONS_CONSOLE.md#api-v1) |
+| SOAR / device execution | Approved proposal → response action → outcome observation | Executor extension work; production vendor-specific mutating integrations are not included |
 
-## Architecture
-
-```text
-Human / SOC analyst
-        │ Matrix approval and intervention
-        ▼
-AgentTeams Team Leader
-        │
-        ├── Alert Fusion ──┐
-        ├── Threat Intel ──┤
-        ├── Network Hunter ├── Evidence IDs + competing hypotheses
-        └── Endpoint IR ───┘
-                           │
-             Standard observation + quality gate
-                           │
-              Entity / observable correlation graph
-                           │
-                    Response Planner
-                           │ proposal
-                           ▼
-                 Controlled Responder ── human approval gate
-                           │
-                    Recovery Verifier
-                           │
-                 Auditable incident report
-
-AgentTeams: orchestration, Matrix, MinIO, Higress, Skills, lifecycle
-CyberGuard: security tools, evidence model, response policy, scenarios, evaluation
-```
-
-## Agent Infra Primitives
-
-The governance core below is domain-agnostic by construction — security is simply its first tenant. Each layer is reusable for any agent workload that needs controlled side effects, normalized evidence, model budgets or run-bound verification.
-
-| Primitive | What it does | Where |
-|---|---|---|
-| Controlled side-effect execution kernel | Proposal → human approval → idempotent allowlisted dispatch → HMAC-chained audit records and checkpoints → rollback, with reconciliation of uncertain outcomes | `services/response-executor/app/main.py` |
-| Observation / Evidence contract layer | OCSF/STIX-aligned normalization, deterministic quality gates and cross-source entity correlation behind one read-only tool surface | `services/security-tool-gateway/app/normalization.py`, `contracts/` |
-| Model admission guard | Reserves per-run token budgets before provider dispatch, authenticates role-bound model routes, rejects exact duplicate requests, retains unknown usage after failures | `cyberguard_investigation/model_guard.py` |
-| Run-bound verification harness | Deterministic scenario fixtures, independent recovery probes and repeatable benchmark runs inside isolated Compose labs | `benchmark/`, `compose.lab.yaml`, `compose.host-lab.yaml` |
-
-## Upstream
-
-Running CyberGuard on real AgentTeams v1.2.2 deployments surfaced three issues that received substantive maintainer replies: MCP tool-service registration friction ([#1284](https://github.com/agentscope-ai/AgentTeams/issues/1284)), cumulative Worker input-token budgets ([#1285](https://github.com/agentscope-ai/AgentTeams/issues/1285)) and driver-policy denial plus Worker console port exposure ([#1286](https://github.com/agentscope-ai/AgentTeams/issues/1286)). The console-binding patch offered in #1286 became [PR #1287](https://github.com/agentscope-ai/AgentTeams/pull/1287), which a maintainer approved and merged into AgentTeams main on 2026-09-18. In #1285 the maintainers confirmed that per-request context limits cannot enforce a cumulative run budget — admission plus reservation, the mechanism CyberGuard's model admission guard already implements, is required.
-
-## Local development without Docker
-
-The step-by-step quickstart for the Python-only path — venv, dependency install
-(the hash lock targets Linux x86_64; Windows falls back to the unhashed service
-requirements), the one-file-per-interpreter test suite, gateway/executor startup
-on loopback and port map — lives in **[docs/QUICKSTART.md](docs/QUICKSTART.md)**.
-On Windows you can also run `powershell -ExecutionPolicy Bypass -File
-scripts/test-local.ps1`; on Linux `bash scripts/test-local.sh`. Run test files
-one per interpreter: both services expose an `app` package, so collecting the
-whole suite in a single `pytest tests/` process is not supported.
-
-## Fast server deployment
-
-Recommended host: Ubuntu 22.04/24.04 x86_64, 8 CPU cores, 16 GB RAM, 100 GB SSD, Docker Engine and outbound access to the selected LLM provider. The current hash-locked Python wheel set intentionally targets Linux x86_64.
-
-1. Upload this repository to `/srv/cyberguard`.
-2. Copy `deploy/agentteams/agentteams.env.example` to `/srv/cyberguard/agentteams.env` and fill the model API values and strong admin password.
-3. Run the single bootstrap and acceptance entry point:
-
-   ```bash
-   cd /srv/cyberguard
-   chmod +x deploy/*.sh scripts/*.sh tests/*.sh
-   sudo ./deploy/bootstrap-server.sh
-   ```
-
-   It checks Linux/Docker/resources, atomically creates `.env` with five role-separated random secrets and mode `0600`, validates both configuration files without exposing secret values, installs the pinned AgentTeams release if needed, builds CyberGuard, proves the response lifecycle and creates a timestamped checksummed archive under `artifacts/acceptance/`.
-
-4. For a remote server, forward the loopback-only audit console and open `http://127.0.0.1:18100/console`:
-
-   ```bash
-   ssh -L 18100:127.0.0.1:18100 user@your-server
-   ```
-
-5. Register the two tool services without placing credentials in Matrix, then run `sudo bash deploy/bootstrap-agentteams.sh`. It distributes Skills and creates/validates the Team through the pinned v1.2.2 Manager workflow. See [AgentTeams bootstrap](agentteams/BOOTSTRAP.md).
-
-6. Run `sudo bash deploy/competition-readiness.sh`, then send [the demo incident](agentteams/demo-task.md) to the `cyberguard-soc` Team Leader.
-
-For the judged deterministic demonstration, run `sudo bash deploy/judge-demo.sh`. It executes both attack scenarios and emits a machine-readable result plus checksums under `artifacts/demo/`; see [the 90-second judge runbook](docs/JUDGE_DEMO.md).
-
-To reproduce the live AgentTeams task evidence (native Matrix event chain, approval, execution, re-verification, rollback), follow [docs/LIVE_TASK_EVIDENCE.md](docs/LIVE_TASK_EVIDENCE.md) and use `scripts/capture-agentteams-task.py`.
-
-The audit console is deliberately read-only and complementary to Matrix: AgentTeams remains the collaboration and human-intervention surface, while the console gives judges a compact view of evidence and response provenance.
-
-## Security boundaries
-
-- Investigation tools are read-only and isolated from the response service.
-- Workers receive gateway consumer credentials, not upstream secrets.
-- The approval secret is human-controlled and must never be assigned to an Agent.
-- The audit HMAC key remains executor-only; the gateway receives only a read-only verification token.
-- Services run as non-root, read-only containers with all Linux capabilities dropped.
-- Services bind only to loopback on the host and are also reachable from `agentteams-net` by container DNS.
-- The host share directory is intentionally narrow; do not mount a user home or `/`.
-- AgentTeams’ Docker access remains a privileged control-plane capability and should run on a dedicated host.
-
-See [the threat model](docs/THREAT_MODEL.md) for trust boundaries and failure handling.
-See [the security observation model](docs/OBSERVATION_MODEL.md) for normalization, quality scoring and correlation semantics.
-
-## Repository layout
-
-```text
-agentteams/     Team creation and demo messages
-contracts/      Evidence and incident schemas
-deploy/         AgentTeams and CyberGuard server deployment
-docs/           Architecture, threat model and operations
-scenarios/      Deterministic incident fixtures
-services/       Read-only tool gateway and response executor
-skills/         Reusable AgentTeams Skill packages
-tests/          Unit and Docker smoke tests
-```
-
-## Competition deliverables
-
-- **v0.13.0 release**: 真实 AgentTeams 任务证据包（tar.gz + SHA256）与复现手册——评委核验入口。
-- `dist/CyberGuard-server-v0.11.0.zip`: upload-ready server bundle.
-- `dist/CyberGuard-GOAI-初赛方案-v0.11.0.pptx`: 19-slide preliminary submission based on the official template.
-- `dist/CyberGuard-GOAI-preliminary-v0.11.0.pptx`: ASCII-named copy included in the server bundle for Windows tar compatibility.
-- `dist/CyberGuard-source-v0.11.0.spdx.json`: deterministic SPDX 2.3 source and dependency SBOM.
-- `dist/skills/`: ten individually packaged Skills plus `SHA256SUMS`.
-
-The deck labels container/model runs as pending until reproduced on the target server. Do not replace those labels with performance claims until `deploy/deploy-cyberguard.sh`, `tests/e2e_demo.sh`, and the four benchmark variants have produced retained evidence.
-
-## Validation
-
-Every push and pull request runs the same deterministic tests, validates Compose, builds both images, fails on fixed HIGH/CRITICAL findings, and publishes source plus container SPDX SBOMs. Third-party Actions are pinned to full commit SHAs and repository permissions are read-only.
-
-The local suite includes real HTTP laboratory integration tests. Install service dependencies and `tests/requirements.lock` first; platform-specific instructions are in [the lab runbook](docs/LAB_EXECUTION.md). Docker smoke tests still exercise the default simulation configuration.
-
-On Windows development hosts:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/test-local.ps1
-```
-
-Run test files one per interpreter (both services expose an `app` package, so a single `pytest tests/` collection is not supported):
+For example, read incidents from a deployed console using a key with `incidents:read` scope:
 
 ```bash
-for f in tests/test_*.py; do .venv/Scripts/python "$f" || break; done
+# Bash. Configure these environment variables locally; do not put keys in source.
+curl --fail --silent --show-error \
+  -H "Authorization: Bearer ${CYBERGUARD_CONSOLE_API_KEY}" \
+  "${CYBERGUARD_CONSOLE_URL}/api/v1/incidents?limit=5"
 ```
 
-On the Linux server, `deploy/deploy-cyberguard.sh` validates Compose, builds all images, starts the stack and runs a cross-service incident. The E2E gate proves that recovery is inconclusive before action, unapproved execution is rejected, approved execution changes verification state, the audit chain is valid, and rollback is observed.
+List responses use `data`, `has_more` and `next_cursor`. Read one incident at `/api/v1/incidents/{incident_id}`. API keys are scoped but not a complete per-tenant isolation system. [Endpoints, authentication and errors →](docs/OPERATIONS_CONSOLE.md#api-v1)
+
+## How the components fit
+
+```mermaid
+flowchart TD
+    S[Security telemetry / incident exports] --> G[Evidence gateway]
+    G --> C[Operations console / API]
+    C --> K[Existing Agent + investigation Skill]
+    G --> A[AgentTeams investigation team]
+    A --> P[Response proposal]
+    P --> E[Response executor]
+    H[Operator approval] --> E
+    E --> B[Simulation or isolated lab backend]
+    B --> V[Independent outcome probes]
+    V --> G
+    E --> R[Action audit and run records]
+    R --> C
+```
+
+AgentTeams supplies orchestration, Matrix collaboration, shared storage and Skill distribution. CyberGuard adds security evidence tools, proposal-bound approvals, execution adapters and outcome observations. The portable investigation Skill is a separate, read-only entry point; it does not execute the response path in this diagram.
+
+## Reuse and extend
+
+- **Evidence:** normalization, source metadata, identifiers and citation checks. [Observation model](docs/OBSERVATION_MODEL.md) · [Contracts](contracts/)
+- **Controlled actions:** allowlisted dispatch, proposal-bound approvals, idempotency and action audit records. [Executor](services/response-executor/) · [Threat model](docs/THREAT_MODEL.md)
+- **Outcome checks:** account-access and process-state probes, run correlation and evidence export. [Run example](docs/examples/run-correlation-CG-2026-0002.md)
+- **Agent integration:** [ten AgentTeams role Skills](docs/SKILL_CATALOG.md), the [portable Skill](integrations/agent-skills/cyberguard/), and [local AgentTeams setup](docs/AGENTTEAMS_LOCAL.md).
+- **Optional model admission guard:** per-run budget reservations and role-bound routes. [Guard documentation](docs/MODEL_GUARD.md)
+
+Security operations is the implemented application domain. Reusing these components for financial, legal or other workflows requires domain-specific evidence mappings, policies and effect checks; those integrations are not claimed here.
+
+## Documentation
+
+| Goal | Guide |
+| --- | --- |
+| Install or troubleshoot | [Quickstart](docs/QUICKSTART.md) · [Console deployment](docs/OPERATIONS_DEPLOY.md) |
+| Investigate in your own Agent | [Skill setup and connection](docs/EXTERNAL_AGENT_SKILL.md) |
+| Run a multi-Agent task | [AgentTeams bootstrap](agentteams/BOOTSTRAP.md) · [Local setup](docs/AGENTTEAMS_LOCAL.md) |
+| Inspect the trust boundaries | [Threat model](docs/THREAT_MODEL.md) · [Live connectors](docs/LIVE_CONNECTORS.md) |
+| Reproduce and evaluate | [Judge service checks](docs/JUDGE_DEMO.md) · [Investigation evaluation](docs/INVESTIGATION_EVALUATION.md) |
+| Find releases and competition material | [Releases](https://github.com/elsechord/CyberGuard/releases) · [Competition guide](docs/COMPETITION.md) |
+
+## Contributing
+
+Useful contributions include sanitized integration examples, connector mappings, independent outcome probes and reproducible failure cases. Start with an [issue](https://github.com/elsechord/CyberGuard/issues) describing the input, expected result and reproduction steps. Do not include credentials or private telemetry.
+
+For local tests, follow [the development instructions](docs/QUICKSTART.md). Run each test file in its own interpreter: several services use the same Python package name. CI is linked above. Upstream integration work includes the AgentTeams Worker console-binding [PR #1287](https://github.com/agentscope-ai/AgentTeams/pull/1287).
 
 ## License
 
-Apache-2.0. Security data and third-party connectors may carry their own licenses; do not add proprietary telemetry to the public repository.
+[Apache-2.0](LICENSE). Third-party assets retain their respective licenses; typography notices for the README artwork are in [brand assets](docs/assets/brand/README.md).
