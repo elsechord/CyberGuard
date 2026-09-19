@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 
-**60-second demo (console walk-through):** [cyberguard-demo-60s.mp4](https://github.com/elsechord/CyberGuard/releases/download/v0.14.0/cyberguard-demo-60s.mp4) — release asset of [v0.14.0](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.0).
+**Handling one attack end-to-end (82 s, fresh recording):** [cyberguard-demo-final.mp4](https://github.com/elsechord/CyberGuard/releases/download/v0.14.1/cyberguard-demo-final.mp4) — release asset of [v0.14.1](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.1), together with a fresh judge-demo evidence bundle ([validation-final-20260919T145335Z.tar.gz](https://github.com/elsechord/CyberGuard/releases/download/v0.14.1/validation-final-20260919T145335Z.tar.gz)).
 
 CyberGuard is an evidence-driven autonomous security operations team built on [AgentTeams](https://github.com/agentscope-ai/AgentTeams). It coordinates specialized Agents for alert fusion, threat intelligence, network hunting, endpoint forensics, response planning, controlled execution and independent recovery verification.
 
@@ -21,6 +21,8 @@ The project is designed for the GOAI “Agent Infra 新智基座” track. It in
 *Signed-in overview: open incidents, actions awaiting approval, evidence volume and guard budget usage.*
 
 ## Three steps to run
+
+**Use CyberGuard inside your existing Agent:** the [portable investigation Skill](docs/EXTERNAL_AGENT_SKILL.md) can be installed into a Codex or Claude Code project. It includes a copyable setup prompt, an offline first-use exercise, and a read-only client for existing CyberGuard incidents. The calling Agent performs the analysis; this path does not require AgentTeams or execute remediation. See the guide for host requirements and validation limits.
 
 **Path A — Docker Compose (recommended):**
 
