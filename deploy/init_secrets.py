@@ -18,22 +18,36 @@ SECRET_KEYS = {
     "CYBERGUARD_AUDIT_READER_TOKEN",
 }
 OPTIONAL_SECRET_KEYS = {"CYBERGUARD_INVESTIGATION_INGEST_TOKEN", "CYBERGUARD_REPORT_TOKEN"}
+# The operations console holds no secret of its own: its gateway token and
+# approval secret are references to the generated role secrets above, and the
+# optional model-guard admin token is provisioned with the guard deployment.
+# init_secrets therefore never generates these values, but the template must
+# still document every key so operators see it in the rendered .env.
+REFERENCE_KEYS = {
+    "CYBERGUARD_GATEWAY_TOKEN",
+    "CYBERGUARD_GUARD_URL",
+    "CYBERGUARD_GUARD_ADMIN_TOKEN",
+    "CYBERGUARD_COOKIE_SECURE",
+}
 
 
 def render(template: str) -> str:
     generated = {key: secrets.token_urlsafe(48) for key in SECRET_KEYS | OPTIONAL_SECRET_KEYS}
     output: list[str] = []
-    replaced: set[str] = set()
+    present: set[str] = set()
     for raw in template.splitlines():
         key = raw.split("=", 1)[0].strip() if "=" in raw else ""
+        present.add(key)
         if key in generated:
             output.append(f"{key}={generated[key]}")
-            replaced.add(key)
         else:
             output.append(raw)
-    missing = SECRET_KEYS - replaced
+    missing = SECRET_KEYS - present
     if missing:
         raise ValueError("template is missing required secret variables: " + ", ".join(sorted(missing)))
+    undocumented = REFERENCE_KEYS - present
+    if undocumented:
+        raise ValueError("template is missing console reference variables: " + ", ".join(sorted(undocumented)))
     return "\n".join(output) + "\n"
 
 

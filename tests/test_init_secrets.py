@@ -27,6 +27,18 @@ class InitSecretsTests(unittest.TestCase):
         self.assertTrue(all(len(value) >= 48 for value in secrets))
         self.assertNotIn("replace-with-", rendered)
 
+    def test_render_preserves_console_reference_keys_verbatim(self):
+        rendered = MODULE.render((ROOT / ".env.example").read_text(encoding="utf-8"))
+        self.assertIn("CYBERGUARD_GATEWAY_TOKEN=\n", rendered)
+        self.assertIn("CYBERGUARD_GUARD_URL=\n", rendered)
+        self.assertIn("CYBERGUARD_GUARD_ADMIN_TOKEN=\n", rendered)
+        self.assertIn("CYBERGUARD_COOKIE_SECURE=true\n", rendered)
+
+    def test_render_requires_console_reference_documentation(self):
+        minimal = "".join(f"{key}=placeholder\n" for key in MODULE.SECRET_KEYS)
+        with self.assertRaisesRegex(ValueError, "console reference variables"):
+            MODULE.render(minimal)
+
     def test_create_is_atomic_locked_down_and_refuses_overwrite(self):
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / ".env"

@@ -92,6 +92,48 @@ services:
       retries: 10
       start_period: 10s
 
+  # Multi-user operations console. It only calls the gateway and executor over
+  # the internal Docker networks and never needs outbound Internet access, so
+  # it stays off agentteams-net. The optional model-guard integration is off
+  # until CYBERGUARD_GUARD_URL/CYBERGUARD_GUARD_ADMIN_TOKEN are set (see
+  # docs/OPERATIONS_DEPLOY.md). The gateway token reuses the generated
+  # CYBERGUARD_API_TOKEN unless a dedicated one was provisioned in .env.
+  operations-console:
+    <<: *common
+    build:
+      context: .
+      dockerfile: services/operations-console/Dockerfile
+    image: cyberguard/operations-console:0.14.0
+    init: true
+    environment:
+      CYBERGUARD_CONSOLE_DB: /data/console.db
+      CYBERGUARD_GATEWAY_URL: http://security-tool-gateway:8080
+      CYBERGUARD_GATEWAY_TOKEN: ${CYBERGUARD_GATEWAY_TOKEN:-${CYBERGUARD_API_TOKEN:?set CYBERGUARD_API_TOKEN in .env}}
+      CYBERGUARD_EXECUTOR_URL: http://response-executor:8080
+      CYBERGUARD_EXECUTOR_TOKEN: ${CYBERGUARD_EXECUTOR_TOKEN:?set CYBERGUARD_EXECUTOR_TOKEN in .env}
+      CYBERGUARD_EXECUTOR_APPROVAL_SECRET: ${CYBERGUARD_APPROVAL_SECRET:?set CYBERGUARD_APPROVAL_SECRET in .env}
+      CYBERGUARD_GUARD_URL: ${CYBERGUARD_GUARD_URL:-}
+      CYBERGUARD_GUARD_ADMIN_TOKEN: ${CYBERGUARD_GUARD_ADMIN_TOKEN:-}
+      CYBERGUARD_COOKIE_SECURE: ${CYBERGUARD_COOKIE_SECURE:-true}
+    volumes:
+      - cyberguard-console-data:/data
+    ports:
+      - "127.0.0.1:18120:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      security-tool-gateway:
+        condition: service_healthy
+      response-executor:
+        condition: service_healthy
+    networks:
+      cyberguard-readonly: {}
+      cyberguard-execution: {}
+
 networks:
   agentteams-net:
     external: true
@@ -106,3 +148,4 @@ networks:
 volumes:
   cyberguard-evidence:
   cyberguard-actions:
+  cyberguard-console-data:
