@@ -277,6 +277,35 @@ class OperationsConsoleTest(unittest.TestCase):
             self.assertIn("investigations:write", auth.ROLE_SCOPE_GRANTS["admin"])
             self.assertIn("decisions:write", auth.ROLE_SCOPE_GRANTS["admin"])
 
+    def test_active_investigation_visible_across_workbench(self) -> None:
+        page = self.client.get("/investigations")
+        csrf = re.search(r'name="csrf_token" value="([^"]+)"', page.text).group(1)
+        key = re.search(r'name="idempotency_key" value="([^"]+)"', page.text).group(1)
+        title = "页面进度可见性测试"
+        created = self.client.post("/investigations/new", data={
+            "csrf_token": csrf, "idempotency_key": key, "title": title,
+            "objective": "核对材料", "domain": "security", "source_type": "other",
+            "name": "测试记录", "content": "A single synthetic event."},
+            follow_redirects=False)
+        self.assertEqual(created.status_code, 303)
+        detail_url = created.headers["location"]
+        for path in ("/", "/incidents", "/investigations", "/investigations/active"):
+            self.assertIn(title, self.client.get(path).text)
+        self.assertIn(f'hx-get="{detail_url}"', self.client.get(detail_url).text)
+        job_id = detail_url.rsplit("/", 1)[-1]
+        with db.tx() as conn:
+            row = conn.execute("SELECT payload FROM investigation_job WHERE id=?", (job_id,)).fetchone()
+            payload = json.loads(row["payload"])
+            payload["runtime"].update(project_id="native-test", workflow={
+                "status": "active", "nodes": [{"id": "task-1", "name": "核对证据",
+                    "assignee": "investigator", "status": "in-progress"}]})
+            conn.execute("UPDATE investigation_job SET payload=? WHERE id=?",
+                         (json.dumps(payload, ensure_ascii=False), job_id))
+        detail = self.client.get(detail_url).text
+        self.assertIn("AgentTeams 团队进度", detail)
+        self.assertIn("核对证据", detail)
+        self.assertIn("investigator", detail)
+
     def test_unauthorized_page_redirects_and_api_keeps_401(self) -> None:
         client = TestClient(app)
         bounced = client.get("/", follow_redirects=False)

@@ -88,11 +88,22 @@ def _payload(form):
 
 
 async def _index(request, principal, *, form=None, error=None, status_code=200):
+    active_jobs = await run_in_threadpool(jobs.list_active_jobs, principal)
+    recent_jobs = await run_in_threadpool(jobs.list_jobs, principal)
     return render(request, "investigations.html", principal=principal,
-                  jobs=await run_in_threadpool(jobs.list_jobs, principal),
+                  active_jobs=active_jobs,
+                  jobs=[job for job in recent_jobs if job["status"] in {"completed", "failed", "canceled"}],
                   domains=DOMAINS, sources=SOURCES, statuses=STATUSES, stage_label=stage_label,
                   form=form or {}, idempotency_key=(form or {}).get("idempotency_key") or uuid4().hex,
                   error=error, status_code=status_code)
+
+
+@router.get("/investigations/active")
+async def active_investigations(request: Request):
+    principal = page_session(request)
+    return render(request, "_active_investigations.html", principal=principal,
+                  active_jobs=await run_in_threadpool(jobs.list_active_jobs, principal),
+                  statuses=STATUSES, stage_label=stage_label)
 
 
 @router.get("/investigations")

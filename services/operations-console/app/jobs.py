@@ -116,6 +116,20 @@ def list_jobs(principal, limit=50, cursor=None):
     return [public(json.loads(row["payload"]), summary=True) for row in rows]
 
 
+def list_active_jobs(principal, limit=20):
+    require(principal, "investigations:read")
+    limit = max(1, min(int(limit), 50))
+    if principal.kind == "session" and principal.role == "admin":
+        rows = db.connection().execute(
+            "SELECT payload FROM investigation_job WHERE status NOT IN ('completed','failed','canceled') "
+            "ORDER BY created_at DESC,id DESC LIMIT ?", (limit,))
+    else:
+        rows = db.connection().execute(
+            "SELECT payload FROM investigation_job WHERE owner=? AND status NOT IN ('completed','failed','canceled') "
+            "ORDER BY created_at DESC,id DESC LIMIT ?", (owner_of(principal), limit))
+    return [public(json.loads(row["payload"]), summary=True) for row in rows]
+
+
 def cancel(principal, job_id):
     require(principal, "investigations:write")
     row = db.connection().execute("SELECT payload FROM investigation_job WHERE id=?", (job_id,)).fetchone()

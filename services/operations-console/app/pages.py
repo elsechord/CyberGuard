@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
 from starlette.concurrency import run_in_threadpool
 
-from . import apikeys, audit, auth, clients, config, connect, db
+from . import apikeys, audit, auth, clients, config, connect, db, jobs
 from .api import DECISION_CLASSIFICATIONS, client_ip
 from .render import render
 
@@ -186,6 +186,7 @@ async def setup_submit(request: Request):
                       csrf=login_csrf_token(), error=error, notice=None,
                       status_code=422)
     auth.create_user(username, password, "admin")
+    jobs.init_db()
     auth.finish_setup()
     auth.ensure_public_demo_admin()
     audit.record("setup", actor=username, result="success",
@@ -212,7 +213,9 @@ def page_session(request: Request) -> auth.Principal:
 
 @router.get("/")
 def overview(request: Request):
-    page_session(request)
+    principal = page_session(request)
+    from .investigation_pages import STATUSES, stage_label
+    active_jobs = jobs.list_active_jobs(principal)
     incidents = _safe(lambda: clients.gateway_incidents(), [])
     open_count = sum(1 for item in incidents
                      if item.get("status") not in {"completed", "rejected", "verified"})
@@ -222,7 +225,8 @@ def overview(request: Request):
     return render(request, "overview.html", principal=None,
                   incidents=incidents[:10], open_count=open_count,
                   pending_count=pending, evidence_total=evidence_total,
-                  usage=usage, upstream_ok=bool(config.gateway_url()))
+                  usage=usage, upstream_ok=bool(config.gateway_url()),
+                  active_jobs=active_jobs, statuses=STATUSES, stage_label=stage_label)
 
 
 def _safe(call, fallback):
@@ -236,13 +240,16 @@ def _safe(call, fallback):
 
 @router.get("/incidents")
 def incidents_page(request: Request, status: str | None = None):
-    page_session(request)
+    principal = page_session(request)
+    from .investigation_pages import STATUSES, stage_label
     incidents = _safe(lambda: clients.gateway_incidents(), None)
     if incidents is not None and status:
         incidents = [item for item in incidents if item.get("status") == status]
     return render(request, "incidents.html", principal=None,
                   incidents=incidents, active_status=status or "",
-                  tabs=STATUS_TABS, upstream_ok=incidents is not None)
+                  tabs=STATUS_TABS, upstream_ok=incidents is not None,
+                  active_jobs=jobs.list_active_jobs(principal),
+                  statuses=STATUSES, stage_label=stage_label)
 
 
 @router.get("/incidents/fragment")

@@ -8,6 +8,7 @@
   <div class="nav-spacer"></div><a class="button" href="/investigations">提交调查</a><a class="button" href="/connect">连接你的 Agent</a>
 </div>
 <div class="metric-grid">
+  <div class="metric"><div class="value {{ 'info' if active_jobs else '' }}">{{ active_jobs|length }}</div><div class="label">进行中的调查</div></div>
   <div class="metric">
     <div class="value {{ 'warn' if open_count else '' }}">{{ open_count }}</div>
     <div class="label">未结事件</div>
@@ -31,6 +32,7 @@
   </div>
 </div>
 
+{% include "_active_investigations.html" %}
 <section class="section incident-register">
   <div class="section-head"><h2>最近事件</h2><a href="/incidents">全部事件</a></div>
   {% if incidents %}

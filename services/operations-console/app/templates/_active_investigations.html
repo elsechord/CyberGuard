@@ -1,0 +1,14 @@
+<section class="section active-investigations" id="active-investigations"
+         hx-get="/investigations/active" hx-trigger="every 8s" hx-swap="outerHTML">
+  <div class="section-head"><h2>进行中的调查 <span class="count">{{ active_jobs|length }}</span></h2><a href="/investigations">全部调查</a></div>
+  {% if active_jobs %}
+  <ul class="queue">
+    {% for job in active_jobs %}
+    <li><a href="/investigations/{{ job.id }}">
+      <span class="row-1"><span class="incident-id">{{ job.title }}</span><span class="badge info">{{ statuses.get(job.status, job.status) }}</span></span>
+      <span class="meta"><span>{{ stage_label(job.stage) }}</span><span>{{ job.updated_at|ts }}</span></span>
+    </a></li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="hint">当前没有进行中的调查。</p>{% endif %}
+</section>

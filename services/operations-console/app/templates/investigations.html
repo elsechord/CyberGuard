@@ -23,8 +23,9 @@
   <button type="submit" class="primary">提交调查</button>
 </form></section>
 {% else %}<p class="hint">分析员及更高角色可以提交调查。</p>{% endif %}
-<section class="card"><h2>可访问的任务</h2><p class="hint">显示最近 50 个任务。默认仅创建者可查看；管理员会话可查看全部任务。</p>
+{% include "_active_investigations.html" %}
+<section class="card"><h2>最近结束的调查</h2>
 {% if jobs %}<div class="table-wrap"><table><thead><tr><th>任务</th><th>领域</th><th>状态</th><th>阶段</th><th>更新时间</th></tr></thead><tbody>
 {% for job in jobs %}<tr><td><a href="/investigations/{{ job.id }}">{{ job.title }}</a></td><td>{{ domains.get(job.domain, job.domain) }}</td><td>{{ statuses.get(job.status, job.status) }}</td><td>{{ stage_label(job.stage) }}</td><td>{{ job.updated_at|ts }}</td></tr>{% endfor %}
-</tbody></table></div>{% else %}<p>还没有可访问的调查任务。提交材料后，任务会出现在这里。</p>{% endif %}</section>
+</tbody></table></div>{% else %}<p class="hint">暂无已结束的调查。</p>{% endif %}</section>
 {% endblock %}
