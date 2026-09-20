@@ -217,6 +217,8 @@ def overview(request: Request):
     from .investigation_pages import STATUSES, stage_label
     active_jobs = jobs.list_active_jobs(principal)
     failed_jobs = jobs.list_failed_jobs(principal)
+    completed_jobs = [item for item in jobs.list_jobs(principal, limit=10)
+                      if item["status"] == "completed"][:3]
     incidents = _safe(lambda: clients.gateway_incidents(), [])
     open_count = sum(1 for item in incidents
                      if item.get("status") not in {"completed", "rejected", "verified"})
@@ -228,6 +230,7 @@ def overview(request: Request):
                   pending_count=pending, evidence_total=evidence_total,
                   usage=usage, upstream_ok=bool(config.gateway_url()),
                   active_jobs=active_jobs, failed_jobs=failed_jobs,
+                  completed_jobs=completed_jobs,
                   statuses=STATUSES, stage_label=stage_label)
 
 

@@ -299,6 +299,12 @@ class OperationsConsoleTest(unittest.TestCase):
         for path in ("/", "/incidents"):
             self.assertIn("需要处理的调查", self.client.get(path).text)
             self.assertIn(title, self.client.get(path).text)
+        with db.tx() as conn:
+            payload["status"] = "completed"
+            payload["stage"] = "complete"
+            conn.execute("UPDATE investigation_job SET status=?,payload=? WHERE id=?",
+                         ("completed", json.dumps(payload, ensure_ascii=False), job_id))
+        self.assertIn("最近完成的调查", self.client.get("/").text)
 
     def test_managed_studio_shows_live_status_instead_of_host_wizard(self) -> None:
         with patch.dict(os.environ, {"CYBERGUARD_MODELSCOPE_EMBED": "1"}):
