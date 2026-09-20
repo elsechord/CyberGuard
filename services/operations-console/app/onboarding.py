@@ -3,6 +3,7 @@ import json
 import io
 import http.client
 import socket
+import time
 from pathlib import Path
 import os
 import urllib.error
@@ -33,6 +34,7 @@ def studio_status():
     result = {"mode": "modelscope", "model": (guard.get("run") or {}).get("model", ""),
               "guard": bool(guard.get("available")), "armed": bool(guard.get("armed")),
               "controller": False, "matrix": False, "team": False, "workers": 0,
+              "ready_workers": 0,
               "errors": []}
     try:
         cfg = native_config()
@@ -43,6 +45,21 @@ def studio_status():
         team = controller(cfg, "GET", "/teams/" + cfg["TEAM_ID"])
         result["controller"] = result["team"] = True
         result["workers"] = len(team.get("workerMembers") or [])
+        health_dir = Path(os.getenv("AGENTTEAMS_EXTERNAL_WORKER_HEALTH_DIR", "/run/cyberguard-workers"))
+        for member in team.get("workerMembers") or []:
+            if not isinstance(member, dict):
+                continue
+            name = member.get("name", "")
+            if not name or "/" in name or "\\" in name:
+                continue
+            try:
+                health = json.loads((health_dir / (name + ".json")).read_text())
+                if health.get("ready") and time.time() - health.get("checked_at", 0) < 30:
+                    result["ready_workers"] += 1
+            except (OSError, ValueError, TypeError):
+                pass
+        if result["ready_workers"] != result["workers"]:
+            result["errors"].append("部分 Worker 尚未就绪。")
     except NativeError as exc:
         result["errors"].append("Controller 或调查团队不可达（" + exc.code + "）。")
     try:

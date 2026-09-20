@@ -6,7 +6,7 @@
 <dl class="investigation-meta">
   <div><dt>AgentTeams Controller</dt><dd>{{ '已连接' if state.controller else '不可达' }}</dd></div>
   <div><dt>Matrix 通信</dt><dd>{{ '已连接' if state.matrix else '不可达' }}</dd></div>
-  <div><dt>调查团队</dt><dd>{{ state.workers ~ ' 名 Worker' if state.team else '不可达' }}</dd></div>
+  <div><dt>调查团队</dt><dd>{{ (state.ready_workers ~ ' / ' ~ state.workers ~ ' 名 Worker 就绪') if state.team else '不可达' }}</dd></div>
   <div><dt>模型预算服务</dt><dd>{{ '已启用' if state.armed else ('已连接，未启用' if state.guard else '不可达') }}</dd></div>
   <div><dt>当前模型</dt><dd>{{ state.model or '未获取到模型信息' }}</dd></div>
 </dl>
