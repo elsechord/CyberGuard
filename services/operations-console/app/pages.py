@@ -178,7 +178,11 @@ async def setup_submit(request: Request):
     auth.finish_setup()
     audit.record("setup", actor=username, result="success",
                  ip=client_ip(request), reason="admin_created")
-    response = RedirectResponse("/login?notice=admin-created", status_code=303)
+    outcome = await run_in_threadpool(auth.attempt_login, username, password,
+                                      ip=client_ip(request), user_agent=request.headers.get("user-agent"))
+    response = RedirectResponse("/settings/onboarding" if outcome.ok else "/login?notice=admin-created", status_code=303)
+    if outcome.ok:
+        set_session_cookie(response, outcome.sid)
     return response
 
 

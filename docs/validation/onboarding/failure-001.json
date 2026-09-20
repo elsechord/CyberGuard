@@ -1,0 +1,18 @@
+{
+  "status": "failed",
+  "image": "cyberguard/operations-console:0.15.1",
+  "test": "real HTTPS and Unix socket transport with local provider stub",
+  "real_provider_calls": 0,
+  "native_team_deployment": false,
+  "checks": [
+    {
+      "name": "setup_automatically_logs_in_and_opens_wizard",
+      "passed": true
+    }
+  ],
+  "started_at_unix": 1789871110.9227622,
+  "failed_stage": "model-https-probe",
+  "error_type": "HTTPError",
+  "elapsed_seconds": 5.51,
+  "isolated_resources_removed": true
+}

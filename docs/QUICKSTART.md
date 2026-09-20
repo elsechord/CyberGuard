@@ -1,5 +1,7 @@
 # Quickstart — from clone to evidence in the audit console
 
+[简体中文](QUICKSTART.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 **Want the full AgentTeams investigation service?** Follow [Native installation](NATIVE_INSTALL.md) after the base stack below. It covers model configuration, native team setup, Worker compatibility installation, Console binding and the first investigation. The timing below measures the base evidence/console stack, not the native multi-agent deployment.
 
 Goal: a stranger with Git, Python 3.12 and (optionally) Docker reaches a live
@@ -45,12 +47,12 @@ Requires Docker Engine or Docker Desktop. Both images build from the repository
 3. **Build and start the stack**
 
    ```bash
-   docker network inspect agentteams-net >/dev/null 2>&1 || docker network create agentteams-net
+   python deploy/agentteams-local/ensure-private-network.py
    docker compose up -d --build
    ```
 
-   These commands use Bash. `agentteams-net` is an external Compose network;
-   create it on a clean Docker host even when AgentTeams is not installed.
+   `agentteams-net` is an external Compose network. The preparation script creates
+   it with loopback-only default port bindings for the later native deployment.
 
    The gateway binds to `127.0.0.1:18100` and the response executor to
    `127.0.0.1:18105` — loopback only, never on all interfaces. Containers run
@@ -92,7 +94,7 @@ Verified on Windows Git Bash; on Linux use `.venv/bin/python` instead of
    On Linux x86_64 the hash-locked set installs directly:
 
    ```bash
-   .venv/Scripts/python -m pip install -r services/requirements.lock -r tests/requirements.lock
+   .venv/bin/python -m pip install -r services/requirements.lock -r tests/requirements.lock
    ```
 
    On Windows the hash lock does not resolve (it pins Linux-only wheels for

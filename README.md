@@ -28,13 +28,21 @@ CyberGuard provides investigation and response-governance infrastructure for Age
 
 ## Deploy the console
 
-**For the complete native investigation backend:** follow the [fresh-install guide](docs/NATIVE_INSTALL.md), from the pinned AgentTeams version to the first Skill-submitted case. The steps below start the base console.
+**Start with the web setup wizard.** On Linux / WSL2 with Git, Python 3.12+ and Docker Compose, run from the repository checkout:
+
+```bash
+sudo python3 deploy/onboarding/bootstrap.py
+```
+
+Open `http://127.0.0.1:18120/setup`. Create an administrator, enter your model endpoint, model name and API key, test the connection, initialize AgentTeams and enable investigations. Existing administrators can open **Settings → Deployment wizard**. Credentials remain on the deployment host. [Setup guide (Chinese)](docs/WEB_ONBOARDING.zh-CN.md) · [Chinese documentation](docs/README.zh-CN.md)
+
+For manually managed deployments, follow the [native backend installation guide](docs/NATIVE_INSTALL.md). The following commands start the base console separately.
 
 For analysts and teams who need an incident queue, approval screens, roles, API keys and an audit history.
 
 ![CyberGuard operations console](docs/assets/console-v2-overview.png)
 
-With Git, Python 3.12+ and Docker Compose, run the following in Bash (Linux/macOS or Windows Git Bash):
+With Git, Python 3.12+ and Docker Compose, run the following in Linux / WSL2 Bash:
 
 ```bash
 git clone https://github.com/elsechord/CyberGuard.git

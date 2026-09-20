@@ -1,5 +1,7 @@
 # Real-source ingest: Suricata EVE (read-only)
 
+[简体中文](INGEST.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 `scripts/ingest-suricata.py` is the first **real-source adapter**: it feeds
 actual IDS logs into the same evidence pipeline used by simulated scenarios.
 Suricata EVE JSON export files are converted to Evidence 1.0 records through

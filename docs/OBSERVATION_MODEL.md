@@ -1,5 +1,7 @@
 # Security observation model
 
+[简体中文](OBSERVATION_MODEL.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 CyberGuard normalizes SIEM, threat-intelligence, NDR, EDR/runtime, CMDB and recovery records into one hash-bound `CyberGuard Evidence` contract before Agents can cite them. The native record remains in `data`; normalization adds correlation and quality metadata without rewriting the original observation.
 
 ## Compatibility posture

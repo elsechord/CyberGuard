@@ -1,5 +1,7 @@
 # Operations console
 
+[简体中文](OPERATIONS_CONSOLE.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 The operations console (`services/operations-console`) is the multi-user operator surface for a CyberGuard deployment: authenticated humans and API keys view the incident queue, drive gateway workflow states, approve or deny executor response proposals with a mandatory closing classification, inspect the model-admission budget ledger and export the console's own authentication audit trail. It turns the single-token demo consoles into a deployable product surface while the underlying services stay untouched.
 
 The console is a FastAPI service listening on internal port 8080; the Compose wiring maps it to `127.0.0.1:18120` on the host. It keeps all state in one SQLite database (`console.db`), holds no long-lived secrets other than password/key digests, and performs every cross-service call against the existing gateway/executor/guard HTTP APIs.
@@ -102,4 +104,4 @@ Threat-model notes: the console assumes a trusted internal network segment betwe
 
 ## Backup
 
-`console.db` is the complete console state: users (password digests), sessions, API keys (digests), comments, decisions and the audit trail. Back up the file (and its `-wal`/`-shm` siblings while running) on the console's data volume; the upstream gateway/executor stores remain the system of record for evidence and actions. Losing the database loses console-local accounts, comments and decision records — recoverable only from backups.
+`console.db` is the complete console state: users (password digests), sessions, API keys (digests), comments, decisions and the audit trail. Use the [consistent export workflow](OPERATIONS_DEPLOY.md#backup-and-recovery) rather than copying a database while it is being written; the upstream gateway/executor stores remain the system of record for evidence and actions. Losing the database loses console-local accounts, comments and decision records — recoverable only from backups.

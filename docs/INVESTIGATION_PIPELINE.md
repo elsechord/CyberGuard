@@ -15,7 +15,7 @@ docker compose -f compose.investigation.yaml cp investigation:/artifacts/. artif
 
 ## 自己的证据材料
 
-Linux 只读采集、范围、权限限制及脱敏说明见 [证据包文档](EVIDENCE_BUNDLES.md)。配置和日志均需明确指定范围；默认不读取进程环境或命令行。离线分析入口：
+Linux 只读采集、范围、权限限制及脱敏说明见 [证据包文档](EVIDENCE_BUNDLES.zh-CN.md)。配置和日志均需明确指定范围；默认不读取进程环境或命令行。离线分析入口：
 
 ```sh
 python scripts/collect-linux-evidence.py --output artifacts/my-evidence.json

@@ -15,7 +15,7 @@
 | 你想做什么 | 入口 |
 | --- | --- |
 | 从零部署完整调查服务 | [原生后端安装指南](NATIVE_INSTALL.md) |
-| 启动控制台 | [快速开始](QUICKSTART.md) · [登录、HTTPS 与会话配置](OPERATIONS_DEPLOY.md) |
+| 启动控制台 | [快速开始](QUICKSTART.zh-CN.md) · [登录、HTTPS 与会话配置](OPERATIONS_DEPLOY.zh-CN.md) |
 | 将已有 Agent 连接进来 | [Skill 安装与连接](EXTERNAL_AGENT_SKILL.md) |
 | 配置真实调查后端 | [AgentTeams 原生任务服务](AGENTTEAMS_TASK_SERVICE.md) |
 | 不调用模型，检查已发布证据 | [运行汇总](validation/full-case/summary.json) · [完整验证记录](FULL_CASE_VALIDATION.md) |

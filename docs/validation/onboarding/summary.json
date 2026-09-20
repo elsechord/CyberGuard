@@ -1,0 +1,57 @@
+{
+  "status": "passed",
+  "image": "cyberguard/operations-console:0.15.1",
+  "test": "real HTTPS and Unix socket transport with local provider stub",
+  "real_provider_calls": 0,
+  "native_team_deployment": false,
+  "checks": [
+    {
+      "name": "setup_automatically_logs_in_and_opens_wizard",
+      "passed": true
+    },
+    {
+      "name": "real_https_probe_via_console_and_unix_socket",
+      "passed": true
+    },
+    {
+      "name": "one_bounded_authenticated_request",
+      "passed": true
+    },
+    {
+      "name": "probe_does_not_persist_key",
+      "passed": true
+    },
+    {
+      "name": "save_succeeds_without_echoing_key",
+      "passed": true
+    },
+    {
+      "name": "private_file_mode_0600",
+      "passed": true
+    },
+    {
+      "name": "private_key_round_trip",
+      "passed": true
+    },
+    {
+      "name": "status_reports_has_key_without_secret",
+      "passed": true
+    },
+    {
+      "name": "helper_restart_preserves_saved_configuration",
+      "passed": true
+    },
+    {
+      "name": "no_extra_model_requests",
+      "passed": true
+    }
+  ],
+  "started_at_unix": 1789871144.8115258,
+  "local_https_requests": 1,
+  "checks_count": 10,
+  "image_id": "sha256:3bd039a7f9e341cac85898ff4665f797309426a9b189860e3272fe8aefba3627",
+  "tls_trust_scope": "SSL_CERT_FILE only in isolated helper subprocess",
+  "installation_or_budget_actions": 0,
+  "elapsed_seconds": 16.45,
+  "isolated_resources_removed": true
+}

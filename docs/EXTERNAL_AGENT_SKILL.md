@@ -1,5 +1,7 @@
 # 在自己的 Agent 中使用 CyberGuard
 
+[中文文档导航](README.zh-CN.md) · [先部署服务端](WEB_ONBOARDING.zh-CN.md)
+
 标准 Skill **v0.2.0** 让现有 Agent 把已授权材料和调查目标提交给 CyberGuard 后端，再取回任务状态与报告。分析由部署端的 AgentTeams Workers 完成；调用方 Agent 负责交互、提交与解释返回结果。源码位于 [`integrations/agent-skills/cyberguard`](../integrations/agent-skills/cyberguard/)，与 [`skills/`](../skills/) 中供 Worker 使用的角色 Skill 分开。
 
 客户端需要文件访问和 Python 3.10+，不需要本机 Docker 或独立模型密钥。在线调查需要可用的服务端 AgentTeams 配置；安装 Skill 本身不部署后端。旧事件只读包和无需服务的合成离线演练继续保留。

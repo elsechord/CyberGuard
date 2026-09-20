@@ -1,5 +1,9 @@
 # Operations runbook
 
+[简体中文](OPERATIONS.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
+This page retains the older server acceptance / seven-role Manager deployment. For current native AgentTeams v1.2.3 installation, use [Native installation](NATIVE_INSTALL.md); use [Console deployment](OPERATIONS_DEPLOY.md) for current Console backup.
+
 ## Health
 
 ```bash
@@ -52,7 +56,7 @@ Stop new tasks before taking a consistent backup. Test restoration on a separate
 
 ## Upgrade
 
-CyberGuard pins AgentTeams v1.2.2. Do not switch to `latest` on the competition server. Test an upgrade on a cloned volume, rerun the baseline and CyberGuard smoke tests, then update the pinned version deliberately.
+The historical bootstrap on this page pins AgentTeams v1.2.2; the current native task service pins v1.2.3. Do not switch to `latest` on the competition server. Test an upgrade on a cloned volume, rerun the baseline and CyberGuard smoke tests, then update the pinned version deliberately.
 
 ## Incident reset for a fresh demo
 

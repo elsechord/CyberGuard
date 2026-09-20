@@ -1,5 +1,7 @@
 # Release process
 
+[简体中文](RELEASE.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 The checked-in Python lock file targets CPython 3.12 on Linux x86_64. Regenerate and verify it before introducing another CPU architecture.
 
 1. Update `VERSION`, `CHANGELOG.md`, service metadata, Compose image tags and competition materials together.

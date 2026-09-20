@@ -1,5 +1,7 @@
 # Real account laboratory
 
+[简体中文](LAB_EXECUTION.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 This lab exercises one real side effect: disabling and restoring `compromised-lab` in a dedicated SQLite-backed identity service. `control-lab` must stay accessible. It is a service integration proof, not a production identity connector, an attack-detection benchmark, or a new live AgentTeams task.
 
 ## Install and reproduce

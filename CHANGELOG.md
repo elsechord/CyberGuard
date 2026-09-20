@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.1 — 2026-09-20
+
+- Added an administrator-only web setup wizard for model connection testing, private configuration, native team initialization and explicit investigation activation.
+- Added an optional local installation helper with a narrow authenticated Unix-socket API; the Console does not receive the Docker socket.
+- Added complete Chinese installation, Console, ingestion, connector and operations documentation, with bilingual navigation.
+
 ## 0.15.0 — 2026-09-20
 
 - Added native AgentTeams investigation delivery: Skill/Console intake, original evidence packets, Project/Task planning, independent verification and cited report retrieval.

@@ -22,19 +22,27 @@ CyberGuard 是面向 Agent 的调查与处置治理基础设施。已有 Agent �
 | 你的任务 | CyberGuard 提供什么 | 从这里开始 |
 | --- | --- | --- |
 | 从已有 Agent 委托调查 | 生成连接指令、提交材料并获取后端报告 | [连接你的 Agent](docs/EXTERNAL_AGENT_SKILL.md#从控制台连接推荐) |
-| 审查一次处置建议 | 查看目标、理由、审批决策与事件历史 | [运营控制台](docs/OPERATIONS_CONSOLE.md) |
+| 审查一次处置建议 | 查看目标、理由、审批决策与事件历史 | [运营控制台](docs/OPERATIONS_CONSOLE.zh-CN.md) |
 | 确认处置是否有效 | 按运行关联观测、执行记录与复核结果 | [真实进程实验](docs/HOST_LAB.md) |
-| 接入已有安全数据 | Suricata 文件导入与可配置的只读 HTTP 连接器 | [数据导入](docs/INGEST.md) · [连接器](docs/LIVE_CONNECTORS.md) |
+| 接入已有安全数据 | Suricata 文件导入与可配置的只读 HTTP 连接器 | [数据导入](docs/INGEST.zh-CN.md) · [连接器](docs/LIVE_CONNECTORS.zh-CN.md) |
 
 ## 部署控制台
 
-**要部署完整的原生调查后端：** 按[从零部署指南](docs/NATIVE_INSTALL.md)，从固定 AgentTeams 版本到第一份 Skill 调查逐步完成。下面的命令先启动基础控制台。
+**推荐使用网页安装向导。** 准备 Linux / WSL2、Git、Python 3.12+ 和 Docker Compose，在仓库根目录运行：
+
+```bash
+sudo python3 deploy/onboarding/bootstrap.py
+```
+
+打开 `http://127.0.0.1:18120/setup`，创建管理员后，依次填写模型地址、模型名与 API Key，测试连接、初始化 AgentTeams，并启用调查。已有管理员从“设置 → 部署向导”进入。密钥保存在部署主机，不放进 Agent 提示词。[网页安装指南](docs/WEB_ONBOARDING.zh-CN.md) · [中文文档中心](docs/README.zh-CN.md)
+
+希望手动管理部署时，使用[原生后端安装指南](docs/NATIVE_INSTALL.md)。下面保留基础控制台的独立启动方式。
 
 适合需要事件队列、审批界面、角色权限、API Key 和审计历史的分析师与团队。
 
 ![CyberGuard 运营控制台](docs/assets/console-v2-overview.png)
 
-准备 Git、Python 3.12+ 与 Docker Compose，在 Bash 中运行（Linux/macOS 或 Windows Git Bash）：
+准备 Git、Python 3.12+ 与 Docker Compose，在 Linux / WSL2 的 Bash 中运行：
 
 ```bash
 git clone https://github.com/elsechord/CyberGuard.git
@@ -44,12 +52,12 @@ docker network inspect agentteams-net >/dev/null 2>&1 || docker network create a
 CYBERGUARD_COOKIE_SECURE=false docker compose up -d --build
 ```
 
-该命令用于本机 HTTP 会话；公网部署按[部署指南](docs/OPERATIONS_DEPLOY.md)启用 HTTPS，并保留 Secure Cookie。
+该命令用于本机 HTTP 会话；公网部署按[部署指南](docs/OPERATIONS_DEPLOY.zh-CN.md)启用 HTTPS，并保留 Secure Cookie。
 
 | 本机入口 | 用途 | 下一步 |
 | --- | --- | --- |
-| `http://127.0.0.1:18120` | 多用户运营控制台 | [创建首个管理员，完成 HTTPS 与会话配置](docs/OPERATIONS_DEPLOY.md) |
-| `http://127.0.0.1:18100/console` | 只读证据审计视图 | [采集第一份演练证据](docs/QUICKSTART.md) |
+| `http://127.0.0.1:18120` | 多用户运营控制台 | [创建首个管理员，完成 HTTPS 与会话配置](docs/OPERATIONS_DEPLOY.zh-CN.md) |
+| `http://127.0.0.1:18100/console` | 只读证据审计视图 | [采集第一份演练证据](docs/QUICKSTART.zh-CN.md) |
 
 基础部署包含控制台与模拟响应后端。完成管理员、HTTPS 会话配置后，按[从零部署指南](docs/NATIVE_INSTALL.md)连接 AgentTeams 与模型，即可运行真实调查。
 
@@ -106,7 +114,7 @@ Linux 进程实验展示了一个具体问题：结束进程成功之后，持�
 <summary>历史演练与组件验收</summary>
 
 - [固定流程进程实验](docs/HOST_LAB.md)：脚本预设两轮决策，用于复核与审批组件回归。
-- [账号实验](docs/LAB_EXECUTION.md)：禁用隔离账号、独立探测访问，再恢复。
+- [账号实验](docs/LAB_EXECUTION.zh-CN.md)：禁用隔离账号、独立探测访问，再恢复。
 - [早期原生任务记录](docs/LIVE_TASK_EVIDENCE.md)：供应链演练中的协作与目标纠正。
 - [v0.14.1 服务演示与证据包](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.1)。
 
@@ -120,9 +128,9 @@ Linux 进程实验展示了一个具体问题：结束进程成功之后，持�
 | --- | --- | --- |
 | 已有 Agent／内部应用 | 已授权材料与目标 → 持久化任务 → 后端报告 | [Skill v0.2.0](docs/EXTERNAL_AGENT_SKILL.md) · [任务 API](docs/INVESTIGATION_TASKS.md) |
 | 既有事件包 | 事件 JSON／只读 API → 本地审阅材料 | 旧 `check` / `fetch` |
-| IDS 导出 | Suricata EVE JSON／JSONL → 规范化证据 | [文件导入适配器](docs/INGEST.md) |
-| SIEM／EDR／NDR／CMDB | 配置的上游 HTTP 响应 → 事件证据 | [服务端连接器配置](docs/LIVE_CONNECTORS.md)，厂商字段需适配 |
-| 内部应用 | 限定 scope 的 API 请求 → 事件、证据和提案数据 | [控制台 API v1](docs/OPERATIONS_CONSOLE.md#api-v1) |
+| IDS 导出 | Suricata EVE JSON／JSONL → 规范化证据 | [文件导入适配器](docs/INGEST.zh-CN.md) |
+| SIEM／EDR／NDR／CMDB | 配置的上游 HTTP 响应 → 事件证据 | [服务端连接器配置](docs/LIVE_CONNECTORS.zh-CN.md)，厂商字段需适配 |
+| 内部应用 | 限定 scope 的 API 请求 → 事件、证据和提案数据 | [控制台 API v1](docs/OPERATIONS_CONSOLE.zh-CN.md#api-v1) |
 | SOAR／设备处置 | 已审批提案 → 执行动作 → 效果观测 | 需要扩展执行器；尚未交付生产厂商的写操作集成 |
 
 例如，使用具有 `incidents:read` 权限的 API Key，从已部署控制台读取事件：
@@ -134,7 +142,7 @@ curl --fail --silent --show-error \
   "${CYBERGUARD_CONSOLE_URL}/api/v1/incidents?limit=5"
 ```
 
-列表响应包含 `data`、`has_more`、`next_cursor`；单个事件通过 `/api/v1/incidents/{incident_id}` 读取。API Key 按 scope 控制接口权限。[接口、鉴权与错误处理 →](docs/OPERATIONS_CONSOLE.md#api-v1)
+列表响应包含 `data`、`has_more`、`next_cursor`；单个事件通过 `/api/v1/incidents/{incident_id}` 读取。API Key 按 scope 控制接口权限。[接口、鉴权与错误处理 →](docs/OPERATIONS_CONSOLE.zh-CN.md#api-v1)
 
 ## 各组件如何协作
 
@@ -162,11 +170,11 @@ AgentTeams 负责原生调查与独立复核；受约束转换器将报告与实
 
 - **按需协作**：调查 Worker 可展开临时专家，支持定向问答和原生回收。[研究取舍](docs/ADAPTIVE_AGENT_RESEARCH.md) · [实际验证](docs/ADAPTIVE_COLLABORATION_VALIDATION.md)
 
-- **证据组织**：规范化、来源信息、标识与引用校验。[观测模型](docs/OBSERVATION_MODEL.md) · [数据契约](contracts/)
-- **受控动作**：允许列表、提案绑定审批、幂等执行与动作审计。[执行器](services/response-executor/) · [威胁模型](docs/THREAT_MODEL.md)
+- **证据组织**：规范化、来源信息、标识与引用校验。[观测模型](docs/OBSERVATION_MODEL.zh-CN.md) · [数据契约](contracts/)
+- **受控动作**：允许列表、提案绑定审批、幂等执行与动作审计。[执行器](services/response-executor/) · [威胁模型](docs/THREAT_MODEL.zh-CN.md)
 - **效果检查**：账号权限与进程状态探测、运行关联和证据导出。[运行关联示例](docs/examples/run-correlation-CG-2026-0002.md)
 - **Agent 接入**：[十个 AgentTeams 角色 Skill](docs/SKILL_CATALOG.md)、[外部调查 Skill](integrations/agent-skills/cyberguard/)与[本机 AgentTeams 部署](docs/AGENTTEAMS_LOCAL.md)。
-- **可选模型准入控制**：按运行预留预算，按角色约束模型路由。[Model Guard](docs/MODEL_GUARD.md)
+- **可选模型准入控制**：按运行预留预算，按角色约束模型路由。[Model Guard](docs/MODEL_GUARD.zh-CN.md)
 
 安全是首个落地场景。财务、法律等文本可复用材料接入与审阅流程，进一步的专业解释、策略和效果判定通过领域适配扩展。
 
@@ -174,18 +182,18 @@ AgentTeams 负责原生调查与独立复核；受约束转换器将报告与实
 
 | 我想做什么 | 文档 |
 | --- | --- |
-| 安装与排障 | [快速开始](docs/QUICKSTART.md) · [控制台部署](docs/OPERATIONS_DEPLOY.md) |
+| 安装与排障 | [快速开始](docs/QUICKSTART.zh-CN.md) · [控制台部署](docs/OPERATIONS_DEPLOY.zh-CN.md) |
 | 从自己的 Agent 委托调查 | [Skill 安装与连接](docs/EXTERNAL_AGENT_SKILL.md) · [任务与材料](docs/INVESTIGATION_TASKS.md) · [后端配置](docs/AGENTTEAMS_TASK_SERVICE.md) |
 | 运行多 Agent 任务 | [AgentTeams 初始化](agentteams/BOOTSTRAP.md) · [本机部署](docs/AGENTTEAMS_LOCAL.md) |
-| 了解权限与信任边界 | [威胁模型](docs/THREAT_MODEL.md) · [实时连接器](docs/LIVE_CONNECTORS.md) |
-| 复现与评测 | [服务验收](docs/JUDGE_DEMO.md) · [调查评测](docs/INVESTIGATION_EVALUATION.md) |
+| 了解权限与信任边界 | [威胁模型](docs/THREAT_MODEL.zh-CN.md) · [实时连接器](docs/LIVE_CONNECTORS.zh-CN.md) |
+| 复现与评测 | [服务验收](docs/JUDGE_DEMO.md) · [调查评测](docs/INVESTIGATION_EVALUATION.zh-CN.md) |
 | 查找版本与比赛材料 | [Releases](https://github.com/elsechord/CyberGuard/releases) · [比赛说明](docs/COMPETITION.md) |
 
 ## 参与贡献
 
 欢迎提交脱敏接入示例、连接器字段映射、独立效果探针和可复现的失败案例。可以先在 [Issues](https://github.com/elsechord/CyberGuard/issues) 说明输入、预期结果与复现步骤，请勿附带凭据或私有安全数据。
 
-本地测试见[开发说明](docs/QUICKSTART.md)。多个服务使用相同的 Python 包名，请将测试文件分别放在独立解释器中执行。CI 入口位于页面顶部。上游集成贡献包括 AgentTeams Worker 控制台绑定修复 [PR #1287](https://github.com/agentscope-ai/AgentTeams/pull/1287)。
+本地测试见[开发说明](docs/QUICKSTART.zh-CN.md)。多个服务使用相同的 Python 包名，请将测试文件分别放在独立解释器中执行。CI 入口位于页面顶部。上游集成贡献包括 AgentTeams Worker 控制台绑定修复 [PR #1287](https://github.com/agentscope-ai/AgentTeams/pull/1287)。
 
 ## 许可证
 

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}部署向导 · CyberGuard{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="/static/onboarding.css">
+<div class="page-head"><div><h1>开始你的第一份调查</h1><p>连接模型，准备调查团队，然后把材料交给 CyberGuard。</p></div><a href="/settings/members">管理员与成员</a></div>
+<div id="onboarding" data-connected="{{ 'true' if connected else 'false' }}">
+<ol class="onboarding-steps"><li>① 管理员已创建</li><li>② 连接模型</li><li>③ 初始化团队</li><li>④ 开始调查</li></ol>
+{% if not connected %}<div class="error-banner">尚未连接宿主机部署服务。请先运行项目提供的部署服务启动器，再回到此页。基础控制台可以继续使用。</div>{% endif %}
+<section class="card"><h2>连接模型</h2><p>填写兼容 OpenAI Chat Completions 的 HTTPS 服务地址。密钥保存在部署主机，保存后不会显示。</p>
+<form id="model-form" autocomplete="off"><input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+<label for="model-url">API Base URL</label><input id="model-url" name="base_url" type="url" placeholder="https://api.example.com/v1" required>
+<label for="model-name">模型名称</label><input id="model-name" name="model" placeholder="模型服务提供的 model 名称" required maxlength="200">
+<label for="model-key">API Key</label><input id="model-key" name="api_key" type="password" autocomplete="new-password" placeholder="首次填写；后续留空保留已有密钥">
+<p id="model-apply-state" class="hint">正在读取模型应用状态…</p><p id="key-state" class="hint">尚未读取配置。</p><p class="hint">“测试连接”会向模型发送一条短请求，可能产生少量费用。</p>
+<div class="actions"><button type="submit" data-action="test">测试连接</button><button type="submit" data-action="save">保存配置</button><button type="submit" data-action="apply">保存并应用到调查服务</button></div>
+</form></section>
+<section class="card"><h2>初始化 AgentTeams</h2><p>启动器将在后台准备调查团队、安装运行组件并连接控制台。首次运行可能需要下载镜像，请保持宿主机部署服务运行。</p>
+<button id="initialize" type="button">初始化 / 应用配置</button><p class="hint">此操作会启动或更新本机调查服务；已有任务运行时请先等待任务结束。</p>
+<dl class="investigation-meta"><div><dt>当前状态</dt><dd id="phase">正在读取…</dd></div><div><dt>当前步骤</dt><dd id="step">—</dd></div><div><dt>Controller</dt><dd id="controller-state">—</dd></div><div><dt>模型网关</dt><dd id="guard-state">—</dd></div><div><dt>调查团队</dt><dd id="team-state">—</dd></div></dl>
+<button id="refresh" class="ghost" type="button">刷新状态</button></section>
+<p id="onboarding-message" role="status" aria-live="polite"></p>
+<section class="card"><h2>准备好后，从这里开始</h2><p>先提交一份小材料，查看调查和独立复核如何生成报告。</p><div class="actions"><a href="/investigations">提交第一份调查</a><a href="/connect">连接已有 Agent</a></div><p id="budget-state">正在读取调查预算…</p><pre id="budget-limits"></pre><button id="enable" type="button">启用调查预算</button><p class="hint">启用后，提交的调查会调用模型并计入本轮限额。保存和初始化本身不启动付费调查。</p></section>
+</div><script src="/static/onboarding.js" defer></script>
+{% endblock %}

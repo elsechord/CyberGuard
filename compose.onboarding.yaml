@@ -1,0 +1,14 @@
+# Optional local installation helper. The Console receives only this narrow API,
+# never the Docker socket or host model configuration directory.
+services:
+  operations-console:
+    group_add:
+      - "10003"
+    environment:
+      CYBERGUARD_ONBOARDING_SOCKET: /run/cyberguard-onboarding/service.sock
+      CYBERGUARD_ONBOARDING_TOKEN_FILE: /run/cyberguard-onboarding/token
+    volumes:
+      - type: bind
+        source: ${CYBERGUARD_ONBOARDING_RUN_DIR:-/run/cyberguard-onboarding}
+        target: /run/cyberguard-onboarding
+        read_only: true

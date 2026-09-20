@@ -1,5 +1,7 @@
 # Operations console deployment runbook
 
+[简体中文](OPERATIONS_DEPLOY.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 For a fresh host running native investigations, use [the complete AgentTeams installation sequence](NATIVE_INSTALL.md). Starting this Console alone does not provision its model or AgentTeams Workers. Keep the generated private `console.override.json` on every Compose upgrade so the backend binding survives recreation.
 
 One-page guide for bringing up, upgrading, backing up and migrating the
@@ -109,7 +111,10 @@ own protected backup; they are not recreated from the console database alone. Ba
 runs (no downtime; the export uses SQLite `VACUUM INTO`, never a live copy):
 
 ```bash
-docker run --rm -v cyberguard_console-data:/data:ro -v "$PWD":/out \
+CG_CONSOLE_CONTAINER=$(docker compose ps -q operations-console)
+CG_CONSOLE_VOLUME=$(docker inspect "$CG_CONSOLE_CONTAINER" --format '{{range .Mounts}}{{if eq .Destination "/data"}}{{.Name}}{{end}}{{end}}')
+test -n "$CG_CONSOLE_VOLUME"
+docker run --rm -v "$CG_CONSOLE_VOLUME":/data:ro -v "$PWD":/out \
   python:3.12-slim \
   python /out/scripts/console-export.py --db /data/console.db \
   --out /out/console-export.tar.gz --env /out/.env --organization cyberguard
@@ -128,8 +133,11 @@ Recovery drill — rehearse these six steps on a lab host before relying on them
    console-export.tar.gz` (checks every sha256 in `manifest.json`).
 4. Restore the database into a fresh volume, owned by container uid 10003:
    ```bash
-   docker volume create cyberguard-console-data
-   docker run --rm -v cyberguard-console-data:/data -v "$PWD":/out \
+   docker compose create operations-console
+   CG_CONSOLE_CONTAINER=$(docker compose ps -aq operations-console)
+   CG_CONSOLE_VOLUME=$(docker inspect "$CG_CONSOLE_CONTAINER" --format '{{range .Mounts}}{{if eq .Destination "/data"}}{{.Name}}{{end}}{{end}}')
+   test -n "$CG_CONSOLE_VOLUME"
+   docker run --rm -i -v "$CG_CONSOLE_VOLUME":/data -v "$PWD":/out \
      python:3.12-slim python - <<'PY'
    import sqlite3, tarfile
    with tarfile.open("/out/console-export.tar.gz") as tar:
@@ -137,7 +145,7 @@ Recovery drill — rehearse these six steps on a lab host before relying on them
        tar.extract(member, "/tmp")
    src = sqlite3.connect("/tmp/console.db"); src.backup(sqlite3.connect("/data/console.db"))
    PY
-   docker run --rm -v cyberguard-console-data:/data alpine chown 10003:10003 /data/console.db
+   docker run --rm -v "$CG_CONSOLE_VOLUME":/data alpine chown 10003:10003 /data/console.db
    ```
 5. Start and wait for health: `docker compose up -d operations-console`, then
    `docker compose ps` shows `healthy` and `/healthz` returns 200.

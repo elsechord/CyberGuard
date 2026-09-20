@@ -1,5 +1,7 @@
 # CyberGuard threat model
 
+[简体中文](THREAT_MODEL.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 ## Protected assets
 
 - LLM, SIEM, EDR, firewall and threat-intelligence credentials.

@@ -730,11 +730,13 @@ class SetupFlowTest(unittest.TestCase):
                 follow_redirects=False)
             self.assertEqual(created.status_code, 303)
             # Setup is permanently closed; the token is wiped.
-            self.assertTrue(created.headers["location"].startswith("/login"))
+            self.assertEqual(created.headers["location"], "/settings/onboarding")
+            self.assertEqual(client.get("/settings/onboarding").status_code, 200)
             self.assertEqual(client.get("/setup", follow_redirects=False).status_code, 303)
             state = auth.setup_state()
             self.assertFalse(state["open"])
             self.assertIsNone(state["token"])
+            client.cookies.clear()
             login(client, "boot-admin", "long-enough-password")
             self.assertEqual(client.get("/").status_code, 200)
         finally:

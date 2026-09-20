@@ -1,6 +1,8 @@
 # 从零部署 AgentTeams 调查服务
 
-本页从一台 Linux / WSL2 Docker 主机开始，部署 Console、原生 AgentTeams 团队和受预算控制的模型通道。所有命令在仓库根目录执行。已有平台可以直接从第 4 步接入自己的配置；基础 Console 安装见 [Quickstart](QUICKSTART.md)。
+希望在浏览器填写模型并初始化团队，可使用[网页安装向导](WEB_ONBOARDING.zh-CN.md)。本页保留完整命令行步骤，适合运维部署与故障核查。[返回中文文档导航](README.zh-CN.md)。
+
+本页从一台 Linux / WSL2 Docker 主机开始，部署 Console、原生 AgentTeams 团队和受预算控制的模型通道。所有命令在仓库根目录执行。已有平台可以直接从第 4 步接入自己的配置；基础 Console 安装见 [Quickstart](QUICKSTART.zh-CN.md)。
 
 ## 1. 准备主机与私有配置
 
@@ -86,7 +88,7 @@ curl -fsS http://127.0.0.1:18120/healthz
 
 默认地址是本机 HTTP，配置器仅对 loopback HTTP 设置 `CYBERGUARD_COOKIE_SECURE=false`，使本地登录 Cookie 可以正常工作。使用 HTTPS 公网域名时通过 `--console-origin https://YOUR_DOMAIN` 配置，Cookie 保持 Secure。
 
-打开 `http://127.0.0.1:18120`，按 [Console 首次管理员配置](OPERATIONS_DEPLOY.md) 完成设置。在接入页面创建 API Key 并生成 Skill 提示词。调用方提交材料后，Console 自动创建案件 TaskRoom、邀请团队并投递完整请求，无需手工创建 Matrix 房间。
+打开 `http://127.0.0.1:18120`，按 [Console 首次管理员配置](OPERATIONS_DEPLOY.zh-CN.md) 完成设置。在接入页面创建 API Key 并生成 Skill 提示词。调用方提交材料后，Console 自动创建案件 TaskRoom、邀请团队并投递完整请求，无需手工创建 Matrix 房间。
 
 已有 v1.2.3 团队可通过 [原生连接变量](AGENTTEAMS_TASK_SERVICE.md#配置) 配置自己的 Controller/Matrix 地址、团队与 Leader ID；所有参与 Worker 均需安装上述材料 helper。自有预算系统不必使用此处 Model Guard，但需提供可用的模型服务。
 

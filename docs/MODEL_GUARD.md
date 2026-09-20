@@ -1,5 +1,7 @@
 # Local model admission guard
 
+[简体中文](MODEL_GUARD.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 The local AgentTeams integration routes each fresh Worker's dedicated Higress provider to this guard before any paid provider request. This replaces after-the-fact polling as the primary request admission control. This component is an experimental single-process local service, not a complete multi-tenant model gateway.
 
 ## Fixed identity and limits

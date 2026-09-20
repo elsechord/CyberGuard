@@ -15,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import auth, config, db, errors, idempotency, jobs
 from . import investigation_api
+from . import onboarding
 from . import investigation_pages
 from . import api as api_module
 from . import pages as pages_module
@@ -63,6 +64,7 @@ app.include_router(api_module.router)
 app.include_router(pages_module.router)
 app.include_router(investigation_api.router)
 app.include_router(investigation_pages.router)
+app.include_router(onboarding.router)
 
 CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; "
        "img-src 'self' data:; connect-src 'self'; form-action 'self'; "

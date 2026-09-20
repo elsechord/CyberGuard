@@ -106,7 +106,7 @@ services:
     build:
       context: .
       dockerfile: services/operations-console/Dockerfile
-    image: cyberguard/operations-console:0.15.0
+    image: cyberguard/operations-console:0.15.1
     init: true
     environment:
       CYBERGUARD_CONSOLE_DB: /data/console.db

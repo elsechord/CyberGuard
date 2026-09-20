@@ -1,5 +1,7 @@
 # Live connector configuration
 
+[简体中文](LIVE_CONNECTORS.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 CyberGuard competition scenarios require no external security products. To use live telemetry, copy `config/connectors.json.example` to `config/connectors.json`, adapt only the server-owned paths, and populate the corresponding base URLs and tokens in `.env`. The example includes SIEM, NDR, firewall/gateway, EDR and CMDB adapters.
 
 Agents call the same tools with `scenario_id: live`. They can provide query arguments but cannot supply the upstream URL, authentication header or credential. The gateway loads those values from its read-only configuration and environment.

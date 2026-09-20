@@ -47,7 +47,7 @@
 
 ## Prepared deterministic service check
 
-Prerequisite: a Linux/Bash host with Python 3, curl and GNU coreutils, a generated `.env`, and the baseline `compose.yaml` services already healthy. Follow [QUICKSTART.md](QUICKSTART.md) first, including creation of the external `agentteams-net` network. No model key or running AgentTeams/Matrix deployment is needed for this script.
+Prerequisite: a Linux/Bash host with Python 3, curl and GNU coreutils, a generated `.env`, and the baseline `compose.yaml` services already healthy. Follow [QUICKSTART.md](QUICKSTART.zh-CN.md) first, including creation of the external `agentteams-net` network. No model key or running AgentTeams/Matrix deployment is needed for this script.
 
 1. Open the read-only audit view at `http://127.0.0.1:18100/console` (SSH-forward this loopback port when using a server).
 2. Run `bash deploy/judge-demo.sh` as a user able to read the local `.env`. It does not rebuild or alter configuration, but creates test incidents and response records.
@@ -58,7 +58,7 @@ The script runs both fixed scenarios with **simulation execution** in the baseli
 
 The current script does **not** check recovery between the first and third actions and does **not** demonstrate a failed post-execution verification followed by a revised proposal. Do not present it as that full exception-handling storyline. The separately retained [live AgentTeams task evidence](LIVE_TASK_EVIDENCE.md) records a wrong-target proposal and subsequent correction; its recovery contract is deterministic too. The [host laboratory](HOST_LAB.md) independently observes harmless real processes restarting after termination and is the separate entry point for an actual-state failure demonstration. Neither is a production intrusion remediation claim.
 
-The multi-user operations console is a separate surface on port **18120**, with first-admin setup and session requirements described in [OPERATIONS_DEPLOY.md](OPERATIONS_DEPLOY.md). Matrix role lanes belong to a separately running AgentTeams task; the deterministic script does not generate them.
+The multi-user operations console is a separate surface on port **18120**, with first-admin setup and session requirements described in [OPERATIONS_DEPLOY.md](OPERATIONS_DEPLOY.zh-CN.md). Matrix role lanes belong to a separately running AgentTeams task; the deterministic script does not generate them.
 
 ## Run correlation one-pager
 

@@ -1,5 +1,7 @@
 # Read-only Linux evidence bundles
 
+[简体中文](EVIDENCE_BUNDLES.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 This collector creates investigation inputs, not a security verdict. It does not execute
 commands found in files, run a shell, collect process environments or command-line arguments,
 change host configuration, or connect to external services. It uses only Python's standard library.

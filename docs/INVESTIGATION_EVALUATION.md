@@ -1,5 +1,7 @@
 # Evidence investigation and fair comparison
 
+[简体中文](INVESTIGATION_EVALUATION.zh-CN.md) · [中文文档导航](README.zh-CN.md)
+
 This is a working **fixed-workflow baseline**, plus a shared report contract and
 an import interface for future real single-agent and multi-agent runs. It is not
 an autonomous investigation or a cryptomining detector. No model/AgentTeams run
