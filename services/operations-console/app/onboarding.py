@@ -213,7 +213,7 @@ async def status(request: Request):
 async def action(request: Request, action: str):
     principal = admin(request)
     if studio_mode():
-        return JSONResponse({"error": {"message": "此创空间由魔搭运行环境托管；模型与团队配置通过创空间设置更新。"}}, status_code=409)
+        return JSONResponse({"error": {"message": "此实例由托管环境管理；模型与团队配置请在部署平台设置中更新。"}}, status_code=409)
     if action not in {"test", "save", "apply", "initialize", "enable"}:
         raise HTTPException(404)
     body = await request.body()
