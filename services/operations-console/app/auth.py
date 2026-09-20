@@ -11,6 +11,7 @@ Security contract implemented here:
 import base64
 import hashlib
 import hmac
+import os
 import secrets
 import time
 from dataclasses import dataclass
@@ -115,6 +116,24 @@ def create_user(username: str, password: str, role: str) -> int:
             (username, hash_password(password), role, audit.now_iso()),
         )
         return cursor.lastrowid
+
+
+def ensure_public_demo_admin() -> None:
+    """Provision the explicitly enabled full-access public Studio account."""
+    username = os.getenv("CYBERGUARD_PUBLIC_DEMO_USERNAME", "").strip()
+    password = os.getenv("CYBERGUARD_PUBLIC_DEMO_PASSWORD", "")
+    if not username or not password or user_count() == 0:
+        return
+    existing = get_user(username)
+    if existing is None:
+        create_user(username, password, "admin")
+        return
+    if existing["role"] != "admin":
+        set_user_role(existing["id"], "admin")
+    if existing["disabled"]:
+        set_user_disabled(existing["id"], False)
+    if not verify_password(password, existing["pw_hash"]):
+        change_password(existing["id"], password)
 
 
 def set_user_role(user_id: int, role: str) -> None:

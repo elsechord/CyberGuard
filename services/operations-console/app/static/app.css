@@ -283,6 +283,10 @@ dl.kv { margin: 0; }
 .auth-card h1 { text-align: left; font-size: 32px; font-weight: 500; margin-bottom: 32px; }
 .auth-card form.stack { gap: 22px; }
 .auth-card button.primary { margin-top: 8px; min-height: 46px; }
+.demo-access { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 20px; }
+.demo-access-title { margin: 0 0 14px; color: var(--muted); font-size: 12px; letter-spacing: .02em; }
+.demo-access p:not(.demo-access-title) { display: flex; justify-content: space-between; gap: 20px; margin: 9px 0; font-size: 13px; }
+.demo-access code { color: var(--ink); font-family: inherit; font-weight: 600; user-select: all; }
 .htmx-request { cursor: progress; }
 .tabs a.htmx-request { background: var(--soft); }
 @media (max-width: 1160px) {

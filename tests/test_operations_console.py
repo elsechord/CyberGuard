@@ -258,6 +258,25 @@ class OperationsConsoleTest(unittest.TestCase):
             self.assertIn("SameSite=none", cookie_response.headers["set-cookie"])
             self.assertIn("Secure", cookie_response.headers["set-cookie"])
 
+    def test_public_demo_account_has_full_access_and_is_shown_only_when_enabled(self) -> None:
+        username, password = "goai-demo-test", "test-public-password-2026"
+        anonymous = TestClient(app)
+        self.assertNotIn("公开演示 · 完整体验", anonymous.get("/login").text)
+        with patch.dict(os.environ, {
+            "CYBERGUARD_PUBLIC_DEMO_USERNAME": username,
+            "CYBERGUARD_PUBLIC_DEMO_PASSWORD": password,
+        }):
+            auth.ensure_public_demo_admin()
+            user = auth.get_user(username)
+            self.assertEqual(user["role"], "admin")
+            page = anonymous.get("/login")
+            self.assertIn(username, page.text)
+            self.assertIn(password, page.text)
+            login(anonymous, username, password)
+            self.assertEqual(anonymous.get("/").status_code, 200)
+            self.assertIn("investigations:write", auth.ROLE_SCOPE_GRANTS["admin"])
+            self.assertIn("decisions:write", auth.ROLE_SCOPE_GRANTS["admin"])
+
     def test_unauthorized_page_redirects_and_api_keeps_401(self) -> None:
         client = TestClient(app)
         bounced = client.get("/", follow_redirects=False)

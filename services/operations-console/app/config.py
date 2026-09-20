@@ -58,6 +58,14 @@ def cookie_samesite() -> str:
     return "lax"
 
 
+def public_demo_username() -> str:
+    return os.getenv("CYBERGUARD_PUBLIC_DEMO_USERNAME", "").strip()
+
+
+def public_demo_password() -> str:
+    return os.getenv("CYBERGUARD_PUBLIC_DEMO_PASSWORD", "")
+
+
 def upstream_timeout() -> float:
     try:
         return float(os.getenv("CYBERGUARD_UPSTREAM_TIMEOUT", "5"))

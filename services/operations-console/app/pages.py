@@ -84,6 +84,14 @@ def set_session_cookie(response: Response, sid: str) -> None:
 
 # ---------------------------------------------------------------- login/logout
 
+def demo_login_context() -> dict:
+    username = config.public_demo_username()
+    password = config.public_demo_password()
+    user = auth.get_user(username) if username and password else None
+    if user is None or user["role"] != "admin" or user["disabled"]:
+        return {"demo_username": "", "demo_password": ""}
+    return {"demo_username": username, "demo_password": password}
+
 @router.get("/login")
 async def login_page(request: Request):
     if auth.user_count() == 0:
@@ -91,7 +99,8 @@ async def login_page(request: Request):
     if auth.session_principal(request.cookies.get(config.cookie_name(), "")):
         return RedirectResponse("/", status_code=303)
     return render(request, "login.html", csrf=login_csrf_token(),
-                  error=None, notice=request.query_params.get("notice"))
+                  error=None, notice=request.query_params.get("notice"),
+                  **demo_login_context())
 
 
 @router.post("/login")
@@ -99,7 +108,8 @@ async def login_submit(request: Request):
     form = await form_of(request)
     if not login_csrf_valid(form.get("login_csrf") or ""):
         return render(request, "login.html", csrf=login_csrf_token(),
-                      error="会话已过期，请重新提交。", notice=None, status_code=403)
+                      error="会话已过期，请重新提交。", notice=None, status_code=403,
+                      **demo_login_context())
     outcome = await run_in_threadpool(
         auth.attempt_login, form.get("username") or "", form.get("password") or "",
         ip=client_ip(request), user_agent=request.headers.get("user-agent"))
@@ -108,7 +118,8 @@ async def login_submit(request: Request):
                    else "账户已锁定，请 15 分钟后重试。")
         status = 401 if outcome.reason == "invalid_credentials" else 429
         return render(request, "login.html", csrf=login_csrf_token(),
-                      error=message, notice=None, status_code=status)
+                      error=message, notice=None, status_code=status,
+                      **demo_login_context())
     response = RedirectResponse("/", status_code=303)
     set_session_cookie(response, outcome.sid)
     return response
@@ -176,6 +187,7 @@ async def setup_submit(request: Request):
                       status_code=422)
     auth.create_user(username, password, "admin")
     auth.finish_setup()
+    auth.ensure_public_demo_admin()
     audit.record("setup", actor=username, result="success",
                  ip=client_ip(request), reason="admin_created")
     outcome = await run_in_threadpool(auth.attempt_login, username, password,

@@ -22,5 +22,12 @@
     {% if error %}<p class="field-error" id="login-error">{{ error }}</p>{% endif %}
     <button type="submit" class="primary">登录</button>
   </form>
+  {% if demo_username and demo_password %}
+  <div class="demo-access" aria-label="公开演示账号">
+    <p class="demo-access-title">公开演示 · 完整体验</p>
+    <p><span>用户名</span><code>{{ demo_username }}</code></p>
+    <p><span>密码</span><code>{{ demo_password }}</code></p>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

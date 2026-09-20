@@ -32,6 +32,7 @@ jobs.init_db()
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     idempotency.purge_expired()
+    auth.ensure_public_demo_admin()
     token = auth.ensure_setup_token()
     if token:
         logger.warning(
