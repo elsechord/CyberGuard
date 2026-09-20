@@ -45,7 +45,8 @@ def package(revision, output):
             if name.startswith(prefix) and not name.endswith('/'):
                 bundled.writestr(name[len(prefix):], archived.read(name))
         for name in ('LICENSE', 'NOTICE'):
-            bundled.writestr(name, archived.read('CyberGuard/' + name))
+            if name not in bundled.namelist():
+                bundled.writestr(name, archived.read('CyberGuard/' + name))
     files = [{'name': p.name, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
               'bytes': p.stat().st_size} for p in (source, skill, video)]
     manifest = {'version': version, 'commit': commit, 'repository': 'https://github.com/elsechord/CyberGuard',
