@@ -9,55 +9,26 @@
   <a href="https://github.com/elsechord/CyberGuard/releases"><img src="https://img.shields.io/github/v/release/elsechord/CyberGuard" alt="最新版本"></a>
 </p>
 
-**CyberGuard 为 Agent 辅助的安全运营提供证据、审批和结果复核能力。** 在已有 Agent 中分析事件，在控制台审查处置提案，通过证据网关和执行器接入工具。多 Agent 协作基于 [AgentTeams](https://github.com/agentscope-ai/AgentTeams)。
+**让 Agent 的调查有据可查，让处置结果经得起复核。**
 
-[在已有 Agent 中使用](#在已有-agent-中使用) · [部署控制台](#部署控制台) · [查看完整案例](#执行成功不代表已经恢复) · [接入现有系统](#接入现有系统) · [文档导航](#文档导航)
+CyberGuard 是面向 Agent 的调查与处置治理基础设施。已有 Agent 通过 Skill 提交材料，AgentTeams 规划任务、组织调查与独立复核，结果带着原文引用返回。安全团队可进一步使用提案绑定审批、执行与效果探针，把“命令执行成功”与“问题真正解决”分开判断。
+
+[新版演示视频](https://github.com/elsechord/CyberGuard/releases/download/v0.15.0/cyberguard-finals-20260920.mp4) · [决赛演示入口](docs/FINALS_ENTRY.md) · [亮点与证据](docs/PROVEN_CAPABILITIES.md) · [部署并连接 Agent](#部署控制台) · [文档导航](#文档导航)
+
+**最新实跑：** 同一合成挖矿案件、相同配置，连续两次完成 Skill → AgentTeams 原生任务 → 调查 → 独立复核 → 报告交付，耗时 **5 分 7 秒 / 3 分 52 秒**。两次都识别出：第一轮停止进程成功，仍未达到清除目标；第二轮只在已有观察窗口内达标。[原始报告、任务记录与复查结果 →](docs/FULL_CASE_VALIDATION.md)
 
 ## 你可以用它做什么
 
 | 你的任务 | CyberGuard 提供什么 | 从这里开始 |
 | --- | --- | --- |
-| 在已有 Agent 中调查事件 | 只读访问事件，按证据引用形成分析 | [外部调查 Skill](docs/EXTERNAL_AGENT_SKILL.md) |
+| 从已有 Agent 委托调查 | 生成连接指令、提交材料并获取后端报告 | [连接你的 Agent](docs/EXTERNAL_AGENT_SKILL.md#从控制台连接推荐) |
 | 审查一次处置建议 | 查看目标、理由、审批决策与事件历史 | [运营控制台](docs/OPERATIONS_CONSOLE.md) |
 | 确认处置是否有效 | 按运行关联观测、执行记录与复核结果 | [真实进程实验](docs/HOST_LAB.md) |
 | 接入已有安全数据 | Suricata 文件导入与可配置的只读 HTTP 连接器 | [数据导入](docs/INGEST.md) · [连接器](docs/LIVE_CONNECTORS.md) |
 
-## 在已有 Agent 中使用
-
-保留你现在使用的 Agent 和模型。外部 Skill 读取 CyberGuard 事件导出或已授权的控制台 API，由当前 Agent 完成分析。需要文件访问与 Python 3.10+，不必另外部署 AgentTeams。
-
-**复制下面的提示词，发送给你的 Coding Agent：**
-
-```text
-请把 CyberGuard 调查 Skill 安装到我当前项目，并完成一次离线首次使用演练。
-
-从 https://github.com/elsechord/CyberGuard 获取源码到独立目录，保留已有文件，
-记录实际检出的提交版本。先阅读 docs/EXTERNAL_AGENT_SKILL.md 和
-integrations/agent-skills/cyberguard/SKILL.md，检查 scripts/install-agent-skill.py。
-
-Codex 使用 --agent codex，Claude Code 使用 --agent claude，
-其他兼容宿主使用 --agent generic；--project 指向我已有的项目目录。
-不要覆盖已安装的 Skill。
-
-安装后读取实际安装位置的 SKILL.md，生成新的离线演练快照，分析：
-仅凭 CPU 占用高，能否认定挖矿？引用 evidence_id，说明还缺什么证据，
-并给出下一步最值得做的观察。注明输入为合成演练，分析由当前 Agent 完成。
-不要部署服务、索要模型密钥或执行处置。
-如果宿主无法运行此流程，请说明缺少的能力。
-```
-
-也可以在包含本接入包的源码目录中安装：
-
-```bash
-python scripts/install-agent-skill.py --agent codex --project /absolute/path/to/project
-# Claude Code 改为 --agent claude；目标项目目录必须已经存在。
-```
-
-**第一次使用的结果：** 得到一份区分事实与判断、带证据引用的分析。随附演练同时提供“CPU 占用高”与“资产清单中有授权任务”的材料；CLI 负责生成、检查快照，分析由你的 Agent 撰写。
-
-这个入口目前是**只读调查**：不直接解析任意日志或 PDF，不向主机采集新数据，也不执行处置。安装目录与客户端行为已有测试；各 Agent 应用内的自动发现仍需分别验证。[接入真实事件与宿主要求 →](docs/EXTERNAL_AGENT_SKILL.md)
-
 ## 部署控制台
+
+**要部署完整的原生调查后端：** 按[从零部署指南](docs/NATIVE_INSTALL.md)，从固定 AgentTeams 版本到第一份 Skill 调查逐步完成。下面的命令先启动基础控制台。
 
 适合需要事件队列、审批界面、角色权限、API Key 和审计历史的分析师与团队。
 
@@ -70,17 +41,53 @@ git clone https://github.com/elsechord/CyberGuard.git
 cd CyberGuard
 python deploy/init_secrets.py
 docker network inspect agentteams-net >/dev/null 2>&1 || docker network create agentteams-net
-docker compose up -d --build
+CYBERGUARD_COOKIE_SECURE=false docker compose up -d --build
 ```
+
+该命令用于本机 HTTP 会话；公网部署按[部署指南](docs/OPERATIONS_DEPLOY.md)启用 HTTPS，并保留 Secure Cookie。
 
 | 本机入口 | 用途 | 下一步 |
 | --- | --- | --- |
 | `http://127.0.0.1:18120` | 多用户运营控制台 | [创建首个管理员，完成 HTTPS 与会话配置](docs/OPERATIONS_DEPLOY.md) |
 | `http://127.0.0.1:18100/console` | 只读证据审计视图 | [采集第一份演练证据](docs/QUICKSTART.md) |
 
-初始队列为空。响应执行器默认使用**模拟后端**，启动服务不代表已取得生产设备的处置权限。控制台默认启用 Secure Cookie，请先完成会话配置。[完整安装与排障 →](docs/QUICKSTART.md)
+基础部署包含控制台与模拟响应后端。完成管理员、HTTPS 会话配置后，按[从零部署指南](docs/NATIVE_INSTALL.md)连接 AgentTeams 与模型，即可运行真实调查。
+
+**随后连接你的 Agent：** 打开 `/connect`，生成 Skill v0.2.0 连接提示词和调查 API Key，将密钥保存到 Agent 主机的私有文件。Agent 安装 Skill、检查连接后，就能按你的要求提交材料、查询任务并取回报告。[连接指南 →](docs/EXTERNAL_AGENT_SKILL.md)
+
+也可以在 `/investigations` 直接提交文本或多材料 JSON。日志、财务记录、审计报告和司法文书采用统一材料格式，支持纯文本、JSON、CSV、Markdown，原文与提交者解释分别保留。[材料格式与领域适配 →](docs/INVESTIGATION_TASKS.md)
+
+SQLite 队列与阶段检查点让调查在调用方 Agent 断开后继续推进；Console 展示等待、运行、失败和交付状态。[后端配置与任务控制 →](docs/AGENTTEAMS_TASK_SERVICE.md)
+
+## 在已有 Agent 中使用
+
+保留当前 Agent 作为交互入口。Skill 的主要职责是委托后端：提交已授权材料、查看任务状态并获取报告。客户端需要文件访问与 Python 3.10+，AgentTeams 运行时及模型配置由部署端提供。
+
+**复制下面的提示词，发送给你的 Coding Agent：**
+
+```text
+请在当前项目配置 CyberGuard Skill v0.2.0，并验证控制台连接。
+从 https://github.com/elsechord/CyberGuard 获取源码到独立目录，记录提交版本，
+阅读 docs/EXTERNAL_AGENT_SKILL.md 和 integrations/agent-skills/cyberguard/SKILL.md，
+检查 scripts/install-agent-skill.py 后再使用。按宿主选择 --agent codex、
+--agent claude 或 --agent generic，--project 指向当前项目。
+复用兼容安装，不覆盖已有文件。使用 /connect 提供的控制台地址和私有密钥文件路径，
+运行 check --investigations 并报告真实结果；缺少配置时说明需要什么。
+本次安装连接不授权上传材料、启动调查、部署服务或执行处置。
+```
+
+也可以从源码目录安装：
+
+```bash
+python scripts/install-agent-skill.py --agent codex --project /absolute/path/to/project
+# Claude Code 改为 --agent claude，目标项目须已存在。
+```
+
+**还没有控制台？** 先用[合成离线演练](docs/EXTERNAL_AGENT_SKILL.md#离线试用复制这段提示词)体验证据分析，随后连接在线后端运行原生任务。已有事件包也可通过 `check` / `fetch` 读取。
 
 ## 执行成功，不代表已经恢复
+
+**同一现场案件已经贯通：** 实时进程证据进入 AgentTeams 原生调查，报告转换为受约束提案；批准执行后，独立采样发现复发，新的证据再次进入原生调查，再提案、再批准、再验证。一次 **11 分 18 秒**的运行通过 **20 项检查**，两轮调查各由不同 Worker 完成调查与复核。[完整原始记录与运行方法 →](docs/LIVE_RESPONSE_DEMO.md)
 
 Linux 进程实验展示了一个具体问题：结束进程成功之后，持久化机制仍可能把它重新启动。
 
@@ -93,17 +100,17 @@ Linux 进程实验展示了一个具体问题：结束进程成功之后，持�
 | 再次提案 | 新方案转向持久化配置，重新获得审批。 |
 | 再次复核 | 观察窗口内，实验进程与持久化均不存在，正常对照任务继续运行，结果为 **verified**。 |
 
-```bash
-docker compose -f compose.host-lab.yaml up --build --abort-on-container-exit --exit-code-from host-lab
-```
+演示在隔离 Linux 环境中操作无害进程和真实文件；已发布记录使用测试审批，现场可选择交互批准。[运行动态提案演示 →](docs/LIVE_RESPONSE_DEMO.md)
 
-这个实验在隔离 Linux 环境中操作真实进程和文件，**决策由脚本预设，审批由测试框架自动提供**，不代表 AI 自主调查或生产环境已经恢复。[实验指南](docs/HOST_LAB.md) 提供交互式人工审批模式与证据导出方法。
+<details>
+<summary>历史演练与组件验收</summary>
 
-还可以查看：
+- [固定流程进程实验](docs/HOST_LAB.md)：脚本预设两轮决策，用于复核与审批组件回归。
+- [账号实验](docs/LAB_EXECUTION.md)：禁用隔离账号、独立探测访问，再恢复。
+- [早期原生任务记录](docs/LIVE_TASK_EVIDENCE.md)：供应链演练中的协作与目标纠正。
+- [v0.14.1 服务演示与证据包](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.1)。
 
-- [账号实验](docs/LAB_EXECUTION.md)：禁用隔离账号、独立探测访问权限，再恢复账号。
-- [AgentTeams 原生任务记录](docs/LIVE_TASK_EVIDENCE.md)：查看供应链演练中的协作、提案、审批记录与目标纠正；执行及复核使用场景契约。
-- [82 秒服务演示视频](https://github.com/elsechord/CyberGuard/releases/download/v0.14.1/cyberguard-demo-final.mp4)与[对应证据包](https://github.com/elsechord/CyberGuard/releases/tag/v0.14.1)：已发布的确定性服务演示，与上面的进程复发实验是两条不同路径。
+</details>
 
 ## 接入现有系统
 
@@ -111,7 +118,8 @@ docker compose -f compose.host-lab.yaml up --build --abort-on-container-exit --e
 
 | 接入对象 | 输入 → 输出 | 当前交付 |
 | --- | --- | --- |
-| 已有 Agent | CyberGuard 事件 JSON／授权 API → 供 Agent 分析的证据 | 外部只读 Skill |
+| 已有 Agent／内部应用 | 已授权材料与目标 → 持久化任务 → 后端报告 | [Skill v0.2.0](docs/EXTERNAL_AGENT_SKILL.md) · [任务 API](docs/INVESTIGATION_TASKS.md) |
+| 既有事件包 | 事件 JSON／只读 API → 本地审阅材料 | 旧 `check` / `fetch` |
 | IDS 导出 | Suricata EVE JSON／JSONL → 规范化证据 | [文件导入适配器](docs/INGEST.md) |
 | SIEM／EDR／NDR／CMDB | 配置的上游 HTTP 响应 → 事件证据 | [服务端连接器配置](docs/LIVE_CONNECTORS.md)，厂商字段需适配 |
 | 内部应用 | 限定 scope 的 API 请求 → 事件、证据和提案数据 | [控制台 API v1](docs/OPERATIONS_CONSOLE.md#api-v1) |
@@ -126,29 +134,33 @@ curl --fail --silent --show-error \
   "${CYBERGUARD_CONSOLE_URL}/api/v1/incidents?limit=5"
 ```
 
-列表响应包含 `data`、`has_more`、`next_cursor`；单个事件通过 `/api/v1/incidents/{incident_id}` 读取。API Key 有 scope 限制，但不等于完整的多租户隔离。[接口、鉴权与错误处理 →](docs/OPERATIONS_CONSOLE.md#api-v1)
+列表响应包含 `data`、`has_more`、`next_cursor`；单个事件通过 `/api/v1/incidents/{incident_id}` 读取。API Key 按 scope 控制接口权限。[接口、鉴权与错误处理 →](docs/OPERATIONS_CONSOLE.md#api-v1)
 
 ## 各组件如何协作
 
 ```mermaid
 flowchart TD
-    S[安全数据 / 事件导出] --> G[证据网关]
-    G --> C[运营控制台 / API]
-    C --> K[已有 Agent + 调查 Skill]
-    G --> A[AgentTeams 调查团队]
-    A --> P[处置提案]
-    P --> E[响应执行器]
-    H[操作者审批] --> E
-    E --> B[模拟或隔离实验后端]
-    B --> V[独立效果探针]
-    V --> G
-    E --> R[动作审计与运行记录]
-    R --> C
+    S[来源文本 / 外部 Agent] --> K[Skill 或控制台提交]
+    K --> T[调查任务服务 / SQLite 检查点]
+    T --> P[AgentTeams Leader / Project DAG]
+    P --> I[Investigation Task / Worker]
+    I --> V[Independent verification Task / Worker]
+    V --> R[带材料引用的报告]
+    R --> C[控制台 / 调用方 Agent]
+    L[实时安全观测] --> K
+    R --> O[受约束提案转换器]
+    O --> H[具体方案审批]
+    H --> E[响应执行器]
+    E --> Q[独立效果探针 / 审计]
+    Q -->|未达标：新证据| K
+    Q -->|达标：记录观察窗口| C
 ```
 
-AgentTeams 提供任务编排、Matrix 协作、共享存储和 Skill 分发；CyberGuard 提供安全证据工具、绑定具体方案的审批、执行适配与效果观测。外部调查 Skill 是单独的只读入口，不执行图中的处置路径。
+AgentTeams 负责原生调查与独立复核；受约束转换器将报告与实时目标映射为执行器允许的提案。方案经过审批后执行，新的效果观测决定是否重新调查。同案实跑使用隔离 Linux 环境中的无害进程与测试审批，现场可切换为交互批准。[完整链路 →](docs/LIVE_RESPONSE_DEMO.md)
 
 ## 复用与扩展
+
+- **按需协作**：调查 Worker 可展开临时专家，支持定向问答和原生回收。[研究取舍](docs/ADAPTIVE_AGENT_RESEARCH.md) · [实际验证](docs/ADAPTIVE_COLLABORATION_VALIDATION.md)
 
 - **证据组织**：规范化、来源信息、标识与引用校验。[观测模型](docs/OBSERVATION_MODEL.md) · [数据契约](contracts/)
 - **受控动作**：允许列表、提案绑定审批、幂等执行与动作审计。[执行器](services/response-executor/) · [威胁模型](docs/THREAT_MODEL.md)
@@ -156,14 +168,14 @@ AgentTeams 提供任务编排、Matrix 协作、共享存储和 Skill 分发；C
 - **Agent 接入**：[十个 AgentTeams 角色 Skill](docs/SKILL_CATALOG.md)、[外部调查 Skill](integrations/agent-skills/cyberguard/)与[本机 AgentTeams 部署](docs/AGENTTEAMS_LOCAL.md)。
 - **可选模型准入控制**：按运行预留预算，按角色约束模型路由。[Model Guard](docs/MODEL_GUARD.md)
 
-当前实现围绕安全运营展开。迁移到金融、法律等工作流，需要补充相应的证据映射、策略和效果判定，不能直接视为现成行业集成。
+安全是首个落地场景。财务、法律等文本可复用材料接入与审阅流程，进一步的专业解释、策略和效果判定通过领域适配扩展。
 
 ## 文档导航
 
 | 我想做什么 | 文档 |
 | --- | --- |
 | 安装与排障 | [快速开始](docs/QUICKSTART.md) · [控制台部署](docs/OPERATIONS_DEPLOY.md) |
-| 在自己的 Agent 中调查 | [Skill 安装与连接](docs/EXTERNAL_AGENT_SKILL.md) |
+| 从自己的 Agent 委托调查 | [Skill 安装与连接](docs/EXTERNAL_AGENT_SKILL.md) · [任务与材料](docs/INVESTIGATION_TASKS.md) · [后端配置](docs/AGENTTEAMS_TASK_SERVICE.md) |
 | 运行多 Agent 任务 | [AgentTeams 初始化](agentteams/BOOTSTRAP.md) · [本机部署](docs/AGENTTEAMS_LOCAL.md) |
 | 了解权限与信任边界 | [威胁模型](docs/THREAT_MODEL.md) · [实时连接器](docs/LIVE_CONNECTORS.md) |
 | 复现与评测 | [服务验收](docs/JUDGE_DEMO.md) · [调查评测](docs/INVESTIGATION_EVALUATION.md) |

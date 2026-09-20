@@ -30,7 +30,7 @@
 
 本轮回归：原生适配 9、协作 helper 14、协作展示 4、任务/API 15、控制台 51，共 93 项测试通过。本机主 Console 已更新，协作 Skill/helper 已重新安装到三个 Worker，并确认原有配置保留。
 
-本地证据位于上级工作区 `output/adaptive-collaboration/`：native-lifecycle.json、native-communication-summary.json、model-budget.json。完整 native-communication.json 仅供本地排障；公开材料使用不含长篇模型过程的精简证明。
+公开证据：[原生生命周期](validation/adaptive-collaboration/native-lifecycle.json)、[带调用与返回配对的通信记录](validation/adaptive-collaboration/native-communication-summary.json)、[模型用量账本](validation/adaptive-collaboration/model-budget.json)。完整 native-communication.json 保留在本地 `output/adaptive-collaboration/` 排障；公开材料不包含长篇模型过程。
 
 ## 当前边界
 

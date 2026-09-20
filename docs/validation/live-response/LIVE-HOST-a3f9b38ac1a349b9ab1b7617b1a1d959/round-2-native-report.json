@@ -1,0 +1,172 @@
+{
+  "investigation_id": "INV-183181f645814f4db17eb6e24128ac7f",
+  "report": {
+    "findings": [
+      {
+        "citations": [
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"event\": \"process_stopped\", \"role\": \"compute\", \"pid\": 9"
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"event\": \"process_started\", \"role\": \"compute\", \"pid\": 20, \"cause\": \"supervisor\""
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"observed_at\": \"2026-09-20T01:30:52.053605+00:00\""
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"observed_at\": \"2026-09-20T01:30:52.109358+00:00\""
+          }
+        ],
+        "claim": "compute 复发由 supervisor 机制触发：pid 9 于 2026-09-20T01:30:52.053605Z 停止，约 55.753 ms 后 pid 20 于 01:30:52.109358Z 以 cause=supervisor 启动，而非初次供应的 lab_provisioning。",
+        "limitations": "间隔由两个事件时间戳相减得出（55.753 ms）；材料为单次观测，未直接给出 supervisor 自身的触发方式，故“立即重启”为对时间线的观测描述。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"heartbeat\": null"
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"sequence\": 9"
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"sequence\": 21"
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"heartbeat\": {\"pid\": 20, \"sequence\": 22"
+          }
+        ],
+        "claim": "复发后的 compute（pid 20）处于运行中且心跳持续推进：复核窗口内首次检查 heartbeat=null，随后 sequence 9→21，实时观测为 sequence 22。",
+        "limitations": "心跳序列来自两次独立材料的观测，合计窗口约 2.3 s（observation_seconds=2.333）；心跳推进证明进程存活，不代表长期稳定。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\""
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"present\": true"
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"restart_seconds\\\": 1.0"
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"restart_interval_seconds\": 1.0"
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"target_absent_through_window\": false, \"persistence_removed\": false, \"control_workload_progressing\": true"
+          }
+        ],
+        "claim": "supervisor 持久化条目仍存在且未移除（present=true、persistence_removed=false），是复发的配置来源；其声明 restart_seconds/restart_interval_seconds=1.0，与实测约 55.753 ms 的重启间隔不一致。",
+        "limitations": "仅证明观测时条目存在，材料未给出安装/写入时间；声明 1.0 s 与实际约 55.753 ms 不一致的成因（退出即重启 vs 定时器）未定。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"verdict\": \"failed\""
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"reason\": \"residual_process_or_persistence\""
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"target_absent_through_window\": false, \"persistence_removed\": false, \"control_workload_progressing\": true"
+          }
+        ],
+        "claim": "上一轮独立复核判定为失败，判据为目标未消失且持久化未移除。",
+        "limitations": "该结论为材料既定的复核输出（verification_scope=bounded_lab_process_and_persistence_observation），本报告仅复核其可复现性，未扩大其证明范围。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"sequence\": 3142"
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"sequence\": 3153"
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "\"sequence\": 3164"
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"heartbeat\": {\"pid\": 8, \"sequence\": 3165"
+          }
+        ],
+        "claim": "正常 control 业务进程（pid 8）未受影响，心跳持续推进 3142→3153→3164（实时观测 3165），control_workload_progressing=true。",
+        "limitations": "心跳推进仅说明 control 进程存活，未覆盖其业务功能正确性。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"target_ref\": \"process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc\""
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\""
+          },
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\""
+          }
+        ],
+        "claim": "材料提供可用于处置定位的 target_ref：compute 为 process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc，control 为 process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547，persistence 为 persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496。",
+        "limitations": "target_ref 为材料给出的标识符，本报告未对其做额外解析或映射。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+            "quote": "\"result\": \"applied\""
+          },
+          {
+            "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+            "quote": "an applied action does not establish recovery."
+          }
+        ],
+        "claim": "supervisor 持久化条目的安装时序（在上一轮处置动作之前已存在，还是由该动作写入）尚不能确定。",
+        "limitations": "材料未提供持久化文件的写入/安装事件；last_mutation.result=applied 仅表示动作被应用，不能推断恢复成功或安装时序。故无法把“检出持久化”外推为“已证实的安装序列”。",
+        "status": "inconclusive"
+      }
+    ],
+    "job_id": "INV-183181f645814f4db17eb6e24128ac7f",
+    "next_steps": [
+      "在停止 compute 之前或同时移除/禁用 supervisor 持久化配置 /tmp/tmp51m3hgxz/host/compute-supervisor.json（target_ref persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496），消除重启的配置来源。",
+      "定位并处置负责 respawn 的 supervisor/父进程（材料中 compute 与 control 的 parent_pid 均为 7），避免仅终止被守护的 worker 子进程而触发再拉起。",
+      "明确保留正常 control 业务进程（pid 8 / process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547），将其排除在处置范围外。",
+      "处置后重跑有界独立复核，要求同时满足 target_absent_through_window=true、persistence_removed=true 且 control_workload_progressing=true 才判定恢复成功。",
+      "记录动作时间与观察时间，并解释声明 restart_seconds=1.0 与实际约 55.753 ms 重启延迟的差异（需材料进一步确认 supervisor 触发方式）。"
+    ],
+    "role": "verifier",
+    "summary": "独立复核（verifier）针对受控无害 Linux 进程实验 LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959。两份原始材料（endpoint.timeline、recovery.metrics）的 sha256 与事件时间线经独立脚本重新解析并逐条校验一致，全部引用为原文精确子串。复核确认：compute 被停止后由 supervisor 于约 55.753 ms 内以新 pid 20 重启（cause=supervisor，非 lab_provisioning）；supervisor 持久化条目 /tmp/tmp51m3hgxz/host/compute-supervisor.json 仍 present=true 且未移除，故上一轮独立复核 verdict=failed、reason=residual_process_or_persistence（target_absent_through_window=false、persistence_removed=false、control_workload_progressing=true）；正常 control 业务进程 pid 8 心跳持续推进、未受影响。已给出 compute/持久化状态与可用 target_ref。场景为受控实验（scenario_nature=benign_process_emulation），不视为真实木马、不归因攻击组织；本报告仅分析，未执行任何操作。",
+    "unknowns": [
+      "持久化文件 compute-supervisor.json 的安装/写入时间（材料未提供，无法证明安装时序）。",
+      "supervisor 进程自身的身份与命令行（材料仅给出 parent_pid=7）。",
+      "supervisor 的重启触发方式（定时器还是退出即重启），以及声明 restart_seconds=1.0 与实际约 55.753 ms 差异的原因。",
+      "两份材料 source_authenticity=unverified、quality gate=review（issues: no_attack_mapping、no_correlatable_entity_or_observable、no_hypothesis_link）。"
+    ]
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "clean_root": "/tmp/cg-clean-release-v2-d2w6cvw2",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "deploy/init_secrets.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1
+    },
+    {
+      "command": [
+        "python3",
+        "deploy/agentteams-local/prepare-local.py",
+        "--directory",
+        "/tmp/cg-clean-release-v2-d2w6cvw2-private/service"
+      ],
+      "exit_code": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": [
+        "python3",
+        "deploy/investigation-service/prepare-native-team.py",
+        "--prepare-only",
+        "--private-dir",
+        "/tmp/cg-clean-release-v2-d2w6cvw2-private/native",
+        "--plan",
+        "/tmp/cg-clean-release-v2-d2w6cvw2-private/plan",
+        "--model-env",
+        "/tmp/cg-clean-release-v2-d2w6cvw2-private/model.env",
+        "--run-id",
+        "CLEAN-PREFLIGHT-001",
+        "--name-prefix",
+        "cg-cleancheck001"
+      ],
+      "exit_code": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "-f",
+        "deploy/investigation-service/compose.native.yaml",
+        "config",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 0.51
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "-f",
+        "compose.yaml",
+        "config",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 0.52
+    },
+    {
+      "command": [
+        "bash",
+        "-n",
+        "deploy/investigation-service/build-controller.sh"
+      ],
+      "exit_code": 0,
+      "seconds": 0.0
+    },
+    {
+      "command": [
+        "python3",
+        "deploy/investigation-service/configure-native-team.py",
+        "--help"
+      ],
+      "exit_code": 0,
+      "seconds": 0.17
+    },
+    {
+      "command": [
+        "python3",
+        "deploy/investigation-service/test_portable_preparation.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.35
+    },
+    {
+      "command": [
+        "docker",
+        "build",
+        "-f",
+        "services/operations-console/Dockerfile",
+        "-t",
+        "cyberguard/operations-console:0.15.0-clean-check",
+        "."
+      ],
+      "exit_code": 0,
+      "seconds": 1.17
+    }
+  ],
+  "shared_docker_cache": true,
+  "model_calls": 0,
+  "existing_containers_changed": false,
+  "private_files_outside_source": true
+}

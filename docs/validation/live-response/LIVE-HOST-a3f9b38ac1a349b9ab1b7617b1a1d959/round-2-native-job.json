@@ -1,0 +1,344 @@
+{
+  "data": {
+    "created_at": "2026-09-20T01:30:54.638695+00:00",
+    "domain": "security",
+    "error": null,
+    "events": [
+      {
+        "at": "2026-09-20T01:30:54.638695+00:00",
+        "message": "Materials accepted; backend investigation pending.",
+        "stage": "accepted",
+        "status": "queued"
+      },
+      {
+        "at": "2026-09-20T01:30:56.047138+00:00",
+        "message": "Backend checkpoint persisted.",
+        "stage": "native_dispatch",
+        "status": "running"
+      },
+      {
+        "at": "2026-09-20T01:30:59.108455+00:00",
+        "message": "Backend checkpoint persisted.",
+        "stage": "native_tasks",
+        "status": "running"
+      },
+      {
+        "at": "2026-09-20T01:36:41.460446+00:00",
+        "message": "Backend checkpoint persisted.",
+        "stage": "complete",
+        "status": "completed"
+      }
+    ],
+    "id": "INV-183181f645814f4db17eb6e24128ac7f",
+    "materials": [
+      {
+        "content": "{\"ok\": true, \"tool\": \"endpoint.timeline\", \"evidence\": {\"evidence_id\": \"EV-79226f9353d8\", \"incident_id\": \"CG-HOST-001\", \"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"scenario_id\": \"lab_host\", \"tool_call_id\": \"CALL-080165fff99f44488b745ed3924088d3\", \"environment\": \"lab\", \"execution\": \"real\", \"envelope_sha256\": \"28eb68f6461207d72069b0be61793ff8d81a4da83e1458a0b0c7d0e613470266\", \"source\": \"linux-host-lab-collector\", \"collected_at\": \"2026-09-20T01:30:54.595342+00:00\", \"observed_at\": \"2026-09-20T01:30:54.595324+00:00\", \"kind\": \"endpoint_timeline\", \"summary\": \"Observed /proc identities, supervisor file and local events; benign laboratory, not incident attribution.\", \"data\": {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"environment\": \"lab\", \"execution\": \"real\", \"scenario_nature\": \"benign_process_emulation\", \"nonce\": \"b86ea64100c146efa11e3c74117e9d0a\", \"observed_at\": \"2026-09-20T01:30:54.581296+00:00\", \"processes\": [{\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 20, \"start_ticks\": \"5992813\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc\", \"role\": \"compute\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"compute\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/compute.json\"], \"heartbeat\": {\"pid\": 20, \"sequence\": 22, \"value\": \"785f3ec7eb32f30b90cd0fcf3657d388b5ff4297f2f9716ff66e9b69c05ddd09\"}}, {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 8, \"start_ticks\": \"5961102\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\", \"role\": \"control\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"control\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/control.json\"], \"heartbeat\": {\"pid\": 8, \"sequence\": 3165, \"value\": \"8d57a52196dfab7020a5cf06e22e81c32e263ca7797ffaf26fa5954d2a7943d6\"}}], \"persistence\": {\"present\": true, \"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\", \"sha256\": \"d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"content\": \"{\\\"schema\\\": \\\"cyberguard-benign-supervisor/v1\\\", \\\"environment_id\\\": \\\"HOST-d18406902eb24ba396b3fd413500b643\\\", \\\"worker_sha256\\\": \\\"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\\\", \\\"restart_seconds\\\": 1.0}\"}, \"events\": [{\"observed_at\": \"2026-09-20T01:25:35.022865+00:00\", \"event\": \"process_started\", \"role\": \"control\", \"pid\": 8, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:25:35.029217+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 9, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:30:52.053605+00:00\", \"event\": \"process_stopped\", \"role\": \"compute\", \"pid\": 9}, {\"observed_at\": \"2026-09-20T01:30:52.109358+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 20, \"cause\": \"supervisor\"}], \"last_mutation\": {\"action_id\": \"ACT-93c1d8b802fa\", \"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"result\": \"applied\"}, \"restart_interval_seconds\": 1.0, \"limitations\": [\"No actual miner, initial exploit, network beacon or adversary identity.\", \"The collector and workload share a trusted laboratory boundary.\"]}, \"sha256\": \"d9333af09f6961bceda8d1bad9a7668093456fff237c60b9a76455a5b836e76f\", \"confidence\": 1.0, \"supports\": [], \"contradicts\": [], \"handling\": \"internal\", \"standard\": {\"schema\": \"cyberguard-security-observation\", \"version\": \"1.0\", \"alignment\": {\"event_profile\": \"OCSF-aligned\", \"cti_profile\": \"STIX-2.1\"}, \"category_name\": \"system_activity\", \"class_name\": \"process_activity\", \"activity_name\": \"endpoint.timeline\", \"raw_sha256\": \"d9333af09f6961bceda8d1bad9a7668093456fff237c60b9a76455a5b836e76f\"}, \"entities\": [], \"observables\": [], \"attack_techniques\": [], \"quality\": {\"score\": 0.65, \"gate\": \"review\", \"issues\": [\"no_attack_mapping\", \"no_correlatable_entity_or_observable\", \"no_hypothesis_link\"], \"required_fields_present\": 5, \"required_fields_total\": 5}}}",
+        "interpretation": "",
+        "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+        "media_type": "application/json",
+        "name": "实时 Linux 实验环境观测",
+        "sha256": "5d7d80f82fd18ee9f84c50a9f13e3d65fec8b62dea9b3a4c6cb0a7158e724a2e",
+        "source_authenticity": "unverified",
+        "source_type": "server_log",
+        "submitted_as": "original_input"
+      },
+      {
+        "content": "{\"ok\": true, \"tool\": \"recovery.metrics\", \"evidence\": {\"evidence_id\": \"EV-bcec24cb1d47\", \"incident_id\": \"CG-HOST-001\", \"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"scenario_id\": \"lab_host\", \"tool_call_id\": \"CALL-a069645b647543588800505c6198bfd1\", \"environment\": \"lab\", \"execution\": \"real\", \"envelope_sha256\": \"2e8d3dd81ac1e2c841957f26686bfd33ba4a2b5e68613e2ee94fbde1584ff3e7\", \"source\": \"linux-host-lab-collector\", \"collected_at\": \"2026-09-20T01:30:54.504824+00:00\", \"observed_at\": \"2026-09-20T01:30:54.504802+00:00\", \"kind\": \"recovery_metrics\", \"summary\": \"Independent bounded recovery observation; an applied action does not establish recovery.\", \"data\": {\"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"action_id\": \"ACT-93c1d8b802fa\", \"environment\": \"lab\", \"execution\": \"real\", \"verdict\": \"failed\", \"telemetry_health\": \"healthy\", \"checks\": [{\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"environment\": \"lab\", \"execution\": \"real\", \"scenario_nature\": \"benign_process_emulation\", \"nonce\": \"0c1fb1f995a7404f810571a807088e52\", \"observed_at\": \"2026-09-20T01:30:52.169443+00:00\", \"processes\": [{\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 20, \"start_ticks\": \"5992813\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc\", \"role\": \"compute\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"compute\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/compute.json\"], \"heartbeat\": null}, {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 8, \"start_ticks\": \"5961102\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\", \"role\": \"control\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"control\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/control.json\"], \"heartbeat\": {\"pid\": 8, \"sequence\": 3142, \"value\": \"b6edca7adf1a569634dffeee2240ea7bcebdb4b2cc6291c5a1103b9944f68eda\"}}], \"persistence\": {\"present\": true, \"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\", \"sha256\": \"d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"content\": \"{\\\"schema\\\": \\\"cyberguard-benign-supervisor/v1\\\", \\\"environment_id\\\": \\\"HOST-d18406902eb24ba396b3fd413500b643\\\", \\\"worker_sha256\\\": \\\"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\\\", \\\"restart_seconds\\\": 1.0}\"}, \"events\": [{\"observed_at\": \"2026-09-20T01:25:35.022865+00:00\", \"event\": \"process_started\", \"role\": \"control\", \"pid\": 8, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:25:35.029217+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 9, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:30:52.053605+00:00\", \"event\": \"process_stopped\", \"role\": \"compute\", \"pid\": 9}, {\"observed_at\": \"2026-09-20T01:30:52.109358+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 20, \"cause\": \"supervisor\"}], \"last_mutation\": {\"action_id\": \"ACT-93c1d8b802fa\", \"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"result\": \"applied\"}, \"restart_interval_seconds\": 1.0, \"limitations\": [\"No actual miner, initial exploit, network beacon or adversary identity.\", \"The collector and workload share a trusted laboratory boundary.\"]}, {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"environment\": \"lab\", \"execution\": \"real\", \"scenario_nature\": \"benign_process_emulation\", \"nonce\": \"dc60194c2d9549d88c8c80fefb099199\", \"observed_at\": \"2026-09-20T01:30:53.328631+00:00\", \"processes\": [{\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 20, \"start_ticks\": \"5992813\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc\", \"role\": \"compute\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"compute\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/compute.json\"], \"heartbeat\": {\"pid\": 20, \"sequence\": 9, \"value\": \"19581e27de7ced00ff1ce50b2047e7a567c76b1cbaebabe5ef03f7c3017bb5b7\"}}, {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 8, \"start_ticks\": \"5961102\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\", \"role\": \"control\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"control\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/control.json\"], \"heartbeat\": {\"pid\": 8, \"sequence\": 3153, \"value\": \"8a159f78a49736dca055bcfeef04680031629c39f31509cf63226fc0517eb55a\"}}], \"persistence\": {\"present\": true, \"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\", \"sha256\": \"d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"content\": \"{\\\"schema\\\": \\\"cyberguard-benign-supervisor/v1\\\", \\\"environment_id\\\": \\\"HOST-d18406902eb24ba396b3fd413500b643\\\", \\\"worker_sha256\\\": \\\"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\\\", \\\"restart_seconds\\\": 1.0}\"}, \"events\": [{\"observed_at\": \"2026-09-20T01:25:35.022865+00:00\", \"event\": \"process_started\", \"role\": \"control\", \"pid\": 8, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:25:35.029217+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 9, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:30:52.053605+00:00\", \"event\": \"process_stopped\", \"role\": \"compute\", \"pid\": 9}, {\"observed_at\": \"2026-09-20T01:30:52.109358+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 20, \"cause\": \"supervisor\"}], \"last_mutation\": {\"action_id\": \"ACT-93c1d8b802fa\", \"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"result\": \"applied\"}, \"restart_interval_seconds\": 1.0, \"limitations\": [\"No actual miner, initial exploit, network beacon or adversary identity.\", \"The collector and workload share a trusted laboratory boundary.\"]}, {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"environment\": \"lab\", \"execution\": \"real\", \"scenario_nature\": \"benign_process_emulation\", \"nonce\": \"3b360e83b24c41498bf0e104b9b98acd\", \"observed_at\": \"2026-09-20T01:30:54.470952+00:00\", \"processes\": [{\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 20, \"start_ticks\": \"5992813\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc\", \"role\": \"compute\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"compute\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/compute.json\"], \"heartbeat\": {\"pid\": 20, \"sequence\": 21, \"value\": \"6f4b6612125fb3a0daecd2799dfd6c9c299424fd920f9b308110a2c1fbd8f443\"}}, {\"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"pid\": 8, \"start_ticks\": \"5961102\", \"executable_sha256\": \"4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\", \"role\": \"control\", \"parent_pid\": 7, \"command_line\": [\"/usr/local/bin/python\", \"/workspace/services/host-lab/worker.py\", \"--role\", \"control\", \"--heartbeat\", \"/tmp/tmp51m3hgxz/host/control.json\"], \"heartbeat\": {\"pid\": 8, \"sequence\": 3164, \"value\": \"de27088fdf91b0a55c1117c3d43ad65853d103bbfc61fe419c7324cdc168d0e3\"}}], \"persistence\": {\"present\": true, \"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\", \"sha256\": \"d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\", \"content\": \"{\\\"schema\\\": \\\"cyberguard-benign-supervisor/v1\\\", \\\"environment_id\\\": \\\"HOST-d18406902eb24ba396b3fd413500b643\\\", \\\"worker_sha256\\\": \\\"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\\\", \\\"restart_seconds\\\": 1.0}\"}, \"events\": [{\"observed_at\": \"2026-09-20T01:25:35.022865+00:00\", \"event\": \"process_started\", \"role\": \"control\", \"pid\": 8, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:25:35.029217+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 9, \"cause\": \"lab_provisioning\"}, {\"observed_at\": \"2026-09-20T01:30:52.053605+00:00\", \"event\": \"process_stopped\", \"role\": \"compute\", \"pid\": 9}, {\"observed_at\": \"2026-09-20T01:30:52.109358+00:00\", \"event\": \"process_started\", \"role\": \"compute\", \"pid\": 20, \"cause\": \"supervisor\"}], \"last_mutation\": {\"action_id\": \"ACT-93c1d8b802fa\", \"run_id\": \"LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959\", \"result\": \"applied\"}, \"restart_interval_seconds\": 1.0, \"limitations\": [\"No actual miner, initial exploit, network beacon or adversary identity.\", \"The collector and workload share a trusted laboratory boundary.\"]}], \"verification_scope\": \"bounded_lab_process_and_persistence_observation\", \"limitations\": [\"Not a permanent recovery guarantee or a real intrusion investigation.\", \"No host isolation, entry point repair or adversary attribution is verified.\"], \"environment_id\": \"HOST-d18406902eb24ba396b3fd413500b643\", \"observation_seconds\": 2.333, \"reason\": \"residual_process_or_persistence\", \"layers\": {\"target_absent_through_window\": false, \"persistence_removed\": false, \"control_workload_progressing\": true}, \"audit_head\": \"0bd240a74df6e7a9c2b961009f43b1c75095d7fd928fb3fa0e7c9444f4acbd40\"}, \"sha256\": \"b477b1d7bc564ea63feef7d03980e36c2eeee4a23e6523099da175703476de8b\", \"confidence\": 1.0, \"supports\": [], \"contradicts\": [], \"handling\": \"internal\", \"standard\": {\"schema\": \"cyberguard-security-observation\", \"version\": \"1.0\", \"alignment\": {\"event_profile\": \"OCSF-aligned\", \"cti_profile\": \"STIX-2.1\"}, \"category_name\": \"findings\", \"class_name\": \"recovery_finding\", \"activity_name\": \"recovery.metrics\", \"raw_sha256\": \"b477b1d7bc564ea63feef7d03980e36c2eeee4a23e6523099da175703476de8b\"}, \"entities\": [], \"observables\": [], \"attack_techniques\": [], \"quality\": {\"score\": 0.65, \"gate\": \"review\", \"issues\": [\"no_attack_mapping\", \"no_correlatable_entity_or_observable\", \"no_hypothesis_link\"], \"required_fields_present\": 5, \"required_fields_total\": 5}}}",
+        "interpretation": "",
+        "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+        "media_type": "application/json",
+        "name": "前轮真实处置后的独立复核",
+        "sha256": "1a10128390261e566fe57e5a66c1fcf9cc4d1f38f5e0f6d9cb6d4d18f538c19d",
+        "source_authenticity": "unverified",
+        "source_type": "audit_report",
+        "submitted_as": "original_input"
+      }
+    ],
+    "objective": "调查本次无害 Linux 进程实验的实时材料，由另一 Worker 独立复核。上一轮停止进程后独立复核失败。根据新鲜观测分析复发原因，提出下一步消除复发的建议。只给调查报告和建议，不执行操作、不寻找审批凭据。保留正常 control 业务进程。用3到5项简短结论、原文引用和next_steps报告，说明compute及持久化状态与可用target_ref。这是受控实验，不把compute称为真实木马，不推测攻击组织。",
+    "report": {
+      "findings": [
+        {
+          "citations": [
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"event\": \"process_stopped\", \"role\": \"compute\", \"pid\": 9"
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"event\": \"process_started\", \"role\": \"compute\", \"pid\": 20, \"cause\": \"supervisor\""
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"observed_at\": \"2026-09-20T01:30:52.053605+00:00\""
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"observed_at\": \"2026-09-20T01:30:52.109358+00:00\""
+            }
+          ],
+          "claim": "compute 复发由 supervisor 机制触发：pid 9 于 2026-09-20T01:30:52.053605Z 停止，约 55.753 ms 后 pid 20 于 01:30:52.109358Z 以 cause=supervisor 启动，而非初次供应的 lab_provisioning。",
+          "limitations": "间隔由两个事件时间戳相减得出（55.753 ms）；材料为单次观测，未直接给出 supervisor 自身的触发方式，故“立即重启”为对时间线的观测描述。",
+          "status": "supported"
+        },
+        {
+          "citations": [
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"heartbeat\": null"
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"sequence\": 9"
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"sequence\": 21"
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"heartbeat\": {\"pid\": 20, \"sequence\": 22"
+            }
+          ],
+          "claim": "复发后的 compute（pid 20）处于运行中且心跳持续推进：复核窗口内首次检查 heartbeat=null，随后 sequence 9→21，实时观测为 sequence 22。",
+          "limitations": "心跳序列来自两次独立材料的观测，合计窗口约 2.3 s（observation_seconds=2.333）；心跳推进证明进程存活，不代表长期稳定。",
+          "status": "supported"
+        },
+        {
+          "citations": [
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\""
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"present\": true"
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"restart_seconds\\\": 1.0"
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"restart_interval_seconds\": 1.0"
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"target_absent_through_window\": false, \"persistence_removed\": false, \"control_workload_progressing\": true"
+            }
+          ],
+          "claim": "supervisor 持久化条目仍存在且未移除（present=true、persistence_removed=false），是复发的配置来源；其声明 restart_seconds/restart_interval_seconds=1.0，与实测约 55.753 ms 的重启间隔不一致。",
+          "limitations": "仅证明观测时条目存在，材料未给出安装/写入时间；声明 1.0 s 与实际约 55.753 ms 不一致的成因（退出即重启 vs 定时器）未定。",
+          "status": "supported"
+        },
+        {
+          "citations": [
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"verdict\": \"failed\""
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"reason\": \"residual_process_or_persistence\""
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"target_absent_through_window\": false, \"persistence_removed\": false, \"control_workload_progressing\": true"
+            }
+          ],
+          "claim": "上一轮独立复核判定为失败，判据为目标未消失且持久化未移除。",
+          "limitations": "该结论为材料既定的复核输出（verification_scope=bounded_lab_process_and_persistence_observation），本报告仅复核其可复现性，未扩大其证明范围。",
+          "status": "supported"
+        },
+        {
+          "citations": [
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"sequence\": 3142"
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"sequence\": 3153"
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "\"sequence\": 3164"
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"heartbeat\": {\"pid\": 8, \"sequence\": 3165"
+            }
+          ],
+          "claim": "正常 control 业务进程（pid 8）未受影响，心跳持续推进 3142→3153→3164（实时观测 3165），control_workload_progressing=true。",
+          "limitations": "心跳推进仅说明 control 进程存活，未覆盖其业务功能正确性。",
+          "status": "supported"
+        },
+        {
+          "citations": [
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"target_ref\": \"process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc\""
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\""
+            },
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\""
+            }
+          ],
+          "claim": "材料提供可用于处置定位的 target_ref：compute 为 process:35e71908c2814903e22180b5811e1c7c2c094c09baaeb700199c8c5c1448e7dc，control 为 process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547，persistence 为 persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496。",
+          "limitations": "target_ref 为材料给出的标识符，本报告未对其做额外解析或映射。",
+          "status": "supported"
+        },
+        {
+          "citations": [
+            {
+              "material_id": "MAT-cf943409ee3aa1b77ac38b8851e6ac67e59eda897f272f6b058da579382b6d7a",
+              "quote": "\"result\": \"applied\""
+            },
+            {
+              "material_id": "MAT-7d9b8680645d9f4545e5b8fb49786f1b1c382cce282dde5bf5722dc65c4308f2",
+              "quote": "an applied action does not establish recovery."
+            }
+          ],
+          "claim": "supervisor 持久化条目的安装时序（在上一轮处置动作之前已存在，还是由该动作写入）尚不能确定。",
+          "limitations": "材料未提供持久化文件的写入/安装事件；last_mutation.result=applied 仅表示动作被应用，不能推断恢复成功或安装时序。故无法把“检出持久化”外推为“已证实的安装序列”。",
+          "status": "inconclusive"
+        }
+      ],
+      "job_id": "INV-183181f645814f4db17eb6e24128ac7f",
+      "next_steps": [
+        "在停止 compute 之前或同时移除/禁用 supervisor 持久化配置 /tmp/tmp51m3hgxz/host/compute-supervisor.json（target_ref persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496），消除重启的配置来源。",
+        "定位并处置负责 respawn 的 supervisor/父进程（材料中 compute 与 control 的 parent_pid 均为 7），避免仅终止被守护的 worker 子进程而触发再拉起。",
+        "明确保留正常 control 业务进程（pid 8 / process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547），将其排除在处置范围外。",
+        "处置后重跑有界独立复核，要求同时满足 target_absent_through_window=true、persistence_removed=true 且 control_workload_progressing=true 才判定恢复成功。",
+        "记录动作时间与观察时间，并解释声明 restart_seconds=1.0 与实际约 55.753 ms 重启延迟的差异（需材料进一步确认 supervisor 触发方式）。"
+      ],
+      "role": "verifier",
+      "summary": "独立复核（verifier）针对受控无害 Linux 进程实验 LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959。两份原始材料（endpoint.timeline、recovery.metrics）的 sha256 与事件时间线经独立脚本重新解析并逐条校验一致，全部引用为原文精确子串。复核确认：compute 被停止后由 supervisor 于约 55.753 ms 内以新 pid 20 重启（cause=supervisor，非 lab_provisioning）；supervisor 持久化条目 /tmp/tmp51m3hgxz/host/compute-supervisor.json 仍 present=true 且未移除，故上一轮独立复核 verdict=failed、reason=residual_process_or_persistence（target_absent_through_window=false、persistence_removed=false、control_workload_progressing=true）；正常 control 业务进程 pid 8 心跳持续推进、未受影响。已给出 compute/持久化状态与可用 target_ref。场景为受控实验（scenario_nature=benign_process_emulation），不视为真实木马、不归因攻击组织；本报告仅分析，未执行任何操作。",
+      "unknowns": [
+        "持久化文件 compute-supervisor.json 的安装/写入时间（材料未提供，无法证明安装时序）。",
+        "supervisor 进程自身的身份与命令行（材料仅给出 parent_pid=7）。",
+        "supervisor 的重启触发方式（定时器还是退出即重启），以及声明 restart_seconds=1.0 与实际约 55.753 ms 差异的原因。",
+        "两份材料 source_authenticity=unverified、quality gate=review（issues: no_attack_mapping、no_correlatable_entity_or_observable、no_hypothesis_link）。"
+      ]
+    },
+    "runtime": {
+      "artifact_path": "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-02/report.json",
+      "backend": "agentteams",
+      "collaboration": [],
+      "collaboration_view": {
+        "message_count": 0,
+        "provenance": "worker_exported_native_snapshot",
+        "runs": [],
+        "team_worker_count": 2,
+        "temporary_agent_count": 0
+      },
+      "completion_requested_by": "console_after_native_acceptance",
+      "execution": "completed",
+      "kind": "agentteams_native_tasks",
+      "native_task_completion": "completed",
+      "project_id": "cg-inv-183181f645814f4db17eb6e24128ac7f",
+      "report_task_id": "cg-inv-183181f645814f4db17eb6e24128ac7f-02",
+      "request_event_id": "$MWjmdbP7avQH3TY56BljfZZU7_nKfR_i6a9Dr83C8Oc",
+      "source_room_id": "!zL23pNO3UhvOa37Xv4:matrix-local.agentteams.io:18080",
+      "team_id": "cg-native001",
+      "workflow": {
+        "edges": [
+          {
+            "conditional": false,
+            "source": "cg-inv-183181f645814f4db17eb6e24128ac7f-01",
+            "target": "cg-inv-183181f645814f4db17eb6e24128ac7f-02"
+          }
+        ],
+        "interrupts": [],
+        "mode": "dag",
+        "next": [],
+        "nodes": [
+          {
+            "assignee": "@cg-native001-investigator:matrix-local.agentteams.io:18080",
+            "id": "cg-inv-183181f645814f4db17eb6e24128ac7f-01",
+            "name": "Investigate live host materials and propose recurrence-elimination next steps",
+            "status": "completed"
+          },
+          {
+            "assignee": "@cg-native001-verifier:matrix-local.agentteams.io:18080",
+            "id": "cg-inv-183181f645814f4db17eb6e24128ac7f-02",
+            "name": "Independent verification and final report.json",
+            "status": "completed"
+          }
+        ],
+        "plan_type": "dag",
+        "project_id": "cg-inv-183181f645814f4db17eb6e24128ac7f",
+        "requester": "INV-183181f645814f4db17eb6e24128ac7f",
+        "requester_report": {
+          "pending": true,
+          "reason": "task_result_accepted",
+          "report_path": "shared/projects/cg-inv-183181f645814f4db17eb6e24128ac7f/result.md",
+          "result_status": "SUCCESS",
+          "summary": "Independent verifier delivered report.json (contract-valid, 7 findings) plus result.md and check script. Re-verified both original materials (sha256 + timeline consistent, all quotes exact substrings). Confirms supervisor recurrence, persistence not removed, prior recovery failed, control unaffected; 1 inconclusive finding on persistence installation timing.",
+          "task_id": "cg-inv-183181f645814f4db17eb6e24128ac7f-02"
+        },
+        "source": "cyberguard",
+        "status": "completed",
+        "tasks_detail": [
+          {
+            "assigned_to": "@cg-native001-investigator:matrix-local.agentteams.io:18080",
+            "deliverables": [
+              "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-01/investigation_note.md",
+              "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-01/result.md",
+              "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-01/workspace/verify_quotes.py"
+            ],
+            "project_id": "cg-inv-183181f645814f4db17eb6e24128ac7f",
+            "result_path": "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-01/result.md",
+            "result_status": "SUCCESS",
+            "spec_path": "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-01/spec.md",
+            "status": "submitted",
+            "summary": "Investigated the 2 live-host materials. compute pid 9 was stopped at 01:30:52.053605Z and restarted as pid 20 at 01:30:52.109358Z with cause=supervisor (~56 ms later), while persistence /tmp/tmp51m3hgxz/host/compute-supervisor.json stayed present=true (restart_seconds 1.0), so the prior independent recovery check returned verdict=failed / reason=residual_process_or_persistence (target_absent_through_window=false, persistence_removed=false) with control_workload_progressing=true. Reported 6 short conclusions with exact quotes, compute/persistence state, available target_ref values, and recurrence-elimination next_steps (remove/disable supervisor persistence, address respawning supervisor/parent_pid 7, preserve control, re-verify). Analysis only; no actions taken.",
+            "task_id": "cg-inv-183181f645814f4db17eb6e24128ac7f-01"
+          },
+          {
+            "assigned_to": "@cg-native001-verifier:matrix-local.agentteams.io:18080",
+            "deliverables": [
+              "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-02/report.json",
+              "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-02/result.md",
+              "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-02/workspace/independent_check.py"
+            ],
+            "project_id": "cg-inv-183181f645814f4db17eb6e24128ac7f",
+            "result_path": "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-02/result.md",
+            "result_status": "SUCCESS",
+            "spec_path": "shared/tasks/cg-inv-183181f645814f4db17eb6e24128ac7f-02/spec.md",
+            "status": "submitted",
+            "summary": "独立复核完成：直接对两份原始材料重新解析并校验（sha256、事件时间线一致、全部引用为原文精确子串）。确认 compute 停止后由 supervisor 约 55.753 ms 内以 pid 20 重启（cause=supervisor），supervisor 持久化条目仍 present=true 未移除，上轮复核 verdict=failed / reason=residual_process_or_persistence；control pid 8 心跳持续推进未受影响。已按 packet report_contract 产出 report.json（7 findings），case_packet.py check 通过 {\"valid\": true, \"findings\": 7}。仅分析，未执行任何操作。",
+            "task_id": "cg-inv-183181f645814f4db17eb6e24128ac7f-02"
+          }
+        ],
+        "team_id": "cg-native001",
+        "title": "LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959 response round 2",
+        "updated_at": "2026-09-20T01:36:37Z",
+        "updated_by": "admin",
+        "values": {
+          "mode": "dag",
+          "plan_type": "dag",
+          "project_id": "cg-inv-183181f645814f4db17eb6e24128ac7f",
+          "status": "completed",
+          "task_count": {
+            "completed": 2
+          },
+          "team_id": "cg-native001",
+          "title": "LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959 response round 2"
+        }
+      }
+    },
+    "stage": "complete",
+    "status": "completed",
+    "submitted_by": "api-key:cg_live_diFqIS",
+    "title": "LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959 response round 2",
+    "updated_at": "2026-09-20T01:36:41.460446+00:00",
+    "links": {
+      "self": "/api/v1/investigations/INV-183181f645814f4db17eb6e24128ac7f",
+      "console": "/investigations/INV-183181f645814f4db17eb6e24128ac7f"
+    }
+  }
+}

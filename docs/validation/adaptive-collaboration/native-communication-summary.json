@@ -1,0 +1,58 @@
+{
+  "scope": "synthetic_communication_probe",
+  "run_id": "cg-comm-a7cee3ad35",
+  "agents": {
+    "reader-a": "tmp-workerflow-cg-comm-a7cee3ad35-reader-a",
+    "reader-b": "tmp-workerflow-cg-comm-a7cee3ad35-reader-b"
+  },
+  "checks": {
+    "child_to_peer_call": true,
+    "child_to_parent_call": true,
+    "replies_observed": true,
+    "simple_case_created_no_persistent_agent": true,
+    "child_peer_roundtrip": true,
+    "child_parent_roundtrip": true,
+    "simple_case_tool_calls": []
+  },
+  "communication_evidence": [
+    {
+      "call_id": "call_00_bsois8y6b9j2i40ybk2bzt55",
+      "to_agent": "tmp-workerflow-cg-comm-a7cee3ad35-reader-b",
+      "question": "Synthetic fixture: 10:00 login denied; 10:05 account disabled; no successful login recorded. What is the elapsed time? Answer in one sentence, no tools needed.",
+      "event_id": "msg_312052dd8bc04711b16b3c6d394415a5",
+      "answer": "[SESSION: tmp-workerflow-cg-comm-a7cee3ad35-reader-a:to:tmp-workerflow-cg-comm-a7cee3ad35-reader-b:1789859634938:cde87445]\n\nElapsed time between the 10:00 login denial and the 10:05 account disablement is 5 minutes; no successful login is recorded in that window.",
+      "output_event_id": "msg_bae6a7a1752c449692e00eed761fb719",
+      "from": "tmp-workerflow-cg-comm-a7cee3ad35-reader-a",
+      "provenance": "native_sse_tool_call_and_successful_output"
+    },
+    {
+      "call_id": "call_00_a6y3rsl2o3l621nuuqlk2gqg",
+      "to_agent": "default",
+      "question": "Bounded synthetic fixture check only; do not use tools, create tasks, delegate or change files. Evidence: 10:00 login denied; 10:05 account disabled; no successful login recorded. Does it support a successful intrusion? Answer in one sentence.",
+      "event_id": "msg_b2dcc7c86b0c48a1bb182c127f4608f9",
+      "answer": "[SESSION: tmp-workerflow-cg-comm-a7cee3ad35-reader-a:to:default:1789859640365:1f94c44d]\n\nNo — the evidence (a denied login at 10:00, the account disabled at 10:05, and no successful login recorded) supports only an unsuccessful access attempt and subsequent containment, not a successful intrusion.",
+      "output_event_id": "msg_820143bde2d5498ab71e439e30f984d5",
+      "from": "tmp-workerflow-cg-comm-a7cee3ad35-reader-a",
+      "provenance": "native_sse_tool_call_and_successful_output"
+    }
+  ],
+  "errors": [],
+  "remaining_test_agents": [],
+  "cleanup": {
+    "status": "completed",
+    "summary": "Deleted 2; already absent 0; failed 0.",
+    "deleted": 2,
+    "missing": 0,
+    "failed": 0,
+    "agents": [
+      {
+        "agentId": "tmp-workerflow-cg-comm-a7cee3ad35-reader-a",
+        "ok": true
+      },
+      {
+        "agentId": "tmp-workerflow-cg-comm-a7cee3ad35-reader-b",
+        "ok": true
+      }
+    ]
+  }
+}

@@ -1,2 +1,5 @@
 # Deployment scripts must remain executable by Bash after Windows checkouts.
 *.sh text eol=lf
+
+# Published evidence is byte-addressed; Windows checkout must not rewrite it.
+docs/validation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

@@ -1,0 +1,158 @@
+{
+  "investigation_id": "INV-5a259d4dbdb9410f87ea4b1511a7cd8f",
+  "report": {
+    "findings": [
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"pid\": 9, \"start_ticks\": \"5961103\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"role\": \"compute\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"target_ref\": \"process:ef6db812ba4dd231868da4c80631477b333b45dbf2d2636a92ccf216c868b139\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"parent_pid\": 7"
+          }
+        ],
+        "claim": "观测时 compute 角色进程仍在运行（pid 9，parent_pid 7），材料为其给出可用的处置定位引用 target_ref=process:ef6db812ba4dd231868da4c80631477b333b45dbf2d2636a92ccf216c868b139。",
+        "limitations": "材料是观测快照（observed_at=2026-09-20T01:25:39.455451+00:00），未记录 compute 进程的退出/停止动作，故仅能确认其在观测时刻存在，不能确认其后状态。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"role\": \"control\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"target_ref\": \"process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547\""
+          }
+        ],
+        "claim": "control 角色业务进程（pid 8）同样在观测时运行，具有独立 target_ref=process:b66dc5f9966477a48ec040d0054e56bfc0b51ebb7221a54aa3516e2119709547，与 compute 定位相互独立，属于应保留的正常业务进程。",
+        "limitations": "材料未显式书写“保留 control”的操作要求；该结论依据 role 标注与两个进程各自独立的 target_ref 判定，并沿用任务目标中“保留正常 control 业务进程”的限定。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"persistence\": {\"present\": true, \"path\": \"/tmp/tmp51m3hgxz/host/compute-supervisor.json\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"target_ref\": \"persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496\""
+          }
+        ],
+        "claim": "持久化条目在观测时存在（present=true），路径为 /tmp/tmp51m3hgxz/host/compute-supervisor.json，并给出可用 target_ref=persistence:HOST-d18406902eb24ba396b3fd413500b643:d935c4c7105d5ff3f1baff7aa67362228093c4bd7ced62232a1994a12297c496。",
+        "limitations": "材料只给出该文件的当前存在与 sha256，未给出其创建/修改时间或安装主体。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "cyberguard-benign-supervisor/v1"
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\\\"restart_seconds\\\": 1.0"
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"last_mutation\": null"
+          }
+        ],
+        "claim": "该持久化是一个声明 restart_seconds=1.0 的监督配置（schema=cyberguard-benign-supervisor/v1），观测时未被移除（last_mutation 为 null）；因此在“只停止当前 compute 进程、不移除持久化”的限定处置范围内，该持久化不在被处理之列，处置后仍保留为未解决残留。",
+        "limitations": "“处置后仍保留”由操作员处置范围限定（不移除持久化）推得，材料本身未记录任何处置动作；该文件的实际重启效果未实测（见 inconclusive 结论）。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"observed_at\": \"2026-09-20T01:25:39.455451+00:00\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"event\": \"process_started\", \"role\": \"compute\", \"pid\": 9, \"cause\": \"lab_provisioning\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"last_mutation\": null"
+          }
+        ],
+        "claim": "材料只记录观测时间（observed_at=2026-09-20T01:25:39.455451+00:00）与两个 lab_provisioning 启动事件（01:25:35Z），未记录任何停止/处置动作时间，因此观测时刻不能当作处置时刻。",
+        "limitations": "材料不含处置动作记录，无法确认任何处置是否已发生或其时间。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"scenario_nature\": \"benign_process_emulation\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "No actual miner, initial exploit, network beacon or adversary identity."
+          }
+        ],
+        "claim": "环境被标注为受控无害进程模拟（scenario_nature=benign_process_emulation），材料明确限制不存在真实矿工、初始利用、网络信标或对手身份，故不得将 compute 称为真实木马或推测攻击组织。",
+        "limitations": "材料为单一来源（linux-host-lab-collector），其 source_authenticity 标记为 unverified，故该性质结论仅限本材料范围。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"restart_interval_seconds\": 1.0"
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\\\"restart_seconds\\\": 1.0"
+          }
+        ],
+        "claim": "未验证假设：若仅停止当前 compute 进程而不移除 compute-supervisor.json，compute 进程会因该持久化监督配置（restart_seconds=1.0）被重新拉起。",
+        "limitations": "材料仅记录监督文件存在及其 restart_seconds/restart_interval_seconds 值，未记录监督进程本身、任何重启事件或停止动作，无法确认重启是否实际发生。",
+        "status": "inconclusive"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"cause\": \"lab_provisioning\""
+          },
+          {
+            "material_id": "MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105",
+            "quote": "\"present\": true"
+          }
+        ],
+        "claim": "未验证假设：compute-supervisor.json 是在本次 lab_provisioning 期间被安装的。",
+        "limitations": "材料未记录该文件的创建/写入事件或时间戳，仅记录其当前存在；不能由“检测到持久化条目”推出“已证实的安装序列”。",
+        "status": "inconclusive"
+      }
+    ],
+    "job_id": "INV-5a259d4dbdb9410f87ea4b1511a7cd8f",
+    "next_steps": [
+      "获授权后移除或停用 /tmp/tmp51m3hgxz/host/compute-supervisor.json，消除“只停进程”遗留的持久化残留（本分析任务不执行）。",
+      "停止 compute 进程后再次采集端点时间线，验证进程是否被监督配置重启。",
+      "采集 compute-supervisor.json 的创建/修改时间戳与父进程 pid 7 信息，补足安装顺序与监督关系。",
+      "处置时保留 control(pid 8) 正常业务进程，勿将其纳入范围。"
+    ],
+    "role": "verifier",
+    "summary": "对单一实时材料 MAT-11a7e85163f037879227d7734af0cfe5eb0e76fa8c8bbb25bf920f3ef2892105（source_authenticity=unverified，scenario_nature=benign_process_emulation）独立复核：观测时刻 compute(pid 9) 与 control(pid 8) 均在运行且各有独立可用 target_ref；持久化 compute-supervisor.json 观测时 present=true、last_mutation=null，其内容为 schema=cyberguard-benign-supervisor/v1、restart_seconds=1.0 的监督配置。在操作员限定“只停止当前 compute 进程、不移除持久化”下，该持久化不在处置范围内、处置后仍为未解决残留；材料只记录观测时间与 lab_provisioning 启动事件，未记录任何停止/处置动作、重启事件或安装时间。共 8 条 findings（6 supported / 2 inconclusive），未发现与上游方向相反的证据。这是单一来源小规模案件，未使用临时专家 fan-out（无需并行问题或方法分歧）。",
+    "unknowns": [
+      "停止 compute 进程后是否实际发生重启（无实测数据）。",
+      "compute-supervisor.json 的创建/修改时间与安装主体。",
+      "父进程 pid 7 的身份与监督行为（材料未列出该进程）。",
+      "target_ref 对应的实际处置接口与审批路径（材料未提供）。"
+    ]
+  }
+}

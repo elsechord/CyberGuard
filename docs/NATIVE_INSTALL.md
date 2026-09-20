@@ -84,6 +84,8 @@ curl -fsS http://127.0.0.1:18120/healthz
 
 配置器使用这台主机的 AgentTeams 管理员身份登录 Matrix，将持久 token 写入私有目录；重复配置复用该身份，不依赖历史 demo 的 token。它保留原生工具，设置 40 次迭代上限，并把 Console 连接到新团队。输出 `runtime-ready.json` 可用于核对团队和工具状态。
 
+默认地址是本机 HTTP，配置器仅对 loopback HTTP 设置 `CYBERGUARD_COOKIE_SECURE=false`，使本地登录 Cookie 可以正常工作。使用 HTTPS 公网域名时通过 `--console-origin https://YOUR_DOMAIN` 配置，Cookie 保持 Secure。
+
 打开 `http://127.0.0.1:18120`，按 [Console 首次管理员配置](OPERATIONS_DEPLOY.md) 完成设置。在接入页面创建 API Key 并生成 Skill 提示词。调用方提交材料后，Console 自动创建案件 TaskRoom、邀请团队并投递完整请求，无需手工创建 Matrix 房间。
 
 已有 v1.2.3 团队可通过 [原生连接变量](AGENTTEAMS_TASK_SERVICE.md#配置) 配置自己的 Controller/Matrix 地址、团队与 Leader ID；所有参与 Worker 均需安装上述材料 helper。自有预算系统不必使用此处 Model Guard，但需提供可用的模型服务。
@@ -128,6 +130,6 @@ python3 deploy/investigation-service/budget.py arm --private-dir "$CG_PRIVATE"
 | 请求处于等待 | 检查 Controller/Team 就绪、预算 armed、模型连通和 Console 配置，不重复提交同一案件 |
 | 迁移主机 | 保存 Console 数据、AgentTeams 数据/工作区与模型预算卷；私有配置单独加密备份 |
 
-当前发布验收包括：独立临时目录生成新配置、计划 SHA256 校验、秘密不进入公开计划、重复执行不覆盖配置，以及现有 Docker 环境真实重启后连续两案完成。**全新主机从拉镜像到真实模型交付的整套计时尚未重新测量**；Quickstart 的旧基础服务耗时不能代指这套原生团队安装耗时。
+当前发布验收包括：从候选源码包解压到独立临时目录、生成新配置、计划 SHA256 校验、秘密不进入公开计划、重复执行不覆盖配置、v0.15.0 镜像构建，以及全新数据卷上的 Console 首次管理员创建、登录和接入页。命令、耗时和镜像 ID 见 [干净目录部署记录](validation/clean-install/README.md)。现有 Docker 环境另有真实重启后连续两案完成。**全新主机从拉镜像到真实模型交付的整套计时尚未重新测量**；Quickstart 的旧基础服务耗时不能代指这套原生团队安装耗时。
 
 本次无模型安装预检命令：`python3 deploy/investigation-service/test_portable_preparation.py`（Windows 和 WSL 均 3 项通过）、`bash -n deploy/investigation-service/build-controller.sh`、使用临时服务 env 的 `docker compose ... config --quiet`、固定 v1.2.3 源码上的 localhost 补丁 dry-run。预检没有启动或修改当前运行容器。

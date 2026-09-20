@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import urllib.request
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 PRIVATE = Path('/root/.config/cyberguard/native-task-service')
@@ -74,6 +75,8 @@ def main():
         CYBERGUARD_AGENTTEAMS_LEADER_ROOM_ID=team['teamRoomID'],CYBERGUARD_AGENTTEAMS_LEADER_USER_ID=leader['matrixUserID'],
         CYBERGUARD_GUARD_URL='http://native-model-guard.agentteams.local:8080',CYBERGUARD_GUARD_ADMIN_TOKEN=guard['admin_token'],
         CYBERGUARD_CONSOLE_ORIGIN=args.console_origin,CYBERGUARD_INVESTIGATION_REQUIRE_GUARD_ARMED='true')
+    origin=urlsplit(args.console_origin)
+    env['CYBERGUARD_COOKIE_SECURE']='false' if origin.scheme == 'http' and origin.hostname in ('127.0.0.1','localhost','::1') else 'true'
     for name, content in [('console.env','\n'.join(k+'='+v for k,v in env.items())+'\n'),
         ('console.override.json',json.dumps({'services':{'operations-console':{'environment':{k:v.replace('$','$$') for k,v in env.items()}}}}))]:
         fd=os.open(PRIVATE/name,os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)

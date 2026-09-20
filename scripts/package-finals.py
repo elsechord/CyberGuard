@@ -28,6 +28,7 @@ def package(revision, output):
     source = output / f'CyberGuard-source-v{version}.zip'
     source.write_bytes(git('archive', '--format=zip', '--prefix=CyberGuard/', commit))
     skill = output / 'cyberguard-skill-v0.2.0.zip'
+    video = output / 'cyberguard-finals-20260920.mp4'
     prefix = 'CyberGuard/integrations/agent-skills/cyberguard/'
     with ZipFile(io.BytesIO(source.read_bytes())) as archived, ZipFile(skill, 'w', ZIP_DEFLATED) as bundled:
         names = archived.namelist()
@@ -39,11 +40,14 @@ def package(revision, output):
             raise ValueError('Committed source is missing finals files: ' + ', '.join(missing))
         if prefix + 'SKILL.md' not in names:
             raise ValueError('Portable Skill is missing from committed source')
+        video.write_bytes(archived.read('CyberGuard/finals/assets/' + video.name))
         for name in names:
             if name.startswith(prefix) and not name.endswith('/'):
                 bundled.writestr(name[len(prefix):], archived.read(name))
+        for name in ('LICENSE', 'NOTICE'):
+            bundled.writestr(name, archived.read('CyberGuard/' + name))
     files = [{'name': p.name, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
-              'bytes': p.stat().st_size} for p in (source, skill)]
+              'bytes': p.stat().st_size} for p in (source, skill, video)]
     manifest = {'version': version, 'commit': commit, 'repository': 'https://github.com/elsechord/CyberGuard',
                 'files': files, 'source': 'Exact committed Git tree; runtime credentials excluded.'}
     manifest_path = output / 'release-manifest.json'

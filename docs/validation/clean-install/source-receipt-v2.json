@@ -1,0 +1,8 @@
+{
+  "created_at": "2026-09-20T01:27:54.163301+00:00",
+  "source": "working-tree candidate v2 after clean-install fixes",
+  "version": "0.15.0",
+  "file_count": 409,
+  "archive_sha256": "493cda73cc2945211e488ee3577c97b8acac39f706e5a1af0008da3e3cbd6c57",
+  "contains_dotenv": false
+}

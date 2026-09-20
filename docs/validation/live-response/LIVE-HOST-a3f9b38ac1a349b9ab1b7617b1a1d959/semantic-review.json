@@ -1,0 +1,102 @@
+{
+  "schema": "cyberguard-post-run-semantic-review/v1",
+  "reviewed_at": "2026-09-20T01:38:33.035196+00:00",
+  "reviewer": "Codex, independent post-run semantic review by finals_clean_install agent",
+  "review_type": "事后语义审阅；不是原生 AgentTeams 运行时验证，也不是人类分析师验收",
+  "run_id": "LIVE-HOST-a3f9b38ac1a349b9ab1b7617b1a1d959",
+  "passed": true,
+  "pass_scope": "关键案件判断、证据逐字引用、两轮背景传递与实际有界复核通过；不表示报告所有措辞均可直接转为执行指令。",
+  "rounds": [
+    {
+      "round": 1,
+      "investigation_id": "INV-5a259d4dbdb9410f87ea4b1511a7cd8f",
+      "passed": true,
+      "findings": 8,
+      "citations": 20,
+      "report_file_sha256": "8bef9b933e9f1c57086e578c3c9ae298b5eb63341d2d71ab673fd89eb1fb032a",
+      "request_file_sha256": "bb7d5e564031dc5a4b92c7b09cf41b520eaba0b32f1804291030b4196cf6f306",
+      "checks": {
+        "request_material_bytes_preserved": true,
+        "material_sha256_match": true,
+        "citations_exact_substrings": true,
+        "proposal_context_binds_report_file_sha256": true,
+        "literal_claim_status_direction_reviewed": true,
+        "control_preservation_explicit": true,
+        "no_real_malware_or_actor_attribution_claim": true,
+        "no_unbounded_clearance_claim": true
+      }
+    },
+    {
+      "round": 2,
+      "investigation_id": "INV-183181f645814f4db17eb6e24128ac7f",
+      "passed": true,
+      "findings": 7,
+      "citations": 25,
+      "report_file_sha256": "55b099cb5c852c441f76ae79b4040616bb6a48e024a7b4f385531062c127abb1",
+      "request_file_sha256": "5b9c7f393a43d5a3b2c034c1c7f12d6e520f60978f3fdfeab20983dab1bb4362",
+      "checks": {
+        "request_material_bytes_preserved": true,
+        "material_sha256_match": true,
+        "citations_exact_substrings": true,
+        "proposal_context_binds_report_file_sha256": true,
+        "literal_claim_status_direction_reviewed": true,
+        "control_preservation_explicit": true,
+        "no_real_malware_or_actor_attribution_claim": true,
+        "no_unbounded_clearance_claim": true
+      }
+    }
+  ],
+  "cross_round_checks": {
+    "same_environment_across_rounds": true,
+    "round_2_includes_failed_round_1_probe": true,
+    "recurrence_observed_after_stop": true,
+    "final_bounded_probe_passed": true,
+    "control_preserved_in_actual_probe": true,
+    "actual_second_action_is_disable_persistence": true
+  },
+  "environment_id": "HOST-d18406902eb24ba396b3fd413500b643",
+  "final_observation_seconds": 2.299,
+  "wording_notes": [
+    {
+      "round": 1,
+      "finding": 4,
+      "severity": "wording",
+      "note": "“处置后仍保留”是只停止进程且不移除持久化这一操作范围下的条件性推断，不是首轮材料已观测到处置。报告 limitations 已说明首轮尚无执行记录。"
+    },
+    {
+      "round": 2,
+      "finding": 3,
+      "severity": "interpretation",
+      "note": "1.0 秒配置与 55.753 毫秒事件间隔数值不同属实，但不能据此断言监督配置失效或自相矛盾；轮询周期不必等于退出到重启的等待时间。报告已将触发机制列为未知，演示应只说实际发生了快速复发。"
+    },
+    {
+      "round": 2,
+      "location": "next_steps[1]",
+      "severity": "requires_operator_interpretation",
+      "note": "“定位并处置 supervisor/父进程”涉及 compute 与 control 共同父进程 pid 7，建议缺少具体动作及业务影响限定，不能直接转换成杀父进程命令。应先确认对 control 的影响与授权。实际第二轮提案是 disable_persistence，没有执行该模糊建议，最终 control 心跳正常。"
+    },
+    {
+      "round": 2,
+      "finding": 5,
+      "severity": "scope",
+      "note": "“control 未受影响”仅由进程身份与心跳推进支持，不能推广为业务功能、性能或所有依赖完全不受影响；报告 limitations 已注明。"
+    },
+    {
+      "round": 2,
+      "finding": 7,
+      "severity": "cross_round_context",
+      "note": "本轮报告仅使用两份处置后材料，故保留安装时序未知；整场首轮快照已证明该文件在第一次停止动作前存在，但仍未证明其最初安装者或创建时间。"
+    },
+    {
+      "round": "both",
+      "severity": "presentation",
+      "note": "请求希望 3–5 项简短结论，原报告分别输出 8 与 7 项；这是篇幅未遵循要求，不影响上述关键案件判断。"
+    }
+  ],
+  "limitations": [
+    "逐字引用匹配证明摘录存在，不自动证明复合结论的全部子句。",
+    "监督复发因果依据同一受信实验边界内的事件与探针，不是独立外部取证认证。",
+    "最终 verified 只覆盖 2.299 秒无害实验的进程、持久化与 control 心跳检查，不是长期清除、入口修复或真实入侵归因保证。",
+    "未修改任何原始请求、报告、提案或执行记录。"
+  ]
+}

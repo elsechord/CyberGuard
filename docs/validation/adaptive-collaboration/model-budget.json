@@ -1,0 +1,51 @@
+{
+  "run": {
+    "run_id": "CG-ADAPTIVE-COMMS-20260920",
+    "model": "deepseek-v4.1-flash",
+    "evidence_hash": "5dc503afaf27712e9c997ccf874440b9fe7c52ae07af4130285ad9f803e2dc1a",
+    "limits": {
+      "max_concurrency": 2,
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 60000,
+      "max_requests": 30,
+      "max_requests_per_role": 30
+    },
+    "status": "closed",
+    "reason": "operator_closed",
+    "created_at": "2026-09-19T23:13:35.825142+00:00",
+    "closed_at": "2026-09-19T23:14:51.204819+00:00",
+    "roles": [
+      "investigator",
+      "planner",
+      "verifier"
+    ],
+    "requests_by_role": {
+      "investigator": 6
+    },
+    "usage": {
+      "requests": 6,
+      "charged_input": 80288,
+      "charged_output": 1131,
+      "known_input": 80288,
+      "known_output": 1131,
+      "reserved_input": 0,
+      "reserved_output": 0,
+      "concurrency_used": 0
+    },
+    "remaining": {
+      "requests": 24,
+      "input_tokens": 919712,
+      "output_tokens": 58869,
+      "concurrency": 2
+    }
+  },
+  "armed": false,
+  "denials": {},
+  "denial_details": [],
+  "token_reservation_method": "serialized_utf8_bytes_plus_overhead",
+  "limitations": [
+    "Input reservation is conservative, not a verified provider tokenizer bound.",
+    "Already forwarded calls cannot be recalled; unknown usage keeps reservations.",
+    "Provider usage is reported, not independently metered billing."
+  ]
+}

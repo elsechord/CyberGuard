@@ -1,0 +1,176 @@
+{
+  "worker": "cg-native001-investigator",
+  "runs": [
+    {
+      "count": 1,
+      "run_id": "cg-lifecycle-590c9bd42d-1",
+      "native_event_id": "$CfBBBWPZSI9QYX5m-dcCFeGMjkTGQ0EYjCW34bXLMuM",
+      "children": [
+        {
+          "id": "tmp-workerflow-cg-lifecycle-590c9bd42d-1-node-0",
+          "active_model": {
+            "provider_id": "agentteams-gateway",
+            "model": "cg-native001-investigator-model"
+          },
+          "max_iters": 7,
+          "auto_title_enabled": false,
+          "removed": true
+        }
+      ],
+      "state_path": "/root/agentteams-fs/agents/cg-native001-investigator/.qwenpaw/workspaces/default/shared/workerflow/cg-lifecycle-590c9bd42d-1/workflow.json",
+      "shared_retained": true,
+      "snapshot": {
+        "schema_version": 1,
+        "job_id": "LIFECYCLE-ONLY",
+        "task_id": "cg-lifecycle-590c9bd42d-1",
+        "parent_worker": "cg-native001-investigator",
+        "run_id": "cg-lifecycle-590c9bd42d-1",
+        "reason": "Lifecycle integration test; no inference task is submitted",
+        "status": "failed",
+        "updated_at": "2026-09-19T23:11:36Z",
+        "nodes": [
+          {
+            "id": "node-0",
+            "agent_id": "tmp-workerflow-cg-lifecycle-590c9bd42d-1-node-0",
+            "role": "Lifecycle fixture",
+            "question": "Do not run: lifecycle-only test.",
+            "material_ids": [
+              "MAT-test"
+            ],
+            "status": "ready",
+            "summary": "ready for submit",
+            "artifact_paths": [],
+            "depends_on": []
+          }
+        ],
+        "messages": [],
+        "limits": {
+          "max_agents": 3,
+          "max_depth": 1
+        },
+        "cleanup": {
+          "status": "completed",
+          "summary": "Deleted 1; already absent 0; failed 0.",
+          "deleted": 1,
+          "missing": 0,
+          "failed": 0,
+          "agents": [
+            {
+              "agentId": "tmp-workerflow-cg-lifecycle-590c9bd42d-1-node-0",
+              "ok": true
+            }
+          ]
+        }
+      },
+      "model_calls": 0,
+      "scope": "lifecycle_only"
+    },
+    {
+      "count": 2,
+      "run_id": "cg-lifecycle-590c9bd42d-2",
+      "native_event_id": "$X1lA9yZ_q9MaH71VC1ReyhSBcqFlNnAw_VYJbC1w7u0",
+      "children": [
+        {
+          "id": "tmp-workerflow-cg-lifecycle-590c9bd42d-2-node-0",
+          "active_model": {
+            "provider_id": "agentteams-gateway",
+            "model": "cg-native001-investigator-model"
+          },
+          "max_iters": 7,
+          "auto_title_enabled": false,
+          "removed": true
+        },
+        {
+          "id": "tmp-workerflow-cg-lifecycle-590c9bd42d-2-node-1",
+          "active_model": {
+            "provider_id": "agentteams-gateway",
+            "model": "cg-native001-investigator-model"
+          },
+          "max_iters": 7,
+          "auto_title_enabled": false,
+          "removed": true
+        }
+      ],
+      "state_path": "/root/agentteams-fs/agents/cg-native001-investigator/.qwenpaw/workspaces/default/shared/workerflow/cg-lifecycle-590c9bd42d-2/workflow.json",
+      "shared_retained": true,
+      "snapshot": {
+        "schema_version": 1,
+        "job_id": "LIFECYCLE-ONLY",
+        "task_id": "cg-lifecycle-590c9bd42d-2",
+        "parent_worker": "cg-native001-investigator",
+        "run_id": "cg-lifecycle-590c9bd42d-2",
+        "reason": "Lifecycle integration test; no inference task is submitted",
+        "status": "failed",
+        "updated_at": "2026-09-19T23:11:40Z",
+        "nodes": [
+          {
+            "id": "node-0",
+            "agent_id": "tmp-workerflow-cg-lifecycle-590c9bd42d-2-node-0",
+            "role": "Lifecycle fixture",
+            "question": "Do not run: lifecycle-only test.",
+            "material_ids": [
+              "MAT-test"
+            ],
+            "status": "ready",
+            "summary": "ready for submit",
+            "artifact_paths": [],
+            "depends_on": []
+          },
+          {
+            "id": "node-1",
+            "agent_id": "tmp-workerflow-cg-lifecycle-590c9bd42d-2-node-1",
+            "role": "Lifecycle fixture",
+            "question": "Do not run: lifecycle-only test.",
+            "material_ids": [
+              "MAT-test"
+            ],
+            "status": "ready",
+            "summary": "ready for submit",
+            "artifact_paths": [],
+            "depends_on": []
+          }
+        ],
+        "messages": [],
+        "limits": {
+          "max_agents": 3,
+          "max_depth": 1
+        },
+        "cleanup": {
+          "status": "completed",
+          "summary": "Deleted 2; already absent 0; failed 0.",
+          "deleted": 2,
+          "missing": 0,
+          "failed": 0,
+          "agents": [
+            {
+              "agentId": "tmp-workerflow-cg-lifecycle-590c9bd42d-2-node-0",
+              "ok": true
+            },
+            {
+              "agentId": "tmp-workerflow-cg-lifecycle-590c9bd42d-2-node-1",
+              "ok": true
+            }
+          ]
+        }
+      },
+      "model_calls": 0,
+      "scope": "lifecycle_only"
+    }
+  ],
+  "communication_tools": {
+    "chat_with_agent": {
+      "signature": "(to_agent: str, text: str, session_id: Optional[str] = None, timeout: int = 300) -> agentscope.tool._response.ToolChunk",
+      "doc": "Send a foreground message to another configured agent.\n\nThis tool waits for the target agent to finish and returns the final text\nresponse in a single tool result. It is intended for direct inter-agent\nconsultation where the caller expects an immediate reply rather than a\nbackground task handle.\n\nArgs:\n    to_agent (`str`):\n        The target agent ID to send the message to. This must be an agent\n        ID returned by ``list_agents``.\n    text (`str`):\n        The message text to send to the target agent.\n    session_id (`str`, optional):\n        Existing session ID to continue a previous conversation. If not\n        provided, a new session ID is generated automatically.\n    timeout (`int`, optional):\n        Foreground wait timeout in seconds. Callers should estimate how\n        long the target agent may need to finish to reduce avoidable\n        timeout failures.\n\nReturns:\n    `ToolChunk`:\n        A text response containing the final agent reply. Successful\n        responses include a ``[SESSION: ...]`` header followed by the reply\n        text so the caller can reuse the same session in later turns."
+    },
+    "submit_to_agent": {
+      "signature": "(to_agent: str, text: str, session_id: Optional[str] = None, task_timeout: Optional[float] = None) -> agentscope.tool._response.ToolChunk",
+      "doc": "Submit a background message to another configured agent.\n\nThis tool is the background-task counterpart to ``chat_with_agent``. It\nsubmits the request and returns immediately with task metadata instead of\nwaiting for the target agent to finish.\n\nArgs:\n    to_agent (`str`):\n        The target agent ID to send the message to. This must be an agent\n        ID returned by ``list_agents``.\n    text (`str`):\n        The message text to execute as a background task.\n    session_id (`str`, optional):\n        Existing session ID to continue a previous conversation in the\n        background. If not provided, a new session ID is generated.\n    task_timeout (`float`, optional):\n        Task execution timeout in seconds. Overrides the server-side\n        default stream_task_timeout for this specific task.\n\nReturns:\n    `ToolChunk`:\n        A text response containing ``[TASK_ID: ...]`` and\n        ``[SESSION: ...]`` headers. The returned task ID can be passed to\n        ``check_agent_task`` to inspect progress or fetch the final result."
+    },
+    "check_agent_task": {
+      "signature": "(task_id: str) -> agentscope.tool._response.ToolChunk",
+      "doc": "Check the status of a background inter-agent task.\n\nThis tool queries a previously submitted background task by its task ID.\nIf the task is still in progress, it returns the current lifecycle state.\nIf the task has finished, it returns either the final agent response or a\nfailure message.\n\nArgs:\n    task_id (`str`):\n        The background task ID returned by ``submit_to_agent``.\n\nReturns:\n    `ToolChunk`:\n        A text response containing a ``[TASK_ID: ...]`` header and current\n        task status. Completed tasks also include the resolved session ID\n        and final agent text when available."
+    }
+  },
+  "model_calls": 0,
+  "scope": "lifecycle_only"
+}

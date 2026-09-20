@@ -1,0 +1,1847 @@
+{
+  "schema": "cyberguard-run-export",
+  "schema_version": "1.0",
+  "incident_id": "CG-HOST-001",
+  "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+  "exported_at": "2026-09-20T01:20:59.608284+00:00",
+  "audit_status": "valid",
+  "actions": [
+    {
+      "action_id": "ACT-beb17d790149",
+      "incident_id": "CG-HOST-001",
+      "action": "terminate_process",
+      "target": "process:f582ecf668edb889da90eadc7bc319656d2feea5ab53afdb957b7d8577fe12c3",
+      "reason": "Operator requested initial containment only: stop the current compute process (pid 8, role 'compute') observed in the lab endpoint timeline. This is the sole allowed terminate_process target, matching that role's target_ref. Persistence (compute-supervisor.json) is deliberately left unchanged per instruction; note that a restart supervision interval of ~1.0s is present, so successful termination alone should not be treated as recovery. [investigation-context-sha256:e2507d3fac98a0956d407c5a50d30550db48faf3f1bf9288088e5137343b4d40]",
+      "idempotency_key": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce-1",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "model_mode": "live",
+      "risk": "L2",
+      "reversible": false,
+      "backend_url": "http://127.0.0.1:41949",
+      "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+      "execution_mode": "host_lab",
+      "environment": "lab",
+      "execution": "real",
+      "status": "pending_approval",
+      "recorded_at": "2026-09-20T01:20:50.416306+00:00",
+      "previous_record_sha256": null,
+      "record_sha256": "71c0b69c2b18bf9d7047e8e268a650d90c7046f5c60f285f3fab09aac0ea85d7",
+      "record_hmac_sha256": "b8eab756836159d933b102a215ce42cbb54eea4dcdb91266ba9ff9ceb3cb143d"
+    },
+    {
+      "action_id": "ACT-beb17d790149",
+      "incident_id": "CG-HOST-001",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "proposal_record_sha256": "71c0b69c2b18bf9d7047e8e268a650d90c7046f5c60f285f3fab09aac0ea85d7",
+      "approver": "automated-lab-harness",
+      "status": "approved",
+      "approval_expires_at": "2026-09-20T01:35:50.528367+00:00",
+      "recorded_at": "2026-09-20T01:20:50.528397+00:00",
+      "previous_record_sha256": "71c0b69c2b18bf9d7047e8e268a650d90c7046f5c60f285f3fab09aac0ea85d7",
+      "record_sha256": "df857d73b7fe99a7bd2052eaf6f9bcd386cb45f400a25559d433fc7ce5fa60da",
+      "record_hmac_sha256": "91bcea36df835ff7e152758539434cf3fe4e4b79bc77d7984d4b63f0d800022d"
+    },
+    {
+      "action_id": "ACT-beb17d790149",
+      "incident_id": "CG-HOST-001",
+      "action": "terminate_process",
+      "target": "process:f582ecf668edb889da90eadc7bc319656d2feea5ab53afdb957b7d8577fe12c3",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+      "execution_mode": "host_lab",
+      "execution": "real",
+      "environment": "lab",
+      "model_mode": "live",
+      "status": "execution_dispatched",
+      "authorization_record_sha256": "df857d73b7fe99a7bd2052eaf6f9bcd386cb45f400a25559d433fc7ce5fa60da",
+      "recorded_at": "2026-09-20T01:20:50.563042+00:00",
+      "previous_record_sha256": "df857d73b7fe99a7bd2052eaf6f9bcd386cb45f400a25559d433fc7ce5fa60da",
+      "record_sha256": "e226eec46314972e7956b2614de6cbe986548d3a8ed211d91d14afb99df9f96d",
+      "record_hmac_sha256": "30d1a3373deb82d04b9497028db5c6e54f485acd2e617c1d31c156752b0b0c58"
+    },
+    {
+      "action_id": "ACT-beb17d790149",
+      "incident_id": "CG-HOST-001",
+      "action": "terminate_process",
+      "target": "process:f582ecf668edb889da90eadc7bc319656d2feea5ab53afdb957b7d8577fe12c3",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+      "execution_mode": "host_lab",
+      "execution": "real",
+      "environment": "lab",
+      "model_mode": "live",
+      "status": "executed",
+      "result": "applied",
+      "backend_receipt": {
+        "kind": "terminate_process",
+        "target": "process:f582ecf668edb889da90eadc7bc319656d2feea5ab53afdb957b7d8577fe12c3",
+        "action_id": "ACT-beb17d790149",
+        "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+        "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+        "operation_id": "ACT-beb17d790149",
+        "observed_at": "2026-09-20T01:20:50.595886+00:00",
+        "result": "applied"
+      },
+      "verification_status": "pending",
+      "rollback_available": false,
+      "recorded_at": "2026-09-20T01:20:50.617719+00:00",
+      "previous_record_sha256": "e226eec46314972e7956b2614de6cbe986548d3a8ed211d91d14afb99df9f96d",
+      "record_sha256": "1f7eb1862de903aed76e9611421b4a9a74d18ec7933ffb83ad31b1e4710a7523",
+      "record_hmac_sha256": "b8ebfc2cabca32a80dadd747d71dfaeaa91c13cf937f49d118bd3c80c4994277"
+    },
+    {
+      "action_id": "ACT-9101b2a576c8",
+      "incident_id": "CG-HOST-001",
+      "action": "disable_persistence",
+      "target": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+      "reason": "Independent recovery verification failed with residual_process_or_persistence: the terminated compute process (pid 8) was immediately replaced by a new compute worker (pid 19) whose start event cause is 'supervisor', while the control worker (pid 7) continues to progress normally. The supervisor file /tmp/tmplwewna_a/host/compute-supervisor.json (sha256 e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2, restart_seconds 1.0) is still present and is the demonstrated cause of recurrence. Disabling that persistence removes the restart mechanism at its source rather than re-terminating a process that the supervisor would recreate, and it does not touch the running control workload. [investigation-context-sha256:e2507d3fac98a0956d407c5a50d30550db48faf3f1bf9288088e5137343b4d40]",
+      "idempotency_key": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce-2",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "model_mode": "live",
+      "risk": "L2",
+      "reversible": false,
+      "backend_url": "http://127.0.0.1:41949",
+      "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+      "execution_mode": "host_lab",
+      "environment": "lab",
+      "execution": "real",
+      "status": "pending_approval",
+      "recorded_at": "2026-09-20T01:20:56.960351+00:00",
+      "previous_record_sha256": "1f7eb1862de903aed76e9611421b4a9a74d18ec7933ffb83ad31b1e4710a7523",
+      "record_sha256": "dbaf59da0662190eb8c0028e9e271bbe39bd385a3137900928c511943414eede",
+      "record_hmac_sha256": "935dc02093726cde2ff863d490f99ee87f3f533ae739d37a0b29beaae072938a"
+    },
+    {
+      "action_id": "ACT-9101b2a576c8",
+      "incident_id": "CG-HOST-001",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "proposal_record_sha256": "dbaf59da0662190eb8c0028e9e271bbe39bd385a3137900928c511943414eede",
+      "approver": "automated-lab-harness",
+      "status": "approved",
+      "approval_expires_at": "2026-09-20T01:35:57.048556+00:00",
+      "recorded_at": "2026-09-20T01:20:57.048578+00:00",
+      "previous_record_sha256": "dbaf59da0662190eb8c0028e9e271bbe39bd385a3137900928c511943414eede",
+      "record_sha256": "cadfd8fcc7eda43bcb7de22e74d9b8ca8b4804d963824edf94f584241cd022cb",
+      "record_hmac_sha256": "7cc7482aa026b5b0f672ccbcb860ca3651bcb68feb796a2ecd80baf419416df2"
+    },
+    {
+      "action_id": "ACT-9101b2a576c8",
+      "incident_id": "CG-HOST-001",
+      "action": "disable_persistence",
+      "target": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+      "execution_mode": "host_lab",
+      "execution": "real",
+      "environment": "lab",
+      "model_mode": "live",
+      "status": "execution_dispatched",
+      "authorization_record_sha256": "cadfd8fcc7eda43bcb7de22e74d9b8ca8b4804d963824edf94f584241cd022cb",
+      "recorded_at": "2026-09-20T01:20:57.098949+00:00",
+      "previous_record_sha256": "cadfd8fcc7eda43bcb7de22e74d9b8ca8b4804d963824edf94f584241cd022cb",
+      "record_sha256": "4aa403c71e9d0e5b4361fd67c8298b0ff74218f09c0e64e169758361c8680572",
+      "record_hmac_sha256": "0dd695c50ae043733f8eefdad06e2bb8fa9bf34c057a3678a26a02c319e464dd"
+    },
+    {
+      "action_id": "ACT-9101b2a576c8",
+      "incident_id": "CG-HOST-001",
+      "action": "disable_persistence",
+      "target": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+      "execution_mode": "host_lab",
+      "execution": "real",
+      "environment": "lab",
+      "model_mode": "live",
+      "status": "executed",
+      "result": "applied",
+      "backend_receipt": {
+        "kind": "disable_persistence",
+        "target": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+        "action_id": "ACT-9101b2a576c8",
+        "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+        "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+        "operation_id": "ACT-9101b2a576c8",
+        "observed_at": "2026-09-20T01:20:57.128723+00:00",
+        "result": "applied"
+      },
+      "verification_status": "pending",
+      "rollback_available": false,
+      "recorded_at": "2026-09-20T01:20:57.146214+00:00",
+      "previous_record_sha256": "4aa403c71e9d0e5b4361fd67c8298b0ff74218f09c0e64e169758361c8680572",
+      "record_sha256": "738171dddb87d457949c6e803d0a6b04f4caa43b2f73498461b6802bcda3058e",
+      "record_hmac_sha256": "717bc44bb622f8c5262cc20aa7e9a197dadd13a66ad124a79c73948818dd7613"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EV-f7d5be1e69d5",
+      "incident_id": "CG-HOST-001",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "scenario_id": "lab_host",
+      "tool_call_id": "CALL-ed1ee85160884be78162b74ec1140de9",
+      "environment": "lab",
+      "execution": "real",
+      "envelope_sha256": "bfa8baa77c49471bbb4644a7571213666b5caf7f1795c5d9920ed99b87a93240",
+      "source": "linux-host-lab-collector",
+      "collected_at": "2026-09-20T01:20:47.998035+00:00",
+      "observed_at": "2026-09-20T01:20:47.998013+00:00",
+      "kind": "endpoint_timeline",
+      "summary": "Observed /proc identities, supervisor file and local events; benign laboratory, not incident attribution.",
+      "data": {
+        "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+        "environment": "lab",
+        "execution": "real",
+        "scenario_nature": "benign_process_emulation",
+        "nonce": "4f9810c114794fbb95fbaccca635818b",
+        "observed_at": "2026-09-20T01:20:47.989103+00:00",
+        "processes": [
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "pid": 8,
+            "start_ticks": "5932015",
+            "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+            "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+            "target_ref": "process:f582ecf668edb889da90eadc7bc319656d2feea5ab53afdb957b7d8577fe12c3",
+            "role": "compute",
+            "parent_pid": 6,
+            "command_line": [
+              "/usr/local/bin/python",
+              "/workspace/services/host-lab/worker.py",
+              "--role",
+              "compute",
+              "--heartbeat",
+              "/tmp/tmplwewna_a/host/compute.json"
+            ],
+            "heartbeat": {
+              "pid": 8,
+              "sequence": 34,
+              "value": "86e50149658661312a9e0b35558d84f6c6d3da797f552a9657fe0558ca40cdef"
+            }
+          },
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "pid": 7,
+            "start_ticks": "5932014",
+            "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+            "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+            "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+            "role": "control",
+            "parent_pid": 6,
+            "command_line": [
+              "/usr/local/bin/python",
+              "/workspace/services/host-lab/worker.py",
+              "--role",
+              "control",
+              "--heartbeat",
+              "/tmp/tmplwewna_a/host/control.json"
+            ],
+            "heartbeat": {
+              "pid": 7,
+              "sequence": 34,
+              "value": "86e50149658661312a9e0b35558d84f6c6d3da797f552a9657fe0558ca40cdef"
+            }
+          }
+        ],
+        "persistence": {
+          "present": true,
+          "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+          "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+          "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+          "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+        },
+        "events": [
+          {
+            "observed_at": "2026-09-20T01:20:44.162701+00:00",
+            "event": "process_started",
+            "role": "control",
+            "pid": 7,
+            "cause": "lab_provisioning"
+          },
+          {
+            "observed_at": "2026-09-20T01:20:44.167723+00:00",
+            "event": "process_started",
+            "role": "compute",
+            "pid": 8,
+            "cause": "lab_provisioning"
+          }
+        ],
+        "last_mutation": null,
+        "restart_interval_seconds": 1.0,
+        "limitations": [
+          "No actual miner, initial exploit, network beacon or adversary identity.",
+          "The collector and workload share a trusted laboratory boundary."
+        ]
+      },
+      "sha256": "ab19e2b8bfa6c4e59f68f4b1956b9a4ada8f2c1eb10e174a66d1921c99803f27",
+      "confidence": 1.0,
+      "supports": [],
+      "contradicts": [],
+      "handling": "internal",
+      "standard": {
+        "schema": "cyberguard-security-observation",
+        "version": "1.0",
+        "alignment": {
+          "event_profile": "OCSF-aligned",
+          "cti_profile": "STIX-2.1"
+        },
+        "category_name": "system_activity",
+        "class_name": "process_activity",
+        "activity_name": "endpoint.timeline",
+        "raw_sha256": "ab19e2b8bfa6c4e59f68f4b1956b9a4ada8f2c1eb10e174a66d1921c99803f27"
+      },
+      "entities": [],
+      "observables": [],
+      "attack_techniques": [],
+      "quality": {
+        "score": 0.65,
+        "gate": "review",
+        "issues": [
+          "no_attack_mapping",
+          "no_correlatable_entity_or_observable",
+          "no_hypothesis_link"
+        ],
+        "required_fields_present": 5,
+        "required_fields_total": 5
+      }
+    },
+    {
+      "evidence_id": "EV-b0ce28c3941b",
+      "incident_id": "CG-HOST-001",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "scenario_id": "lab_host",
+      "tool_call_id": "CALL-a0f0b245be7043df85e13c67f44a42b1",
+      "environment": "lab",
+      "execution": "real",
+      "envelope_sha256": "f88030eab8723d4cd02f3c8363c2a9c4205ad1f8bef6eeca3d31c082a88b89c2",
+      "source": "linux-host-lab-collector",
+      "collected_at": "2026-09-20T01:20:53.066233+00:00",
+      "observed_at": "2026-09-20T01:20:53.066208+00:00",
+      "kind": "recovery_metrics",
+      "summary": "Independent bounded recovery observation; an applied action does not establish recovery.",
+      "data": {
+        "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+        "action_id": "ACT-beb17d790149",
+        "environment": "lab",
+        "execution": "real",
+        "verdict": "failed",
+        "telemetry_health": "healthy",
+        "checks": [
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "environment": "lab",
+            "execution": "real",
+            "scenario_nature": "benign_process_emulation",
+            "nonce": "f09096b157944b60af327a5206c07915",
+            "observed_at": "2026-09-20T01:20:50.729529+00:00",
+            "processes": [
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 7,
+                "start_ticks": "5932014",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                "role": "control",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "control",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/control.json"
+                ],
+                "heartbeat": {
+                  "pid": 7,
+                  "sequence": 61,
+                  "value": "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c"
+                }
+              }
+            ],
+            "persistence": {
+              "present": true,
+              "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+              "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+              "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+              "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+            },
+            "events": [
+              {
+                "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                "event": "process_started",
+                "role": "control",
+                "pid": 7,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 8,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 8
+              }
+            ],
+            "last_mutation": {
+              "action_id": "ACT-beb17d790149",
+              "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+              "result": "applied"
+            },
+            "restart_interval_seconds": 1.0,
+            "limitations": [
+              "No actual miner, initial exploit, network beacon or adversary identity.",
+              "The collector and workload share a trusted laboratory boundary."
+            ]
+          },
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "environment": "lab",
+            "execution": "real",
+            "scenario_nature": "benign_process_emulation",
+            "nonce": "9b67fdca4002412cb8f2c4b82ead0733",
+            "observed_at": "2026-09-20T01:20:51.867031+00:00",
+            "processes": [
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 19,
+                "start_ticks": "5932715",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:9eede2087e3789399cf7c2e7d587d441d519684523ba280fb83386c525efc410",
+                "role": "compute",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "compute",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/compute.json"
+                ],
+                "heartbeat": {
+                  "pid": 19,
+                  "sequence": 3,
+                  "value": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce"
+                }
+              },
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 7,
+                "start_ticks": "5932014",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                "role": "control",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "control",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/control.json"
+                ],
+                "heartbeat": {
+                  "pid": 7,
+                  "sequence": 72,
+                  "value": "8722616204217eddb39e7df969e0698aed8e599ba62ed2de1ce49b03ade0fede"
+                }
+              }
+            ],
+            "persistence": {
+              "present": true,
+              "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+              "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+              "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+              "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+            },
+            "events": [
+              {
+                "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                "event": "process_started",
+                "role": "control",
+                "pid": 7,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 8,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 8
+              },
+              {
+                "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 19,
+                "cause": "supervisor"
+              }
+            ],
+            "last_mutation": {
+              "action_id": "ACT-beb17d790149",
+              "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+              "result": "applied"
+            },
+            "restart_interval_seconds": 1.0,
+            "limitations": [
+              "No actual miner, initial exploit, network beacon or adversary identity.",
+              "The collector and workload share a trusted laboratory boundary."
+            ]
+          },
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "environment": "lab",
+            "execution": "real",
+            "scenario_nature": "benign_process_emulation",
+            "nonce": "bf20945737ad44949ebc072b6165e906",
+            "observed_at": "2026-09-20T01:20:53.013746+00:00",
+            "processes": [
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 19,
+                "start_ticks": "5932715",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:9eede2087e3789399cf7c2e7d587d441d519684523ba280fb83386c525efc410",
+                "role": "compute",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "compute",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/compute.json"
+                ],
+                "heartbeat": {
+                  "pid": 19,
+                  "sequence": 14,
+                  "value": "8527a891e224136950ff32ca212b45bc93f69fbb801c3b1ebedac52775f99e61"
+                }
+              },
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 7,
+                "start_ticks": "5932014",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                "role": "control",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "control",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/control.json"
+                ],
+                "heartbeat": {
+                  "pid": 7,
+                  "sequence": 84,
+                  "value": "44c8031cb036a7350d8b9b8603af662a4b9cdbd2f96e8d5de5af435c9c35da69"
+                }
+              }
+            ],
+            "persistence": {
+              "present": true,
+              "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+              "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+              "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+              "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+            },
+            "events": [
+              {
+                "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                "event": "process_started",
+                "role": "control",
+                "pid": 7,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 8,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 8
+              },
+              {
+                "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 19,
+                "cause": "supervisor"
+              }
+            ],
+            "last_mutation": {
+              "action_id": "ACT-beb17d790149",
+              "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+              "result": "applied"
+            },
+            "restart_interval_seconds": 1.0,
+            "limitations": [
+              "No actual miner, initial exploit, network beacon or adversary identity.",
+              "The collector and workload share a trusted laboratory boundary."
+            ]
+          }
+        ],
+        "verification_scope": "bounded_lab_process_and_persistence_observation",
+        "limitations": [
+          "Not a permanent recovery guarantee or a real intrusion investigation.",
+          "No host isolation, entry point repair or adversary attribution is verified."
+        ],
+        "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+        "observation_seconds": 2.333,
+        "reason": "residual_process_or_persistence",
+        "layers": {
+          "target_absent_through_window": false,
+          "persistence_removed": false,
+          "control_workload_progressing": true
+        },
+        "audit_head": "1f7eb1862de903aed76e9611421b4a9a74d18ec7933ffb83ad31b1e4710a7523"
+      },
+      "sha256": "83638ddb45b3044366a9855cd1bdd1fd8a5c095eb772be5b303f6709e2ce4f2a",
+      "confidence": 1.0,
+      "supports": [],
+      "contradicts": [],
+      "handling": "internal",
+      "standard": {
+        "schema": "cyberguard-security-observation",
+        "version": "1.0",
+        "alignment": {
+          "event_profile": "OCSF-aligned",
+          "cti_profile": "STIX-2.1"
+        },
+        "category_name": "findings",
+        "class_name": "recovery_finding",
+        "activity_name": "recovery.metrics",
+        "raw_sha256": "83638ddb45b3044366a9855cd1bdd1fd8a5c095eb772be5b303f6709e2ce4f2a"
+      },
+      "entities": [],
+      "observables": [],
+      "attack_techniques": [],
+      "quality": {
+        "score": 0.65,
+        "gate": "review",
+        "issues": [
+          "no_attack_mapping",
+          "no_correlatable_entity_or_observable",
+          "no_hypothesis_link"
+        ],
+        "required_fields_present": 5,
+        "required_fields_total": 5
+      }
+    },
+    {
+      "evidence_id": "EV-a2baca0b8b94",
+      "incident_id": "CG-HOST-001",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "scenario_id": "lab_host",
+      "tool_call_id": "CALL-4a3e6fcb6a24448da0308b083bcad036",
+      "environment": "lab",
+      "execution": "real",
+      "envelope_sha256": "42214c2bb06cdc4fcd29eb1a7f3b379364cf04006130b56dd828108eb9f3bd74",
+      "source": "linux-host-lab-collector",
+      "collected_at": "2026-09-20T01:20:53.134428+00:00",
+      "observed_at": "2026-09-20T01:20:53.134415+00:00",
+      "kind": "endpoint_timeline",
+      "summary": "Observed /proc identities, supervisor file and local events; benign laboratory, not incident attribution.",
+      "data": {
+        "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+        "environment": "lab",
+        "execution": "real",
+        "scenario_nature": "benign_process_emulation",
+        "nonce": "2f09db3d06bb469481bbcaa4d0a03142",
+        "observed_at": "2026-09-20T01:20:53.122986+00:00",
+        "processes": [
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "pid": 19,
+            "start_ticks": "5932715",
+            "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+            "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+            "target_ref": "process:9eede2087e3789399cf7c2e7d587d441d519684523ba280fb83386c525efc410",
+            "role": "compute",
+            "parent_pid": 6,
+            "command_line": [
+              "/usr/local/bin/python",
+              "/workspace/services/host-lab/worker.py",
+              "--role",
+              "compute",
+              "--heartbeat",
+              "/tmp/tmplwewna_a/host/compute.json"
+            ],
+            "heartbeat": {
+              "pid": 19,
+              "sequence": 15,
+              "value": "e629fa6598d732768f7c726b4b621285f9c3b85303900aa912017db7617d8bdb"
+            }
+          },
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "pid": 7,
+            "start_ticks": "5932014",
+            "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+            "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+            "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+            "role": "control",
+            "parent_pid": 6,
+            "command_line": [
+              "/usr/local/bin/python",
+              "/workspace/services/host-lab/worker.py",
+              "--role",
+              "control",
+              "--heartbeat",
+              "/tmp/tmplwewna_a/host/control.json"
+            ],
+            "heartbeat": {
+              "pid": 7,
+              "sequence": 85,
+              "value": "b4944c6ff08dc6f43da2e9c824669b7d927dd1fa976fadc7b456881f51bf5ccc"
+            }
+          }
+        ],
+        "persistence": {
+          "present": true,
+          "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+          "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+          "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+          "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+        },
+        "events": [
+          {
+            "observed_at": "2026-09-20T01:20:44.162701+00:00",
+            "event": "process_started",
+            "role": "control",
+            "pid": 7,
+            "cause": "lab_provisioning"
+          },
+          {
+            "observed_at": "2026-09-20T01:20:44.167723+00:00",
+            "event": "process_started",
+            "role": "compute",
+            "pid": 8,
+            "cause": "lab_provisioning"
+          },
+          {
+            "observed_at": "2026-09-20T01:20:50.610411+00:00",
+            "event": "process_stopped",
+            "role": "compute",
+            "pid": 8
+          },
+          {
+            "observed_at": "2026-09-20T01:20:51.171987+00:00",
+            "event": "process_started",
+            "role": "compute",
+            "pid": 19,
+            "cause": "supervisor"
+          }
+        ],
+        "last_mutation": {
+          "action_id": "ACT-beb17d790149",
+          "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+          "result": "applied"
+        },
+        "restart_interval_seconds": 1.0,
+        "limitations": [
+          "No actual miner, initial exploit, network beacon or adversary identity.",
+          "The collector and workload share a trusted laboratory boundary."
+        ]
+      },
+      "sha256": "7d12f78507a1e0d1b102fda2f79e697b61587c1895a139989801cac3ab487ef4",
+      "confidence": 1.0,
+      "supports": [],
+      "contradicts": [],
+      "handling": "internal",
+      "standard": {
+        "schema": "cyberguard-security-observation",
+        "version": "1.0",
+        "alignment": {
+          "event_profile": "OCSF-aligned",
+          "cti_profile": "STIX-2.1"
+        },
+        "category_name": "system_activity",
+        "class_name": "process_activity",
+        "activity_name": "endpoint.timeline",
+        "raw_sha256": "7d12f78507a1e0d1b102fda2f79e697b61587c1895a139989801cac3ab487ef4"
+      },
+      "entities": [],
+      "observables": [],
+      "attack_techniques": [],
+      "quality": {
+        "score": 0.65,
+        "gate": "review",
+        "issues": [
+          "no_attack_mapping",
+          "no_correlatable_entity_or_observable",
+          "no_hypothesis_link"
+        ],
+        "required_fields_present": 5,
+        "required_fields_total": 5
+      }
+    },
+    {
+      "evidence_id": "EV-9cda215eca3b",
+      "incident_id": "CG-HOST-001",
+      "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+      "scenario_id": "lab_host",
+      "tool_call_id": "CALL-1819d4e8c174478d993e3a626c6dd9d0",
+      "environment": "lab",
+      "execution": "real",
+      "envelope_sha256": "48e4595b51ef5657e83d431560bfea2924569f7fad7b6fb445f0c99c477f4add",
+      "source": "linux-host-lab-collector",
+      "collected_at": "2026-09-20T01:20:59.562701+00:00",
+      "observed_at": "2026-09-20T01:20:59.562675+00:00",
+      "kind": "recovery_metrics",
+      "summary": "Independent bounded recovery observation; an applied action does not establish recovery.",
+      "data": {
+        "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+        "action_id": "ACT-9101b2a576c8",
+        "environment": "lab",
+        "execution": "real",
+        "verdict": "verified",
+        "telemetry_health": "healthy",
+        "checks": [
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "environment": "lab",
+            "execution": "real",
+            "scenario_nature": "benign_process_emulation",
+            "nonce": "e3a8853ed549412680dcb2fba853952a",
+            "observed_at": "2026-09-20T01:20:57.270471+00:00",
+            "processes": [
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 7,
+                "start_ticks": "5932014",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                "role": "control",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "control",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/control.json"
+                ],
+                "heartbeat": {
+                  "pid": 7,
+                  "sequence": 126,
+                  "value": "65a699905c02619370bcf9207f5a477c3d67130ca71ec6f750e07fe8d510b084"
+                }
+              }
+            ],
+            "persistence": {
+              "present": false,
+              "path": "/tmp/tmplwewna_a/host/compute-supervisor.json"
+            },
+            "events": [
+              {
+                "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                "event": "process_started",
+                "role": "control",
+                "pid": 7,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 8,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 8
+              },
+              {
+                "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 19,
+                "cause": "supervisor"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:57.132964+00:00",
+                "event": "supervisor_disabled",
+                "operation_id": "ACT-9101b2a576c8"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:57.137991+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 19
+              }
+            ],
+            "last_mutation": {
+              "action_id": "ACT-9101b2a576c8",
+              "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+              "result": "applied"
+            },
+            "restart_interval_seconds": 1.0,
+            "limitations": [
+              "No actual miner, initial exploit, network beacon or adversary identity.",
+              "The collector and workload share a trusted laboratory boundary."
+            ]
+          },
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "environment": "lab",
+            "execution": "real",
+            "scenario_nature": "benign_process_emulation",
+            "nonce": "789b46bbb86e445288fc638876eeb549",
+            "observed_at": "2026-09-20T01:20:58.407538+00:00",
+            "processes": [
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 7,
+                "start_ticks": "5932014",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                "role": "control",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "control",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/control.json"
+                ],
+                "heartbeat": {
+                  "pid": 7,
+                  "sequence": 137,
+                  "value": "d80eae6e96d148b3b2abbbc6760077b66c4ea071f847dab573d507a32c4d99a5"
+                }
+              }
+            ],
+            "persistence": {
+              "present": false,
+              "path": "/tmp/tmplwewna_a/host/compute-supervisor.json"
+            },
+            "events": [
+              {
+                "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                "event": "process_started",
+                "role": "control",
+                "pid": 7,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 8,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 8
+              },
+              {
+                "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 19,
+                "cause": "supervisor"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:57.132964+00:00",
+                "event": "supervisor_disabled",
+                "operation_id": "ACT-9101b2a576c8"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:57.137991+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 19
+              }
+            ],
+            "last_mutation": {
+              "action_id": "ACT-9101b2a576c8",
+              "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+              "result": "applied"
+            },
+            "restart_interval_seconds": 1.0,
+            "limitations": [
+              "No actual miner, initial exploit, network beacon or adversary identity.",
+              "The collector and workload share a trusted laboratory boundary."
+            ]
+          },
+          {
+            "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+            "environment": "lab",
+            "execution": "real",
+            "scenario_nature": "benign_process_emulation",
+            "nonce": "ae31c24a330a4fdfbbe8a341a8b87290",
+            "observed_at": "2026-09-20T01:20:59.533435+00:00",
+            "processes": [
+              {
+                "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                "pid": 7,
+                "start_ticks": "5932014",
+                "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                "role": "control",
+                "parent_pid": 6,
+                "command_line": [
+                  "/usr/local/bin/python",
+                  "/workspace/services/host-lab/worker.py",
+                  "--role",
+                  "control",
+                  "--heartbeat",
+                  "/tmp/tmplwewna_a/host/control.json"
+                ],
+                "heartbeat": {
+                  "pid": 7,
+                  "sequence": 148,
+                  "value": "ec2e990b934dde55cb87300629cedfc21b15cd28bbcf77d8bbdc55359d7689da"
+                }
+              }
+            ],
+            "persistence": {
+              "present": false,
+              "path": "/tmp/tmplwewna_a/host/compute-supervisor.json"
+            },
+            "events": [
+              {
+                "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                "event": "process_started",
+                "role": "control",
+                "pid": 7,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 8,
+                "cause": "lab_provisioning"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 8
+              },
+              {
+                "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                "event": "process_started",
+                "role": "compute",
+                "pid": 19,
+                "cause": "supervisor"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:57.132964+00:00",
+                "event": "supervisor_disabled",
+                "operation_id": "ACT-9101b2a576c8"
+              },
+              {
+                "observed_at": "2026-09-20T01:20:57.137991+00:00",
+                "event": "process_stopped",
+                "role": "compute",
+                "pid": 19
+              }
+            ],
+            "last_mutation": {
+              "action_id": "ACT-9101b2a576c8",
+              "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+              "result": "applied"
+            },
+            "restart_interval_seconds": 1.0,
+            "limitations": [
+              "No actual miner, initial exploit, network beacon or adversary identity.",
+              "The collector and workload share a trusted laboratory boundary."
+            ]
+          }
+        ],
+        "verification_scope": "bounded_lab_process_and_persistence_observation",
+        "limitations": [
+          "Not a permanent recovery guarantee or a real intrusion investigation.",
+          "No host isolation, entry point repair or adversary attribution is verified."
+        ],
+        "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+        "observation_seconds": 2.293,
+        "reason": "bounded_recovery_observed",
+        "layers": {
+          "target_absent_through_window": true,
+          "persistence_removed": true,
+          "control_workload_progressing": true
+        },
+        "audit_head": "738171dddb87d457949c6e803d0a6b04f4caa43b2f73498461b6802bcda3058e"
+      },
+      "sha256": "c7fb2217195d4bd277a4fb0adb0c335337fc248f5c7be8254551a1be0a4466bf",
+      "confidence": 1.0,
+      "supports": [],
+      "contradicts": [],
+      "handling": "internal",
+      "standard": {
+        "schema": "cyberguard-security-observation",
+        "version": "1.0",
+        "alignment": {
+          "event_profile": "OCSF-aligned",
+          "cti_profile": "STIX-2.1"
+        },
+        "category_name": "findings",
+        "class_name": "recovery_finding",
+        "activity_name": "recovery.metrics",
+        "raw_sha256": "c7fb2217195d4bd277a4fb0adb0c335337fc248f5c7be8254551a1be0a4466bf"
+      },
+      "entities": [],
+      "observables": [],
+      "attack_techniques": [],
+      "quality": {
+        "score": 0.65,
+        "gate": "review",
+        "issues": [
+          "no_attack_mapping",
+          "no_correlatable_entity_or_observable",
+          "no_hypothesis_link"
+        ],
+        "required_fields_present": 5,
+        "required_fields_total": 5
+      }
+    }
+  ],
+  "action_states": [
+    {
+      "action_id": "ACT-beb17d790149",
+      "target": "process:f582ecf668edb889da90eadc7bc319656d2feea5ab53afdb957b7d8577fe12c3",
+      "status": "executed",
+      "execution_mode": "host_lab",
+      "model_mode": "live",
+      "verification": "failed",
+      "observation": {
+        "evidence_id": "EV-b0ce28c3941b",
+        "incident_id": "CG-HOST-001",
+        "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+        "scenario_id": "lab_host",
+        "tool_call_id": "CALL-a0f0b245be7043df85e13c67f44a42b1",
+        "environment": "lab",
+        "execution": "real",
+        "envelope_sha256": "f88030eab8723d4cd02f3c8363c2a9c4205ad1f8bef6eeca3d31c082a88b89c2",
+        "source": "linux-host-lab-collector",
+        "collected_at": "2026-09-20T01:20:53.066233+00:00",
+        "observed_at": "2026-09-20T01:20:53.066208+00:00",
+        "kind": "recovery_metrics",
+        "summary": "Independent bounded recovery observation; an applied action does not establish recovery.",
+        "data": {
+          "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+          "action_id": "ACT-beb17d790149",
+          "environment": "lab",
+          "execution": "real",
+          "verdict": "failed",
+          "telemetry_health": "healthy",
+          "checks": [
+            {
+              "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+              "environment": "lab",
+              "execution": "real",
+              "scenario_nature": "benign_process_emulation",
+              "nonce": "f09096b157944b60af327a5206c07915",
+              "observed_at": "2026-09-20T01:20:50.729529+00:00",
+              "processes": [
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 7,
+                  "start_ticks": "5932014",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                  "role": "control",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "control",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/control.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 7,
+                    "sequence": 61,
+                    "value": "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c"
+                  }
+                }
+              ],
+              "persistence": {
+                "present": true,
+                "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+                "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+                "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+                "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+              },
+              "events": [
+                {
+                  "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                  "event": "process_started",
+                  "role": "control",
+                  "pid": 7,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 8,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 8
+                }
+              ],
+              "last_mutation": {
+                "action_id": "ACT-beb17d790149",
+                "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+                "result": "applied"
+              },
+              "restart_interval_seconds": 1.0,
+              "limitations": [
+                "No actual miner, initial exploit, network beacon or adversary identity.",
+                "The collector and workload share a trusted laboratory boundary."
+              ]
+            },
+            {
+              "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+              "environment": "lab",
+              "execution": "real",
+              "scenario_nature": "benign_process_emulation",
+              "nonce": "9b67fdca4002412cb8f2c4b82ead0733",
+              "observed_at": "2026-09-20T01:20:51.867031+00:00",
+              "processes": [
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 19,
+                  "start_ticks": "5932715",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:9eede2087e3789399cf7c2e7d587d441d519684523ba280fb83386c525efc410",
+                  "role": "compute",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "compute",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/compute.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 19,
+                    "sequence": 3,
+                    "value": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce"
+                  }
+                },
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 7,
+                  "start_ticks": "5932014",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                  "role": "control",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "control",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/control.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 7,
+                    "sequence": 72,
+                    "value": "8722616204217eddb39e7df969e0698aed8e599ba62ed2de1ce49b03ade0fede"
+                  }
+                }
+              ],
+              "persistence": {
+                "present": true,
+                "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+                "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+                "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+                "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+              },
+              "events": [
+                {
+                  "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                  "event": "process_started",
+                  "role": "control",
+                  "pid": 7,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 8,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 8
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 19,
+                  "cause": "supervisor"
+                }
+              ],
+              "last_mutation": {
+                "action_id": "ACT-beb17d790149",
+                "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+                "result": "applied"
+              },
+              "restart_interval_seconds": 1.0,
+              "limitations": [
+                "No actual miner, initial exploit, network beacon or adversary identity.",
+                "The collector and workload share a trusted laboratory boundary."
+              ]
+            },
+            {
+              "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+              "environment": "lab",
+              "execution": "real",
+              "scenario_nature": "benign_process_emulation",
+              "nonce": "bf20945737ad44949ebc072b6165e906",
+              "observed_at": "2026-09-20T01:20:53.013746+00:00",
+              "processes": [
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 19,
+                  "start_ticks": "5932715",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:9eede2087e3789399cf7c2e7d587d441d519684523ba280fb83386c525efc410",
+                  "role": "compute",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "compute",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/compute.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 19,
+                    "sequence": 14,
+                    "value": "8527a891e224136950ff32ca212b45bc93f69fbb801c3b1ebedac52775f99e61"
+                  }
+                },
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 7,
+                  "start_ticks": "5932014",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                  "role": "control",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "control",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/control.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 7,
+                    "sequence": 84,
+                    "value": "44c8031cb036a7350d8b9b8603af662a4b9cdbd2f96e8d5de5af435c9c35da69"
+                  }
+                }
+              ],
+              "persistence": {
+                "present": true,
+                "path": "/tmp/tmplwewna_a/host/compute-supervisor.json",
+                "sha256": "e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+                "target_ref": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+                "content": "{\"schema\": \"cyberguard-benign-supervisor/v1\", \"environment_id\": \"HOST-5a35839ac9e641409c51765dbf13757b\", \"worker_sha256\": \"add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd\", \"restart_seconds\": 1.0}"
+              },
+              "events": [
+                {
+                  "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                  "event": "process_started",
+                  "role": "control",
+                  "pid": 7,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 8,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 8
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 19,
+                  "cause": "supervisor"
+                }
+              ],
+              "last_mutation": {
+                "action_id": "ACT-beb17d790149",
+                "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+                "result": "applied"
+              },
+              "restart_interval_seconds": 1.0,
+              "limitations": [
+                "No actual miner, initial exploit, network beacon or adversary identity.",
+                "The collector and workload share a trusted laboratory boundary."
+              ]
+            }
+          ],
+          "verification_scope": "bounded_lab_process_and_persistence_observation",
+          "limitations": [
+            "Not a permanent recovery guarantee or a real intrusion investigation.",
+            "No host isolation, entry point repair or adversary attribution is verified."
+          ],
+          "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+          "observation_seconds": 2.333,
+          "reason": "residual_process_or_persistence",
+          "layers": {
+            "target_absent_through_window": false,
+            "persistence_removed": false,
+            "control_workload_progressing": true
+          },
+          "audit_head": "1f7eb1862de903aed76e9611421b4a9a74d18ec7933ffb83ad31b1e4710a7523"
+        },
+        "sha256": "83638ddb45b3044366a9855cd1bdd1fd8a5c095eb772be5b303f6709e2ce4f2a",
+        "confidence": 1.0,
+        "supports": [],
+        "contradicts": [],
+        "handling": "internal",
+        "standard": {
+          "schema": "cyberguard-security-observation",
+          "version": "1.0",
+          "alignment": {
+            "event_profile": "OCSF-aligned",
+            "cti_profile": "STIX-2.1"
+          },
+          "category_name": "findings",
+          "class_name": "recovery_finding",
+          "activity_name": "recovery.metrics",
+          "raw_sha256": "83638ddb45b3044366a9855cd1bdd1fd8a5c095eb772be5b303f6709e2ce4f2a"
+        },
+        "entities": [],
+        "observables": [],
+        "attack_techniques": [],
+        "quality": {
+          "score": 0.65,
+          "gate": "review",
+          "issues": [
+            "no_attack_mapping",
+            "no_correlatable_entity_or_observable",
+            "no_hypothesis_link"
+          ],
+          "required_fields_present": 5,
+          "required_fields_total": 5
+        }
+      }
+    },
+    {
+      "action_id": "ACT-9101b2a576c8",
+      "target": "persistence:HOST-5a35839ac9e641409c51765dbf13757b:e83782a3540f11f35e925fe663aa12bfc5bc89943c0fb6e24360d0a4ade16fe2",
+      "status": "executed",
+      "execution_mode": "host_lab",
+      "model_mode": "live",
+      "verification": "verified",
+      "observation": {
+        "evidence_id": "EV-9cda215eca3b",
+        "incident_id": "CG-HOST-001",
+        "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+        "scenario_id": "lab_host",
+        "tool_call_id": "CALL-1819d4e8c174478d993e3a626c6dd9d0",
+        "environment": "lab",
+        "execution": "real",
+        "envelope_sha256": "48e4595b51ef5657e83d431560bfea2924569f7fad7b6fb445f0c99c477f4add",
+        "source": "linux-host-lab-collector",
+        "collected_at": "2026-09-20T01:20:59.562701+00:00",
+        "observed_at": "2026-09-20T01:20:59.562675+00:00",
+        "kind": "recovery_metrics",
+        "summary": "Independent bounded recovery observation; an applied action does not establish recovery.",
+        "data": {
+          "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+          "action_id": "ACT-9101b2a576c8",
+          "environment": "lab",
+          "execution": "real",
+          "verdict": "verified",
+          "telemetry_health": "healthy",
+          "checks": [
+            {
+              "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+              "environment": "lab",
+              "execution": "real",
+              "scenario_nature": "benign_process_emulation",
+              "nonce": "e3a8853ed549412680dcb2fba853952a",
+              "observed_at": "2026-09-20T01:20:57.270471+00:00",
+              "processes": [
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 7,
+                  "start_ticks": "5932014",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                  "role": "control",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "control",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/control.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 7,
+                    "sequence": 126,
+                    "value": "65a699905c02619370bcf9207f5a477c3d67130ca71ec6f750e07fe8d510b084"
+                  }
+                }
+              ],
+              "persistence": {
+                "present": false,
+                "path": "/tmp/tmplwewna_a/host/compute-supervisor.json"
+              },
+              "events": [
+                {
+                  "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                  "event": "process_started",
+                  "role": "control",
+                  "pid": 7,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 8,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 8
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 19,
+                  "cause": "supervisor"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:57.132964+00:00",
+                  "event": "supervisor_disabled",
+                  "operation_id": "ACT-9101b2a576c8"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:57.137991+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 19
+                }
+              ],
+              "last_mutation": {
+                "action_id": "ACT-9101b2a576c8",
+                "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+                "result": "applied"
+              },
+              "restart_interval_seconds": 1.0,
+              "limitations": [
+                "No actual miner, initial exploit, network beacon or adversary identity.",
+                "The collector and workload share a trusted laboratory boundary."
+              ]
+            },
+            {
+              "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+              "environment": "lab",
+              "execution": "real",
+              "scenario_nature": "benign_process_emulation",
+              "nonce": "789b46bbb86e445288fc638876eeb549",
+              "observed_at": "2026-09-20T01:20:58.407538+00:00",
+              "processes": [
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 7,
+                  "start_ticks": "5932014",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                  "role": "control",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "control",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/control.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 7,
+                    "sequence": 137,
+                    "value": "d80eae6e96d148b3b2abbbc6760077b66c4ea071f847dab573d507a32c4d99a5"
+                  }
+                }
+              ],
+              "persistence": {
+                "present": false,
+                "path": "/tmp/tmplwewna_a/host/compute-supervisor.json"
+              },
+              "events": [
+                {
+                  "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                  "event": "process_started",
+                  "role": "control",
+                  "pid": 7,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 8,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 8
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 19,
+                  "cause": "supervisor"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:57.132964+00:00",
+                  "event": "supervisor_disabled",
+                  "operation_id": "ACT-9101b2a576c8"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:57.137991+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 19
+                }
+              ],
+              "last_mutation": {
+                "action_id": "ACT-9101b2a576c8",
+                "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+                "result": "applied"
+              },
+              "restart_interval_seconds": 1.0,
+              "limitations": [
+                "No actual miner, initial exploit, network beacon or adversary identity.",
+                "The collector and workload share a trusted laboratory boundary."
+              ]
+            },
+            {
+              "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+              "environment": "lab",
+              "execution": "real",
+              "scenario_nature": "benign_process_emulation",
+              "nonce": "ae31c24a330a4fdfbbe8a341a8b87290",
+              "observed_at": "2026-09-20T01:20:59.533435+00:00",
+              "processes": [
+                {
+                  "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+                  "pid": 7,
+                  "start_ticks": "5932014",
+                  "executable_sha256": "4dbf3143240288fb2170257ffaa7bd030cdda5d2703d1f5f30b627042267e2e3",
+                  "worker_sha256": "add5aaf4f13b5592eb32e429645eb36a5b97e219d1a06fb182d93c61a4fa79fd",
+                  "target_ref": "process:f76cba76216c82f35d4c282b9ebad28435d1bf5390a0bf0af819c4b6d36c4e57",
+                  "role": "control",
+                  "parent_pid": 6,
+                  "command_line": [
+                    "/usr/local/bin/python",
+                    "/workspace/services/host-lab/worker.py",
+                    "--role",
+                    "control",
+                    "--heartbeat",
+                    "/tmp/tmplwewna_a/host/control.json"
+                  ],
+                  "heartbeat": {
+                    "pid": 7,
+                    "sequence": 148,
+                    "value": "ec2e990b934dde55cb87300629cedfc21b15cd28bbcf77d8bbdc55359d7689da"
+                  }
+                }
+              ],
+              "persistence": {
+                "present": false,
+                "path": "/tmp/tmplwewna_a/host/compute-supervisor.json"
+              },
+              "events": [
+                {
+                  "observed_at": "2026-09-20T01:20:44.162701+00:00",
+                  "event": "process_started",
+                  "role": "control",
+                  "pid": 7,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:44.167723+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 8,
+                  "cause": "lab_provisioning"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:50.610411+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 8
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:51.171987+00:00",
+                  "event": "process_started",
+                  "role": "compute",
+                  "pid": 19,
+                  "cause": "supervisor"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:57.132964+00:00",
+                  "event": "supervisor_disabled",
+                  "operation_id": "ACT-9101b2a576c8"
+                },
+                {
+                  "observed_at": "2026-09-20T01:20:57.137991+00:00",
+                  "event": "process_stopped",
+                  "role": "compute",
+                  "pid": 19
+                }
+              ],
+              "last_mutation": {
+                "action_id": "ACT-9101b2a576c8",
+                "run_id": "LIVE-HOST-373c2a440f8445e98d1b672e32bb62ce",
+                "result": "applied"
+              },
+              "restart_interval_seconds": 1.0,
+              "limitations": [
+                "No actual miner, initial exploit, network beacon or adversary identity.",
+                "The collector and workload share a trusted laboratory boundary."
+              ]
+            }
+          ],
+          "verification_scope": "bounded_lab_process_and_persistence_observation",
+          "limitations": [
+            "Not a permanent recovery guarantee or a real intrusion investigation.",
+            "No host isolation, entry point repair or adversary attribution is verified."
+          ],
+          "environment_id": "HOST-5a35839ac9e641409c51765dbf13757b",
+          "observation_seconds": 2.293,
+          "reason": "bounded_recovery_observed",
+          "layers": {
+            "target_absent_through_window": true,
+            "persistence_removed": true,
+            "control_workload_progressing": true
+          },
+          "audit_head": "738171dddb87d457949c6e803d0a6b04f4caa43b2f73498461b6802bcda3058e"
+        },
+        "sha256": "c7fb2217195d4bd277a4fb0adb0c335337fc248f5c7be8254551a1be0a4466bf",
+        "confidence": 1.0,
+        "supports": [],
+        "contradicts": [],
+        "handling": "internal",
+        "standard": {
+          "schema": "cyberguard-security-observation",
+          "version": "1.0",
+          "alignment": {
+            "event_profile": "OCSF-aligned",
+            "cti_profile": "STIX-2.1"
+          },
+          "category_name": "findings",
+          "class_name": "recovery_finding",
+          "activity_name": "recovery.metrics",
+          "raw_sha256": "c7fb2217195d4bd277a4fb0adb0c335337fc248f5c7be8254551a1be0a4466bf"
+        },
+        "entities": [],
+        "observables": [],
+        "attack_techniques": [],
+        "quality": {
+          "score": 0.65,
+          "gate": "review",
+          "issues": [
+            "no_attack_mapping",
+            "no_correlatable_entity_or_observable",
+            "no_hypothesis_link"
+          ],
+          "required_fields_present": 5,
+          "required_fields_total": 5
+        }
+      }
+    }
+  ],
+  "warnings": [
+    "verification_is_a_point_in_time_observation_not_a_fresh_probe"
+  ],
+  "provenance": {
+    "agentteams_task": "not_attested",
+    "worker_skill_binding": "not_attested",
+    "model_mode_source": "caller_reported"
+  },
+  "evidence_integrity": "valid",
+  "audit": {
+    "valid": true,
+    "records": 8,
+    "head": "738171dddb87d457949c6e803d0a6b04f4caa43b2f73498461b6802bcda3058e",
+    "authenticated": true
+  },
+  "audit_snapshot_at": "2026-09-20T01:20:59.636768+00:00",
+  "audit_assurance": "executor_validated_snapshot",
+  "export_sha256": "f1ae504506959a404e9066ea15324f99c898bd628ccb3ecc45ca5081cbde3432"
+}

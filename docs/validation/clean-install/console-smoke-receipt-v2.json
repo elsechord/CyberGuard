@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-09-20T01:28:39.662886+00:00",
+  "elapsed_seconds": 4.25,
+  "checks": [
+    {
+      "check": "fresh_container_healthz",
+      "passed": true
+    },
+    {
+      "check": "create_first_administrator",
+      "passed": true
+    },
+    {
+      "check": "login_session",
+      "passed": true
+    },
+    {
+      "check": "authenticated_connect_page",
+      "passed": true
+    },
+    {
+      "check": "connect_contains_skill",
+      "passed": true
+    },
+    {
+      "check": "setup_closed_after_admin",
+      "passed": true
+    }
+  ],
+  "image_id": "sha256:a7fb391234bd140d1ecf1bf09480bac6cbc606c1aa23999df36c0c46ad8b2a4c",
+  "volume": "cyberguard-clean-install-20260920-18138",
+  "port": 18138,
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2+-x86_64-with-glibc2.43",
+  "docker_server": "29.7.2",
+  "network": "default Docker bridge, no existing AgentTeams network",
+  "model_calls": 0,
+  "upstream_services_configured": false,
+  "cleanup": "isolated container and isolated named volume removed"
+}

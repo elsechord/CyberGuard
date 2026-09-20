@@ -1,0 +1,115 @@
+{
+  "run_id": "LIVE-HOST-c4286aad3d284a558fd5344ab19857ab",
+  "started_at": "2026-09-20T01:21:33.443723+00:00",
+  "status": "passed",
+  "execution": "real",
+  "environment": "lab",
+  "scenario_nature": "benign_process_emulation",
+  "decision_source": "bounded_llm_response_planner",
+  "agentteams_task": false,
+  "approval_mode": "automated_lab_harness",
+  "model_request_limit": 2,
+  "model_usage": [
+    {
+      "round": 1,
+      "model": "deepseek-v4.1-flash",
+      "completion_tokens": 452,
+      "prompt_tokens": 4426,
+      "total_tokens": 4878,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 165
+      }
+    },
+    {
+      "round": 2,
+      "model": "deepseek-v4.1-flash",
+      "completion_tokens": 388,
+      "prompt_tokens": 8777,
+      "total_tokens": 9165,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 259
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "round_1_fresh_evidence",
+      "passed": true
+    },
+    {
+      "name": "round_1_live_model_proposal",
+      "passed": true
+    },
+    {
+      "name": "round_1_proposal_created",
+      "passed": true
+    },
+    {
+      "name": "round_1_unapproved_execution_blocked",
+      "passed": true
+    },
+    {
+      "name": "round_1_approval_hash_bound",
+      "passed": true
+    },
+    {
+      "name": "round_1_real_execution",
+      "passed": true
+    },
+    {
+      "name": "round_1_independent_verification_failed",
+      "passed": true
+    },
+    {
+      "name": "round_2_fresh_evidence",
+      "passed": true
+    },
+    {
+      "name": "round_2_live_model_proposal",
+      "passed": true
+    },
+    {
+      "name": "process_recurrence_observed",
+      "passed": true
+    },
+    {
+      "name": "round_2_proposal_created",
+      "passed": true
+    },
+    {
+      "name": "round_2_unapproved_execution_blocked",
+      "passed": true
+    },
+    {
+      "name": "round_2_approval_hash_bound",
+      "passed": true
+    },
+    {
+      "name": "round_2_real_execution",
+      "passed": true
+    },
+    {
+      "name": "round_2_independent_verification_verified",
+      "passed": true
+    },
+    {
+      "name": "audit_and_evidence_integrity",
+      "passed": true
+    }
+  ],
+  "scope": "Fresh Linux process observations, approved mutations, independent recovery probes",
+  "initial_scope": "Operator deliberately requests process-only containment before recovery check",
+  "investigation_context": {
+    "sha256": "e2507d3fac98a0956d407c5a50d30550db48faf3f1bf9288088e5137343b4d40",
+    "relation": "Prior investigation context; targets are freshly collected from this separate lab",
+    "job_id": "INV-f886e0f0c0054181910e722cd818a545",
+    "passed_to_planner": true
+  },
+  "finished_at": "2026-09-20T01:21:53.890060+00:00"
+}
