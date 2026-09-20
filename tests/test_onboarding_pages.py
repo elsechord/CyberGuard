@@ -10,7 +10,11 @@ from fastapi.testclient import TestClient
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "services" / "operations-console"))
 from app import auth, db, onboarding
-from app.main import app
+# The app initializes its database during import, before unittest setUp runs.
+# Keep that initialization isolated too, including on unprivileged CI runners.
+with tempfile.TemporaryDirectory() as import_dir:
+    with patch.dict(os.environ, {"CYBERGUARD_CONSOLE_DB": str(Path(import_dir) / "import.db")}):
+        from app.main import app
 
 
 class OnboardingTest(unittest.TestCase):
