@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}运行状态 · CyberGuard{% endblock %}
 {% block content %}
-<div class="page-head"><div><h1>运行状态</h1><p>魔搭创空间正在托管 CyberGuard 调查服务。</p></div><a href="/settings/onboarding">重新检查</a></div>
+<div class="page-head"><div><h1>运行状态</h1><p>查看 CyberGuard 调查服务与协作组件的连接情况。</p></div><a href="/settings/onboarding">重新检查</a></div>
 <section class="card"><h2>当前服务</h2>
 <dl class="investigation-meta">
   <div><dt>AgentTeams Controller</dt><dd>{{ '已连接' if state.controller else '不可达' }}</dd></div>
@@ -12,5 +12,5 @@
 </dl>
 {% for error in state.errors %}<p class="error-banner" role="alert">{{ error }}</p>{% endfor %}
 </section>
-<section class="card"><h2>开始调查</h2><p>模型和 AgentTeams 随创空间启动。提交材料后，可在调查任务中查看原生项目、团队分工和结果。</p><a class="button" href="/investigations">打开调查任务</a></section>
+<section class="card"><h2>开始调查</h2><p>提交材料后，可在调查任务中查看 AgentTeams 项目、团队分工和结果。</p><a class="button" href="/investigations">打开调查任务</a></section>
 {% endblock %}
