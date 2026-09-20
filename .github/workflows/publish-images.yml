@@ -1,8 +1,9 @@
 name: publish-images
 
-# Publishes the two product images to GHCR on every release and on demand.
+# Publishes the product images to GHCR on every release and on demand.
 #   gateway  <- services/security-tool-gateway/Dockerfile
 #   executor <- services/response-executor/Dockerfile
+#   console  <- services/operations-console/Dockerfile
 # Images are linux/amd64 only: services/requirements.lock pins linux x86_64
 # wheels, so arm64 builds cannot resolve hashes today.
 
@@ -51,7 +52,7 @@ jobs:
           fi
           {
             echo "owner=${owner}"
-            for service in gateway executor; do
+            for service in gateway executor console; do
               echo "${service}_tags<<EOF"
               for version in "${versions[@]}"; do
                 echo "ghcr.io/${owner}/cyberguard-${service}:${version}"
@@ -77,3 +78,12 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.vars.outputs.executor_tags }}
+
+      - name: Build and push console image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: services/operations-console/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.vars.outputs.console_tags }}

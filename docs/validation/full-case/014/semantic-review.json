@@ -1,0 +1,26 @@
+{
+  "job_id": "INV-f886e0f0c0054181910e722cd818a545",
+  "reviewer": "Codex semantic review after execution",
+  "passed": true,
+  "checks": {
+    "skill_result_retrieved": true,
+    "native_nodes_accepted": true,
+    "native_project_completed": true,
+    "different_workers": true,
+    "original_hashes_match": true,
+    "all_citations_exact": true,
+    "r1_failure_recognized": true,
+    "r2_observation_window_limited": true,
+    "attribution_inconclusive": true,
+    "status_claim_direction_reviewed": true
+  },
+  "findings": 8,
+  "citations": 16,
+  "scope": "Synthetic incident replay; no response actions executed in this run.",
+  "notes": [
+    "Same deployment and settings as attempt 013. No operator messages, approvals or state edits after submission.",
+    "R1 wording should say action success does not establish clearance, rather than imply the executor necessarily lied.",
+    "Exact citations and source material support key verdicts; some multi-clause claims require opening full source text beyond excerpts.",
+    "Passing the stated case criteria does not imply perfect prose, production reliability, optimal agent count or real incident containment."
+  ]
+}

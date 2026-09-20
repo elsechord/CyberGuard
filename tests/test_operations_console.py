@@ -1,4 +1,6 @@
 import atexit
+import html
+import json
 import os
 import re
 import shutil
@@ -6,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from datetime import UTC, datetime
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -27,6 +30,12 @@ from app import apikeys, auth, clients, db  # noqa: E402
 from app.main import app  # noqa: E402
 
 ADMIN = ("root-admin", "correct-horse-battery-9", "admin")
+
+
+def setUpModule():
+    # app.main may already have been imported under another test module's DB.
+    # Initialize the current database explicitly instead of relying on import order.
+    db.init_db()
 
 
 def login(client: TestClient, username: str, password: str) -> None:
@@ -560,6 +569,128 @@ class OperationsConsoleTest(unittest.TestCase):
         # The plaintext never appears on subsequent list renders.
         listing = self.client.get("/settings/keys")
         self.assertNotIn(match.group(1), listing.text)
+
+
+class AgentConnectionTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.env = patch.dict(os.environ, {"CYBERGUARD_CONSOLE_ORIGIN": "https://console.example.com"})
+        self.env.start()
+        self.addCleanup(self.env.stop)
+        self.upstream = patch.object(clients, "gateway_incidents", return_value=[{"incident_id": "CG-real-1"}])
+        self.gateway = self.upstream.start()
+        self.addCleanup(self.upstream.stop)
+        if auth.user_count() == 0:
+            auth.create_user(*ADMIN)
+            auth.finish_setup()
+        self.client = TestClient(app)
+        login(self.client, ADMIN[0], ADMIN[1])
+        self.csrf = re.search(r'name="csrf_token" value="([^"]+)"', self.client.get("/connect").text).group(1)
+
+    def post(self, endpoint="prompt", **values):
+        return self.client.post("/connect/" + endpoint, data={"csrf_token": self.csrf, "purpose": "read", **values})
+
+    def prompt(self, response):
+        match = re.search(r'<textarea id="connection-prompt"[^>]*>(.*?)</textarea>', response.text, re.S)
+        self.assertIsNotNone(match, response.text)
+        return html.unescape(match.group(1))
+
+    def test_connect_requires_session_and_csrf(self):
+        fresh = TestClient(app)
+        for path in ("/connect", "/connect/prompt", "/connect/key"):
+            response = (fresh.get(path, follow_redirects=False) if path == "/connect"
+                        else fresh.post(path, follow_redirects=False))
+            self.assertIn(response.status_code, (303, 401))
+        with patch.object(apikeys, "create_key") as create:
+            for endpoint in ("prompt", "key"):
+                self.assertEqual(self.client.post("/connect/" + endpoint, data={"csrf_token": "wrong"}).status_code, 403)
+            create.assert_not_called()
+
+    def test_viewer_can_prepare_prompt_but_cannot_issue_key(self):
+        auth.create_user("connect-viewer", "connect-viewer-password", "viewer")
+        viewer = TestClient(app)
+        login(viewer, "connect-viewer", "connect-viewer-password")
+        page = viewer.get("/connect")
+        self.assertEqual(page.status_code, 200)
+        csrf = re.search(r'name="csrf_token" value="([^"]+)"', page.text).group(1)
+        self.assertEqual(viewer.post("/connect/prompt", data={"csrf_token": csrf}).status_code, 200)
+        with patch.object(apikeys, "create_key") as create:
+            self.assertEqual(viewer.post("/connect/key", data={"csrf_token": csrf}).status_code, 403)
+            create.assert_not_called()
+
+    def test_bearer_key_cannot_replace_browser_session(self):
+        _, raw, _ = apikeys.create_key(name="connect-admin-api", scopes=["admin"], created_by=ADMIN[0])
+        fresh = TestClient(app)
+        for path in ("/connect/prompt", "/connect/key"):
+            response = fresh.post(path, headers={"Authorization": "Bearer " + raw}, follow_redirects=False)
+            self.assertIn(response.status_code, (303, 401))
+
+    def test_get_and_prompt_do_not_issue_credentials(self):
+        with patch.object(apikeys, "create_key") as create:
+            page = self.client.get("/connect?issue_key=true", headers={"Host": "evil.example", "X-Forwarded-Host": "evil.example"})
+            self.assertIn("https://console.example.com", self.prompt(page))
+            self.assertNotIn("evil.example", self.prompt(page))
+            self.assertEqual(self.post().status_code, 200)
+            create.assert_not_called()
+
+    def test_key_scope_expiry_and_secret_separation(self):
+        response = self.post("key", scopes="approvals:write,admin", expires_in_days="0", expires_at="2099-01-01", incident_id="CG-real-1")
+        self.assertEqual(response.status_code, 200)
+        raw = re.search(r'id="connection-secret">(cg_live_[A-Za-z0-9_-]+)<', response.text).group(1)
+        row = apikeys.verify_key(raw)
+        self.assertEqual(json.loads(row["scopes"]), ["incidents:read"])
+        remaining = (datetime.fromisoformat(row["expires_at"]) - datetime.now(UTC)).total_seconds()
+        self.assertGreater(remaining, 29 * 86400)
+        self.assertLessEqual(remaining, 30 * 86400)
+        self.assertNotIn(raw, self.prompt(response))
+        self.assertNotIn(raw, self.client.get("/connect").text)
+        self.assertNotIn(raw, self.client.get("/settings/keys").text)
+        self.assertEqual(row["key_hash"], apikeys.key_hash(raw))
+
+    def test_prompt_ignores_submitted_secret_origin_and_scope(self):
+        response = self.post(api_key="cg_live_do_not_echo", origin="https://evil.example", console_url="https://evil.example", scopes="admin", key_file="C:\\Users\\me\\key", incident_id="CG-real-1")
+        prompt = self.prompt(response)
+        self.assertIn("https://console.example.com", prompt)
+        self.assertIn("CG-real-1", prompt)
+        self.assertNotIn("evil.example", prompt)
+        self.assertNotIn("cg_live_do_not_echo", response.text)
+
+    def test_unconfigured_host_is_not_inferred(self):
+        with patch.dict(os.environ, {"CYBERGUARD_CONSOLE_ORIGIN": ""}):
+            response = self.client.get("/connect", headers={"Host": "evil.example", "X-Forwarded-Host": "console.example.com", "X-Forwarded-Proto": "https"})
+        self.assertNotIn('id="connection-prompt"', response.text)
+        self.assertIn("CYBERGUARD_CONSOLE_ORIGIN", response.text)
+        self.assertNotIn("https://evil.example", response.text)
+
+    def test_invalid_configured_origins_do_not_generate_prompt_or_key(self):
+        origins = ("https://..", "https://-", "https://a..example", "http://remote.example", "https://user:password@example.com", "https://example.com/api", "https://example.com?token=secret", "https://example.com#frag", "https://example.com:99999", "https://example.com\\evil", "https://example.com\n")
+        with patch.object(apikeys, "create_key") as create:
+            for origin in origins:
+                with self.subTest(origin=origin), patch.dict(os.environ, {"CYBERGUARD_CONSOLE_ORIGIN": origin}):
+                    response = self.post("key")
+                    self.assertEqual(response.status_code, 422)
+                    self.assertNotIn('id="connection-prompt"', response.text)
+            create.assert_not_called()
+
+    def test_invalid_agent_incident_and_path_cannot_create_key(self):
+        cases = ({"agent": "shell"}, {"incident_id": "CG-missing"}, {"incident_id": "../secrets"}, {"key_file": "relative/key"}, {"key_file": "cg_live_not_a_path"}, {"key_file": "/tmp/key\nprint-secret"}, {"key_file": "/" + "x" * 513})
+        with patch.object(apikeys, "create_key") as create:
+            for case in cases:
+                with self.subTest(case=case):
+                    self.assertEqual(self.post("key", **case).status_code, 422)
+            create.assert_not_called()
+
+    def test_empty_and_failed_upstream_are_distinct(self):
+        self.gateway.return_value = []
+        empty = self.client.get("/connect?purpose=read")
+        self.assertIn("当前没有事件", empty.text)
+        self.assertNotIn("证据服务当前不可用", empty.text)
+        self.assertIn("本次只验证连接", self.prompt(empty))
+        self.gateway.side_effect = clients.UpstreamError("upstream unavailable")
+        failed = self.client.get("/connect?purpose=read")
+        self.assertIn("证据服务当前不可用", failed.text)
+        self.assertNotIn("当前没有事件", failed.text)
+        self.assertIn("本次只验证连接", self.prompt(failed))
+        self.assertEqual(self.post(incident_id="CG-real-1").status_code, 422)
 
 
 def api_headers(extra: dict | None = None) -> dict:

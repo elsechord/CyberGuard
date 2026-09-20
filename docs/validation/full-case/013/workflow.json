@@ -1,0 +1,86 @@
+{
+  "edges": [
+    {
+      "conditional": false,
+      "source": "cg-inv-917eca8a27db4258ad7afed415076207-01",
+      "target": "cg-inv-917eca8a27db4258ad7afed415076207-02"
+    }
+  ],
+  "interrupts": [],
+  "mode": "dag",
+  "next": [],
+  "nodes": [
+    {
+      "assignee": "@cg-native001-investigator:matrix-local.agentteams.io:18080",
+      "id": "cg-inv-917eca8a27db4258ad7afed415076207-01",
+      "name": "调查 build-07 事件链与两次处置清除判定（investigator）",
+      "status": "completed"
+    },
+    {
+      "assignee": "@cg-native001-verifier:matrix-local.agentteams.io:18080",
+      "id": "cg-inv-917eca8a27db4258ad7afed415076207-02",
+      "name": "独立复核并产出最终 report.json（verifier）",
+      "status": "completed"
+    }
+  ],
+  "plan_type": "dag",
+  "project_id": "cg-inv-917eca8a27db4258ad7afed415076207",
+  "requester": "INV-917eca8a27db4258ad7afed415076207",
+  "requester_report": {
+    "pending": true,
+    "reason": "task_result_accepted",
+    "report_path": "shared/projects/cg-inv-917eca8a27db4258ad7afed415076207/result.md",
+    "result_status": "SUCCESS",
+    "summary": "独立复核完成：report.json 符合 packet report_contract（7 findings：6 supported / 1 inconclusive），22 条引用经 case_packet.py check 校验 valid=true。",
+    "task_id": "cg-inv-917eca8a27db4258ad7afed415076207-02"
+  },
+  "source": "cyberguard",
+  "status": "completed",
+  "tasks_detail": [
+    {
+      "assigned_to": "@cg-native001-investigator:matrix-local.agentteams.io:18080",
+      "deliverables": [
+        "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-01/investigation-note.md",
+        "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-01/workspace/evidence-index.md",
+        "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-01/workspace/verify_quotes.py"
+      ],
+      "project_id": "cg-inv-917eca8a27db4258ad7afed415076207",
+      "result_path": "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-01/result.md",
+      "result_status": "SUCCESS",
+      "spec_path": "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-01/spec.md",
+      "status": "submitted",
+      "summary": "build-07 事件链已重建（窗口 2026-09-20T01:00:00Z–01:20:00Z）：R1 执行器返回 success 但独立复查三项清除条件全部未通过（未清除）；R2 在观察窗口内三项条件全部通过（已清除，不主张永久/其它主机清除）；无证据归因到具体攻击组织。26 条原文引用经校验均为精确子串。未使用临时专家。",
+      "task_id": "cg-inv-917eca8a27db4258ad7afed415076207-01"
+    },
+    {
+      "assigned_to": "@cg-native001-verifier:matrix-local.agentteams.io:18080",
+      "deliverables": [
+        "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-02/report.json",
+        "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-02/result.md",
+        "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-02/workspace/verify_report.py"
+      ],
+      "project_id": "cg-inv-917eca8a27db4258ad7afed415076207",
+      "result_path": "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-02/result.md",
+      "result_status": "SUCCESS",
+      "spec_path": "shared/tasks/cg-inv-917eca8a27db4258ad7afed415076207-02/spec.md",
+      "status": "submitted",
+      "summary": "独立复核完成，产出符合 packet report_contract 的最终 report.json：7 条 findings（6 supported / 1 inconclusive），22 条引用全部为 case.json 原文精确子串，case_packet.py check 返回 valid=true。",
+      "task_id": "cg-inv-917eca8a27db4258ad7afed415076207-02"
+    }
+  ],
+  "team_id": "cg-native001",
+  "title": "构建服务器挖矿事件：调查与两次处置复核（合成演练）",
+  "updated_at": "2026-09-20T01:06:24Z",
+  "updated_by": "admin",
+  "values": {
+    "mode": "dag",
+    "plan_type": "dag",
+    "project_id": "cg-inv-917eca8a27db4258ad7afed415076207",
+    "status": "completed",
+    "task_count": {
+      "completed": 2
+    },
+    "team_id": "cg-native001",
+    "title": "构建服务器挖矿事件：调查与两次处置复核（合成演练）"
+  }
+}

@@ -8,6 +8,7 @@
 # qwenpaw worker: installs Skills at runtime):
 #   - deploy/agentteams-local/controller.Dockerfile
 #   - deploy/agentteams-local/qwenpaw.Dockerfile
+#   - deploy/investigation-service/controller-native.Dockerfile (v1.2.3 controller)
 # See docs/AGENTTEAMS_LOCAL.md. Service images built by this repository are
 # non-root; keep it that way — do not widen this entry.
 # Revisit by 2027-03-31 or when upstream ships non-root images.

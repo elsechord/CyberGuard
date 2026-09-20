@@ -1,47 +1,36 @@
-# Connect to an existing CyberGuard deployment
+# Console connection
 
-The API is the **operations console**, not the raw evidence gateway. The operator
-creates a console API key limited to `incidents:read` and stores it in a private
-file in the Agent's execution environment. Do not ask the user to paste the key
-into chat, and do not print the file. The URL and the file path are configuration;
-the key itself is not a command argument.
+Use the configured operations console, not the raw evidence gateway. An operator
+stores a scoped `cg_live_...` console API key in a private file. Never paste the
+key into chat, print it, or pass it as a command argument.
 
-Set these environment variables through the host's secret/configuration mechanism:
-
-| Name | Value |
+| Environment variable | Purpose |
 |---|---|
-| `CYBERGUARD_CONSOLE_URL` | The authorized console origin, e.g. `https://cyberguard.internal.example` |
-| `CYBERGUARD_SKILL_KEY_FILE` | Absolute path to a file containing only the console `cg_live_...` key |
+| `CYBERGUARD_CONSOLE_URL` | Authorized origin, e.g. `https://cyberguard.internal.example` |
+| `CYBERGUARD_SKILL_KEY_FILE` | Private file containing only the console API key |
 
-HTTPS is required except for an explicitly configured localhost/loopback service.
-The script rejects credentials in URLs, redirects and oversized responses, and
-does not inherit HTTP proxy environment variables. For an enterprise CA, configure
-the Python/system trust store rather than disabling certificate verification.
+Version 0.2.0 adds asynchronous investigation submission. Check `--version`
+before using new commands. Installation neither connects nor submits materials.
 
-`fetch CG-123 --out incident.json` calls exactly:
+| Command | API | Scope |
+|---|---|---|
+| `check --investigations` | GET `/api/v1/investigations?limit=1` | `investigations:read` |
+| `submit` | POST `/api/v1/investigations` | `investigations:write` |
+| `status`, `result` | GET `/api/v1/investigations/{id}` | `investigations:read` |
+| `cancel` | POST `/api/v1/investigations/{id}/cancel` | `investigations:write` |
+| `check` | GET `/api/v1/incidents?limit=1` | `incidents:read` |
+| `fetch` | GET `/api/v1/incidents/{id}` | `incidents:read` |
 
-```text
-GET /api/v1/incidents/CG-123
-Authorization: Bearer <read from private key file>
-```
+Read access does not prove write authorization. An empty list is a successful
+connection check. A 401 means the key was rejected; 403 means access denied.
+Network and 5xx failures do not establish invalid credentials or empty results.
+A failed POST may already have been accepted; preserve its idempotency key.
+Do not switch to a broader key or unrelated host to evade an access failure.
 
-Expected response: `{ "data": { "summary": { "incident_id": "CG-123" },
-"evidence": [...], "actions": [...], "workflow": ... } }`.
-The offline `inspect` command accepts this wrapper or the unwrapped gateway
-incident response. It does not accept arbitrary PDF/CSV files or the separate
-investigation-bundle format; those need their own ingestion/export path.
-
-401 means the key was not accepted. 403 means access was denied. 404 means the
-incident was not found. Connection/5xx errors require an operator to check the
-deployment. Do not switch to a broader key, retry against unrelated hosts, or
-generate a successful-looking result when a read failed.
-
-No registration, model provider key, approval credential or Docker runtime is
-needed on the Agent side. A live fetch does require an existing working console
-and incident data. The console's keys currently cover the deployment's incidents;
-do not represent this as per-incident or per-tenant isolation.
-
-The helper has no external model calls and no telemetry. Reading results into a
-hosted Agent exposes them to that Agent's processing environment; follow the
-customer's existing data handling policy. Offline mode refers to the helper's
-network behavior, not a guarantee that the caller's model runs locally.
+HTTPS is required except explicitly configured loopback services. The client
+refuses redirects, ignores proxy environment variables, and caps payloads at
+8 MiB. Configure enterprise CAs through the trust store, never disable TLS.
+No client model key, Docker runtime or telemetry is needed. Backend investigation
+requires a working deployment and its configured AgentTeams runtime; acceptance
+does not establish that the runtime completed successfully. Reading material into
+a hosted calling Agent also exposes it to that Agent's processing environment.

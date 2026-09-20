@@ -1,0 +1,84 @@
+{
+  "edges": [
+    {
+      "conditional": false,
+      "source": "cg-inv-f886e0f0c0054181910e722cd818a545-01",
+      "target": "cg-inv-f886e0f0c0054181910e722cd818a545-02"
+    }
+  ],
+  "interrupts": [],
+  "mode": "dag",
+  "next": [],
+  "nodes": [
+    {
+      "assignee": "@cg-native001-investigator:matrix-local.agentteams.io:18080",
+      "id": "cg-inv-f886e0f0c0054181910e722cd818a545-01",
+      "name": "调查 build-07 事件链与两次处置效果",
+      "status": "completed"
+    },
+    {
+      "assignee": "@cg-native001-verifier:matrix-local.agentteams.io:18080",
+      "id": "cg-inv-f886e0f0c0054181910e722cd818a545-02",
+      "name": "独立复核并产出 report.json",
+      "status": "completed"
+    }
+  ],
+  "plan_type": "dag",
+  "project_id": "cg-inv-f886e0f0c0054181910e722cd818a545",
+  "requester": "INV-f886e0f0c0054181910e722cd818a545",
+  "requester_report": {
+    "pending": true,
+    "reason": "task_result_accepted",
+    "report_path": "shared/projects/cg-inv-f886e0f0c0054181910e722cd818a545/result.md",
+    "result_status": "SUCCESS",
+    "summary": "接受独立复核：report.json 通过 case_packet.py check（valid=true），8 条发现（7 supported/1 inconclusive），16 条引用经本地校验均为原文精确子串。",
+    "task_id": "cg-inv-f886e0f0c0054181910e722cd818a545-02"
+  },
+  "source": "cyberguard",
+  "status": "completed",
+  "tasks_detail": [
+    {
+      "assigned_to": "@cg-native001-investigator:matrix-local.agentteams.io:18080",
+      "deliverables": [
+        "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-01/investigation-note.md",
+        "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-01/result.md"
+      ],
+      "project_id": "cg-inv-f886e0f0c0054181910e722cd818a545",
+      "result_path": "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-01/result.md",
+      "result_status": "SUCCESS",
+      "spec_path": "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-01/spec.md",
+      "status": "submitted",
+      "summary": "完成 build-07 挖矿事件链调查（01:00:00Z–01:20:00Z）：还原事件链；确认 R1 执行器 success 与实际效果不符（复查三项仍 true，PID 4120→4189 parent=cron），未达清除条件；R2 在 01:12–01:20Z 窗口内三项均 false，满足清除条件但不证明永久/他机清除；无任何归因证据。所有结论引用原文与 material_id。",
+      "task_id": "cg-inv-f886e0f0c0054181910e722cd818a545-01"
+    },
+    {
+      "assigned_to": "@cg-native001-verifier:matrix-local.agentteams.io:18080",
+      "deliverables": [
+        "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-02/report.json",
+        "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-02/result.md"
+      ],
+      "project_id": "cg-inv-f886e0f0c0054181910e722cd818a545",
+      "result_path": "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-02/result.md",
+      "result_status": "SUCCESS",
+      "spec_path": "shared/tasks/cg-inv-f886e0f0c0054181910e722cd818a545-02/spec.md",
+      "status": "submitted",
+      "summary": "独立复核完成：8 条决定性发现（7 supported / 1 inconclusive）。事件链 2026-09-20T01:00:00Z–01:20:00Z 已还原；R1 执行器 status=success 与实际不符，未达清除条件；R2 在 01:12:00Z–01:20:00Z 窗口内满足清除条件但不证明永久/其他主机清除；材料无归因证据。report.json 已通过 case_packet.py check（valid=true）。",
+      "task_id": "cg-inv-f886e0f0c0054181910e722cd818a545-02"
+    }
+  ],
+  "team_id": "cg-native001",
+  "title": "构建服务器挖矿事件：调查与两次处置复核（合成演练）",
+  "updated_at": "2026-09-20T01:11:10Z",
+  "updated_by": "admin",
+  "values": {
+    "mode": "dag",
+    "plan_type": "dag",
+    "project_id": "cg-inv-f886e0f0c0054181910e722cd818a545",
+    "status": "completed",
+    "task_count": {
+      "completed": 2
+    },
+    "team_id": "cg-native001",
+    "title": "构建服务器挖矿事件：调查与两次处置复核（合成演练）"
+  }
+}

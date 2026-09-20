@@ -1,0 +1,6 @@
+services:
+  controller:
+    image: cyberguard/agentteams-embedded:v1.2.3-localhost
+    pull_policy: never
+    environment:
+      AGENTTEAMS_QWENPAW_WORKER_IMAGE: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-qwenpaw-worker:v1.2.3@sha256:6bc61f3857c5cd290d5f75f2d07eb584b6560cdacdce373a7aedf786f95abd0d

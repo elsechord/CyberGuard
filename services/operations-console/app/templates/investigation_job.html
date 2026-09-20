@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} · 调查任务{% endblock %}
+{% block content %}
+<div class="investigation-detail">
+<div class="page-head"><div><a href="/investigations">← 调查任务</a><h1>{{ job.title }}</h1><p class="hint mono">{{ job.id }}</p></div><a href="/investigations/{{ job.id }}">刷新状态</a></div>
+<section class="card"><h2>处理状态：{{ statuses.get(job.status, job.status) }}</h2>
+<dl class="investigation-meta">
+<div><dt>当前阶段</dt><dd>{{ stage_label(job.stage) }}</dd></div>
+<div><dt>领域</dt><dd>{{ domains.get(job.domain, job.domain) }}</dd></div>
+<div><dt>创建时间</dt><dd>{{ job.created_at|ts }}</dd></div>
+<div><dt>更新时间</dt><dd>{{ job.updated_at|ts }}</dd></div>
+</dl><h3>调查目标</h3><p class="investigation-text">{{ job.objective }}</p>
+{% if job.error %}<div class="error-banner" role="alert">{{ message_label(job.error) }}</div>{% endif %}
+{% if job.status == 'waiting_backend' %}<p>任务已保存，等待团队连接恢复后继续。</p>{% endif %}
+{% if job.status in ['queued', 'running', 'waiting_backend'] %}<p class="hint">刷新此页查看最新进展。</p>
+{% if principal.has_role('analyst') %}<form method="post" action="/investigations/{{ job.id }}/cancel"><input type="hidden" name="csrf_token" value="{{ principal.csrf }}"><p class="hint">取消会停止后续阶段；已经运行的远程请求可能继续完成。</p><button type="submit">取消任务</button></form>{% endif %}{% endif %}
+</section>
+{% if job.runtime.get('workflow') %}<section class="card"><h2>团队进度</h2><p class="hint mono">{{ job.runtime.project_id }}</p><div class="table-wrap"><table><thead><tr><th>任务</th><th>负责人</th><th>状态</th></tr></thead><tbody>
+{% for node in job.runtime.workflow.get('nodes', []) %}<tr><td>{{ node.name or node.id }}</td><td>{{ node.assignee or '待分配' }}</td><td>{{ {'pending':'待开始','delegated':'已委派','in-progress':'进行中','completed':'已完成','revision':'待修改','blocked':'受阻'}.get(node.status,node.status) }}</td></tr>{% endfor %}
+</tbody></table></div>{% if job.runtime.workflow.get('interrupts') %}<p>团队有待处理的问题，详情见运行记录。</p>{% endif %}</section>{% endif %}
+{% set collaboration = job.runtime.get('collaboration_view', {}) %}
+{% if collaboration.get('runs') %}<section class="card collaboration-view"><h2>协作过程</h2>
+<dl class="investigation-meta"><div><dt>任务记录中的团队 Worker</dt><dd>{{ collaboration.team_worker_count }}</dd></div><div><dt>本次展开的临时 Agent</dt><dd>{{ collaboration.temporary_agent_count }}</dd></div><div><dt>定向通信记录</dt><dd>{{ collaboration.message_count }}</dd></div></dl>
+<p class="hint">来自 Worker 导出的原生快照和通信记录；临时 Agent 由所属 Worker 汇总，任务仍由团队验收。</p>
+{% for run in collaboration.runs %}<article class="collaboration-run"><h3>{{ run.parent_worker or 'Worker' }} <span class="hint">{{ run.status }}</span></h3>
+{% if run.reason %}<p>{{ run.reason }}</p>{% endif %}<p class="hint mono">{{ run.task_id }} · {{ run.run_id }}</p>
+<div class="collaboration-nodes">{% for node in run.nodes %}<section class="collaboration-node"><h4>{{ node.role or node.id }} <span class="hint">{{ node.status }}</span></h4><p>{{ node.question }}</p>{% if node.summary %}<p>{{ node.summary }}</p>{% endif %}
+{% if node.material_ids %}<p class="hint">引用材料：{{ node.material_ids|join('、') }}</p>{% endif %}
+<details><summary>Agent 与产物</summary><p class="mono">{{ node.agent_id }}</p>{% for path in node.artifact_paths %}<p class="mono">{{ path }}</p>{% endfor %}</details></section>{% endfor %}</div>
+{% if run.messages %}<h4>问题如何得到回应</h4><ol class="collaboration-messages">{% for message in run.messages %}<li><p class="hint">{{ message['from'] }} → {{ message.to }}{% if message.kind %} · {{ message.kind }}{% endif %}</p>{% if message.question %}<p>{{ message.question }}</p>{% endif %}{% if message.answer %}<blockquote>{{ message.answer }}</blockquote>{% endif %}
+{% if message.changed_conclusion is sameas true %}<p>记录标注：这次交流改变了判断。</p>{% elif message.changed_conclusion is string and message.changed_conclusion %}<p>判断变化：{{ message.changed_conclusion }}</p>{% endif %}
+{% if message.event_id %}<details><summary>记录引用</summary><p class="mono">{{ message.event_id }}</p><p class="hint">导出记录引用的标识，未在此单独核验传输事件。</p></details>{% endif %}</li>{% endfor %}</ol>{% endif %}
+{% if run.cleanup_recorded %}<p class="hint">临时 Agent 回收记录：{{ run.cleanup.status or '已记录' }}{% if run.cleanup.summary %} · {{ run.cleanup.summary }}{% endif %}</p>{% endif %}
+</article>{% endfor %}</section>{% endif %}
+<section class="card investigation-report"><div class="section-head"><h2>调查报告</h2>{% if job.status == 'completed' %}<a href="/api/v1/investigations/{{ job.id }}/report">下载报告 JSON</a>{% endif %}</div>
+{% if report_text %}<p>{{ job.report.summary }}</p>{% if job.domain in ['finance', 'legal'] %}<p class="hint">专业结论请交由相应领域人员审阅。</p>{% endif %}
+{% for finding in job.report.findings %}<article class="investigation-finding"><h3>{{ finding.claim }}</h3><p class="hint">{{ {'supported':'材料支持','refuted':'材料反驳','inconclusive':'证据不足'}.get(finding.status, finding.status) }}</p>
+{% for citation in finding.citations %}<blockquote><p>{{ citation.quote }}</p><a class="mono" data-material-link href="#{{ citation.material_id }}">查看引用原文</a></blockquote>{% endfor %}
+{% if finding.limitations %}<p class="hint">判断限制：{{ finding.limitations }}</p>{% endif %}</article>{% endfor %}
+{% if job.report.unknowns %}<h3>尚未查明</h3><ul>{% for item in job.report.unknowns %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+{% if job.report.next_steps %}<h3>后续建议</h3><ul>{% for item in job.report.next_steps %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+<details><summary>结构化报告</summary><pre class="mono">{{ report_text }}</pre></details>
+{% else %}<p>团队完成调查后，报告将显示在这里。</p>{% endif %}</section>
+<section class="card"><h2>原始材料与提交者解释</h2>
+{% for material in job.materials %}<details class="investigation-material" id="{{ material.material_id }}"><summary>{{ material.name }} · {{ sources.get(material.source_type, material.source_type) }}</summary>
+<dl class="investigation-meta">
+<div><dt>格式</dt><dd>{{ material.media_type }}</dd></div>
+<div><dt>来源验证</dt><dd>{{ {'unverified':'尚未验证'}.get(material.source_authenticity, material.source_authenticity) }}</dd></div>
+{% if material.source_uri %}<div class="investigation-meta-wide"><dt>来源标签（未抓取）</dt><dd>{{ material.source_uri }}</dd></div>{% endif %}
+{% if material.observed_at %}<div><dt>提交者声明的观察时间</dt><dd>{{ material.observed_at }}</dd></div>{% endif %}
+</dl><h3>原始提交文本</h3><pre>{{ material.content }}</pre>
+{% if material.interpretation %}<h3>提交者解释（与原文分开）</h3><pre>{{ material.interpretation }}</pre>{% endif %}
+<details><summary>材料标识与校验值</summary><dl class="investigation-meta"><div class="investigation-meta-wide"><dt>材料标识</dt><dd class="mono">{{ material.material_id }}</dd></div><div class="investigation-meta-wide"><dt>内容 SHA-256</dt><dd class="mono">{{ material.sha256 }}</dd></div></dl></details>
+</details>{% endfor %}
+</section>
+<section class="card"><h2>任务记录</h2>{% if job.events %}<ol>{% for event in job.events %}<li><time>{{ event.at|ts }}</time> · {{ statuses.get(event.status, event.status) }} · {{ stage_label(event.stage) }}<p>{{ message_label(event.message) }}</p></li>{% endfor %}</ol>{% else %}<p>暂无阶段记录。</p>{% endif %}
+<details><summary>原始运行诊断</summary><p class="hint">保留后端原始字段，供排障时核对。</p><pre>{{ {'stage':job.stage, 'error':job.error, 'events':job.events, 'runtime':job.runtime}|tojson(indent=2) }}</pre></details></section>
+</div>
+<script src="/static/investigation.js" defer></script>
+{% endblock %}

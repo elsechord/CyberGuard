@@ -120,6 +120,9 @@ class ModelGuard:
         self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.run_id = config["run_id"]
         self.roles = config["roles"]
+        self.tool_policy = config.get("tool_policy", "guard")
+        if self.tool_policy not in {"guard", "runtime"}:
+            raise ValueError("tool_policy must be guard or runtime")
         self.model = config["model"]
         endpoint = urlsplit(config["upstream_endpoint"])
         if (endpoint.scheme != "https" or not endpoint.hostname or endpoint.username or endpoint.password
@@ -276,7 +279,7 @@ class ModelGuard:
                     or not message["tool_call_id"].strip()):
                 raise GuardError("invalid_messages")
         allowed = self.roles[role].get("allowed_tools")
-        if allowed is not None:
+        if self.tool_policy == "guard" and allowed is not None:
             tool_list = body.get("tools") or []
             if (not isinstance(tool_list, list) or any(not isinstance(t, dict) or t.get("type") != "function"
                     or not isinstance(t.get("function"), dict) or t["function"].get("name") not in allowed for t in tool_list)):
@@ -284,7 +287,7 @@ class ModelGuard:
                                  details=self.record_tool_denial(role, tool_list, allowed))
         if body.get("n", 1) != 1 or type(body.get("n", 1)) is not int:
             raise GuardError("multiple_completions_not_allowed")
-        if repeated_tool_error(messages):
+        if self.tool_policy == "guard" and repeated_tool_error(messages):
             self.ledger.close_run(self.run_id, "repeated_structured_tool_failure")
             raise GuardError("repeated_structured_tool_failure")
         streaming = body.get("stream", False)
@@ -436,7 +439,7 @@ def create_app(config, directory, *, transport=None):
             state = guard.ledger.get_run(guard.run_id)
             if state["status"] != "open" or state["usage"]["concurrency_used"]:
                 raise GuardError("closed_or_uncertain_run_cannot_rearm")
-            if any(not value.get("allowed_tools") for value in guard.roles.values()):
+            if guard.tool_policy == "guard" and any(not value.get("allowed_tools") for value in guard.roles.values()):
                 raise GuardError("tool_allowlist_not_configured")
             guard.armed = True
         return guard.snapshot()

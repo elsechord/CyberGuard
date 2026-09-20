@@ -1,0 +1,46 @@
+[
+  {
+    "content": "SYNTHETIC EXERCISE ONLY. All times UTC.\n2026-09-20T01:00:00Z host=build-07 ssh user=deploy result=accepted key_fingerprint=SHA256:fixture-old src=192.0.2.44\n2026-09-20T01:00:08Z host=build-07 uid=deploy command=download artifact=https://updates.example.invalid/build-helper.tgz sha256=fixture-package-19\n2026-09-20T01:00:12Z host=build-07 uid=deploy installed=/home/deploy/.cache/build-helper/service\nAsset owner: build-07 is a build host. The owner reports no authorized deployment during 01:00-01:20 UTC.\nNo records explaining how the deploy private key was obtained are available.",
+    "interpretation": "提交者怀疑是供应链入侵，但尚未提供上游软件仓库或签名验证记录。",
+    "material_id": "MAT-45891bd92f013758fd8fecdf94d96d7074abf7367a8c377b3ca03e763b9c8991",
+    "media_type": "text/plain",
+    "name": "认证与部署记录",
+    "sha256": "52ceda80b86b39653ee65e8476db450b42a5aec0bd267db22ffe5bf82749921d",
+    "source_authenticity": "unverified",
+    "source_type": "server_log",
+    "submitted_as": "original_input"
+  },
+  {
+    "content": "SYNTHETIC EXERCISE ONLY.\n2026-09-20T01:02:00Z host=build-07 process_pid=4120 exe=/home/deploy/.cache/build-helper/service cpu=96%\n2026-09-20T01:02:01Z host=build-07 pid=4120 argv=service --algo=randomx --pool=pool.example.invalid:3333 --wallet=fixture-wallet-42\n2026-09-20T01:02:03Z host=build-07 pid=4120 outbound=198.51.100.28:3333 protocol=stratum result=connected\n2026-09-20T01:02:05Z host=build-07 user_crontab=deploy entry='* * * * * /home/deploy/.cache/build-helper/service --resume'\nThe addresses, domain names and wallet are synthetic placeholders. No threat-intelligence attribution data is supplied.",
+    "interpretation": "",
+    "material_id": "MAT-4ada035c81c78060d8d7a6a96be5e853b1941d5ca611d59bc09228e5706431e1",
+    "media_type": "text/plain",
+    "name": "初始主机与网络观测",
+    "sha256": "c826ec038f65afc68f001e8d33f69b798fa2f2d0aa0cca00c761d5b446bdbd52",
+    "source_authenticity": "unverified",
+    "source_type": "edr",
+    "submitted_as": "original_input"
+  },
+  {
+    "content": "SYNTHETIC EXERCISE ONLY.\n2026-09-20T01:05:00Z proposal=R1 approved_by=fixture-operator target=build-07 action=stop_process pid=4120\n2026-09-20T01:05:01Z executor proposal=R1 status=success message='process stopped'\n2026-09-20T01:06:05Z independent_probe host=build-07 user_crontab=deploy malicious_entry_present=true\n2026-09-20T01:06:07Z independent_probe host=build-07 miner_process_present=true pid=4189 parent=cron\n2026-09-20T01:06:09Z independent_probe host=build-07 pool_connection_present=true\nAcceptance criteria: no miner process, no malicious persistence, no pool connection; all three must pass.",
+    "interpretation": "首次执行器显示 success，因此提交者起初认为已经完成清除。",
+    "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+    "media_type": "text/plain",
+    "name": "第一次处置回执与独立复查",
+    "sha256": "f2aaf1fd92bc047b8bac5051fe17f8d13aa8ac22695e9b3a0e519a0f8041d071",
+    "source_authenticity": "unverified",
+    "source_type": "audit_report",
+    "submitted_as": "original_input"
+  },
+  {
+    "content": "SYNTHETIC EXERCISE ONLY.\n2026-09-20T01:10:00Z proposal=R2 approved_by=fixture-operator target=build-07 actions=disable_fixture_deploy_key,remove_malicious_cron,quarantine_service_binary,stop_miner_process\n2026-09-20T01:10:05Z executor proposal=R2 status=success\n2026-09-20T01:12:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false old_deploy_key_accepted=false\n2026-09-20T01:15:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false\n2026-09-20T01:20:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false\nObservation ends at 01:20:00Z. No claim of permanent eradication or other-host clearance is supported.",
+    "interpretation": "",
+    "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+    "media_type": "text/plain",
+    "name": "第二次处置与观察窗口",
+    "sha256": "7a55d01e103adce788701ca9a552aaf966d7df94ca48dc089ab2747b4c98ee7d",
+    "source_authenticity": "unverified",
+    "source_type": "audit_report",
+    "submitted_as": "original_input"
+  }
+]

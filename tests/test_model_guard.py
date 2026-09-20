@@ -60,6 +60,17 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(self.client.post("/v1/chat/completions", json={}).status_code, 401)
         self.assertEqual(self.calls, [])
 
+    def test_native_runtime_owns_tool_policy_but_budget_and_identity_still_apply(self):
+        self.config['tool_policy'] = 'runtime'
+        for role in self.config['roles'].values():
+            role.pop('allowed_tools')
+        self.make()
+        self.arm()
+        tools = [{'type': 'function', 'function': {'name': 'teamharness_projectflow', 'parameters': {'type': 'object'}}}]
+        self.assertEqual(self.post(tools=tools).status_code, 200)
+        self.assertEqual(self.post(model='wrong', tools=tools).status_code, 400)
+        self.assertEqual(len(self.calls), 1)
+
     def test_real_http_normalization_and_duplicate_never_forward_twice(self):
         self.make()
         self.arm()

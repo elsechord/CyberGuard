@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.15.0 — 2026-09-20
+
+- Added native AgentTeams investigation delivery: Skill/Console intake, original evidence packets, Project/Task planning, independent verification and cited report retrieval.
+- Added portable investigation Skill v0.2.0 and console-generated connection instructions for existing Agents.
+- Preserved two consecutive full-case runs with original source materials, native workflows, report reviews and actual model usage under `docs/validation/full-case`.
+- Added prepared task rooms and documented local v1.2.3 compatibility fixes for Worker addressing and model routing after restart.
 
 - Added the multi-user operations console (`services/operations-console`): a FastAPI control plane on internal port 8080 (host `127.0.0.1:18120`) that turns the single-token demo surface into a deployable product. It ships PBKDF2 password authentication with per-account exponential backoff and lockout, hashed session IDs in a `__Host-` cookie with idle/absolute expiry and rotation, a four-role RBAC matrix (viewer/analyst/approver/admin) enforced deny-by-default, scope-tagged `cg_live_` API keys with one-time plaintext display, an append-only `auth_event` audit trail with CSV export, and one-time first-boot `/setup` gated by a token printed to the container log (plus a `python -m app.bootstrap admin` CLI).
 - Added console API v1 with dual session/API-key authentication, a unified envelope (`data`/`has_more`/`next_cursor`) and error shape, `Idempotency-Key` replay protection (24 h), and proxies onto the existing gateway incident/workflow APIs, the executor approval API (decisions require a mandatory closing classification and comment) and the optional model-guard admission ledger. Pages cover overview metrics, incident queue/detail with timeline, approvals, budget ledger, audit and admin settings; CSRF uses per-session synchronizer tokens plus Origin/`X-Requested-With` checks, behind a strict CSP. Documentation in `docs/OPERATIONS_CONSOLE.md`; tests in `tests/test_operations_console.py`.

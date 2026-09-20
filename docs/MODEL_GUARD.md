@@ -37,3 +37,7 @@ Stored traces replace known credential literals and a finite set of JSON-escaped
 `tests/test_model_admission.py` covers immutable run bindings, atomic budgets, independent processes, crash/unknown reservations and usage settlement. `tests/test_model_guard.py` uses fake transports to exercise request bounds, dispatch/close races, deduplication, role authentication, tool restrictions and failure behavior without paid calls.
 
 Three real native Workers run in an operator-controlled serial harness to test integration. Successful reports would demonstrate actual Worker → model → MCP → gateway execution. They would not establish autonomous task planning, fair multi-agent performance gains, production readiness or attribution to a real threat organization.
+
+## Native AgentTeams tool policy
+
+Set `tool_policy` to `runtime` when AgentTeams owns tool authorization. The guard still checks model identity and reserves request/token budgets, but does not duplicate the runtime tool allowlist or close the run after repeated tool errors. The default `guard` mode retains the fixed allowlist behavior for existing deployments.

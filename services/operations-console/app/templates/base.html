@@ -18,8 +18,10 @@
   <nav class="nav-links" aria-label="主导航">
     <a href="/" {% if request.url.path == '/' %}aria-current="page"{% endif %}>概览</a>
     <a href="/incidents" {% if request.url.path.startswith('/incidents') %}aria-current="page"{% endif %}>事件</a>
+    <a href="/investigations" {% if request.url.path.startswith('/investigations') %}aria-current="page"{% endif %}>调查任务</a>
     <a href="/approvals" {% if request.url.path.startswith('/approvals') %}aria-current="page"{% endif %}>审批</a>
     <a href="/ledger" {% if request.url.path.startswith('/ledger') %}aria-current="page"{% endif %}>预算账本</a>
+    <a href="/connect" {% if request.url.path.startswith('/connect') %}aria-current="page"{% endif %}>连接 Agent</a>
     {% if nav_principal and nav_principal.role == 'admin' %}
     <a href="/audit" {% if request.url.path.startswith('/audit') %}aria-current="page"{% endif %}>审计</a>
     <a href="/settings/members" {% if request.url.path.startswith('/settings') %}aria-current="page"{% endif %}>设置</a>

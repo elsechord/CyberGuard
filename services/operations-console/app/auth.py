@@ -34,6 +34,11 @@ ROLE_SCOPE_GRANTS = {
 }
 ALL_SCOPES = ["incidents:read", "incidents:write", "decisions:write", "audit:read",
               "usage:read", "keys:admin", "admin"]
+ALL_SCOPES += ["investigations:read", "investigations:write"]
+for _role in ROLE_SCOPE_GRANTS:
+    ROLE_SCOPE_GRANTS[_role].add("investigations:read")
+    if _role != "viewer":
+        ROLE_SCOPE_GRANTS[_role].add("investigations:write")
 
 # A fixed dummy hash so failed lookups cost the same as failed verifications.
 _DUMMY_SALT = base64.b64encode(b"\x00" * 16).decode()

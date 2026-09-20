@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate local-only service secrets without printing them or inventing an LLM key."""
 import os
+import argparse
 from pathlib import Path
 import secrets
 
@@ -8,7 +9,10 @@ import secrets
 def main():
     if os.name != "posix":
         raise SystemExit("Run in WSL/Linux so service secrets can be created with mode 0600.")
-    directory = Path.home() / ".config" / "cyberguard"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--directory', type=Path, default=Path.home()/'.config/cyberguard')
+    args = parser.parse_args()
+    directory = args.directory
     directory.mkdir(parents=True, exist_ok=True, mode=0o700)
     path = directory / "agentteams-local.env"
     values = {"AGENTTEAMS_ADMIN_USER": "admin", "AGENTTEAMS_MINIO_USER": "admin",

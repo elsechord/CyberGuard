@@ -1,0 +1,26 @@
+{
+  "job_id": "INV-917eca8a27db4258ad7afed415076207",
+  "reviewer": "Codex semantic review after execution",
+  "passed": true,
+  "checks": {
+    "skill_result_retrieved": true,
+    "native_nodes_accepted": true,
+    "native_project_completed": true,
+    "different_workers": true,
+    "original_hashes_match": true,
+    "all_citations_exact": true,
+    "r1_failure_recognized": true,
+    "r2_observation_window_limited": true,
+    "attribution_inconclusive": true,
+    "status_claim_direction_reviewed": true
+  },
+  "findings": 7,
+  "citations": 22,
+  "scope": "Synthetic incident replay; no response actions executed in this run.",
+  "notes": [
+    "No operator messages or approvals after submission.",
+    "Core case acceptance passed. This does not certify all prose: finding 3 incorrectly calls 01:06:05 to 01:06:09 three seconds (four-second span).",
+    "R1 success versus non-clearance wording could better distinguish action success from the broader objective.",
+    "Source authenticity remains unverified; exact quotes do not validate real-world authenticity."
+  ]
+}

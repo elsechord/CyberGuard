@@ -1,0 +1,66 @@
+# Fresh single-host installation; use from repository root.
+name: cyberguard-agentteams-local
+services:
+  controller:
+    image: cyberguard/agentteams-embedded:v1.2.3-localhost
+    container_name: agentteams-controller
+    env_file:
+      - ${CYBERGUARD_AGENTTEAMS_SERVICE_ENV:?Set the absolute path to agentteams-local.env}
+    environment:
+      TZ: Asia/Shanghai
+      AGENTTEAMS_MANAGER_ENABLED: "false"
+      AGENTTEAMS_MANAGER_RUNTIME: copaw
+      AGENTTEAMS_DEFAULT_WORKER_RUNTIME: qwenpaw
+      AGENTTEAMS_MANAGER_IMAGE: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-manager-copaw:v1.2.2
+      AGENTTEAMS_WORKER_IMAGE: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-worker:v1.2.2
+      AGENTTEAMS_COPAW_WORKER_IMAGE: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.2
+      AGENTTEAMS_QWENPAW_WORKER_IMAGE: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-qwenpaw-worker:v1.2.3@sha256:6bc61f3857c5cd290d5f75f2d07eb584b6560cdacdce373a7aedf786f95abd0d
+      AGENTTEAMS_MATRIX_DOMAIN: matrix-local.agentteams.io:18080
+      AGENTTEAMS_ELEMENT_HOMESERVER_URL: http://127.0.0.1:18080
+      AGENTTEAMS_MATRIX_URL: http://127.0.0.1:6167
+      AGENTTEAMS_MATRIX_E2EE: "0"
+      AGENTTEAMS_MATRIX_APPSERVICE_ENABLED: "true"
+      AGENTTEAMS_MINIO_ENDPOINT: http://127.0.0.1:9000
+      AGENTTEAMS_MINIO_BUCKET: agentteams-storage
+      AGENTTEAMS_STORAGE_PREFIX: agentteams/agentteams-storage
+      AGENTTEAMS_FS_ENDPOINT: http://127.0.0.1:9000
+      AGENTTEAMS_AI_GATEWAY_URL: http://aigw-local.agentteams.io:8080
+      AGENTTEAMS_CONTROLLER_URL: http://agentteams-controller:8090
+      AGENTTEAMS_DOCKER_NETWORK: agentteams-net
+      AGENTTEAMS_WORKSPACE_DIR: cyberguard-agentteams-local-workspace
+      AGENTTEAMS_HOST_SHARE_DIR: cyberguard-agentteams-local-share
+      AGENTTEAMS_PORT_MANAGER_CONSOLE: "18888"
+      AGENTTEAMS_CMS_TRACES_ENABLED: "false"
+      AGENTTEAMS_CMS_METRICS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:18080:8080"
+      - "127.0.0.1:18001:8001"
+      - "127.0.0.1:18088:8088"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+      - workspace:/root/agentteams-fs/agents/manager
+    networks:
+      agentteams:
+        aliases:
+          - matrix-local.agentteams.io
+          - aigw-local.agentteams.io
+          - fs-local.agentteams.io
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:6167/_tuwunel/server_version >/dev/null && curl -fsS http://127.0.0.1:9000/minio/health/live >/dev/null && curl -fsS http://127.0.0.1:8080/status >/dev/null && agt get managers -o json >/dev/null"]
+      start_period: 120s
+      interval: 15s
+      timeout: 10s
+      retries: 12
+volumes:
+  data:
+    name: cyberguard-agentteams-local-data
+  workspace:
+    name: cyberguard-agentteams-local-workspace
+  share:
+    name: cyberguard-agentteams-local-share
+networks:
+  agentteams:
+    name: agentteams-net
+    external: true

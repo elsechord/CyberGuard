@@ -1,5 +1,7 @@
 # Quickstart — from clone to evidence in the audit console
 
+**Want the full AgentTeams investigation service?** Follow [Native installation](NATIVE_INSTALL.md) after the base stack below. It covers model configuration, native team setup, Worker compatibility installation, Console binding and the first investigation. The timing below measures the base evidence/console stack, not the native multi-agent deployment.
+
 Goal: a stranger with Git, Python 3.12 and (optionally) Docker reaches a live
 read-only audit console with their first collected evidence.
 

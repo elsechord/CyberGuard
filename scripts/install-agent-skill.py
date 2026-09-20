@@ -29,6 +29,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     try:
         print(json.dumps({'installed': str(install(args.project, args.agent)),
-                          'scope': 'project', 'version': '0.1.0'}))
+                          'scope': 'project', 'version': '0.2.0'}))
     except (OSError, ValueError) as exc:
         parser.exit(2, str(exc) + '\n')

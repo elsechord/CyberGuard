@@ -1,3 +1,35 @@
+.shell pre { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; font-size: 13px; line-height: 1.8; }
+.shell dd { overflow-wrap: anywhere; margin: 6px 0 20px; }
+.shell details { margin: 20px 0; }
+.shell summary { cursor: pointer; padding: 12px 0; }
+.table-wrap { overflow-x: auto; }
+.investigation-finding { margin: 30px 0; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.investigation-detail .investigation-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 32px; margin: 18px 0; }
+.investigation-detail .investigation-meta > div { min-width: 0; }
+.investigation-detail .investigation-meta dt { margin: 0 0 4px; font-size: 12px; color: var(--muted); }
+.investigation-detail .investigation-meta dd { margin: 0; overflow-wrap: anywhere; }
+.investigation-detail .investigation-meta-wide { grid-column: 1 / -1; }
+.investigation-detail .investigation-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.investigation-detail pre { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+.investigation-detail .investigation-material { padding: 16px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 100px; }
+.investigation-detail .investigation-material:target { outline: 2px solid var(--purple); outline-offset: 8px; }
+.investigation-detail details summary { cursor: pointer; }
+@media (max-width: 640px) {
+  .investigation-detail .investigation-meta { grid-template-columns: 1fr; gap: 12px; }
+}
+.investigation-finding blockquote { border-left: 2px solid var(--purple); padding-left: 18px; margin-left: 0; }
+.connect-layout { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.3fr); gap: clamp(28px, 5vw, 80px); }
+.connect-layout h2 { font-size: 19px; font-weight: 600; }
+.connect-origin { overflow-wrap: anywhere; font-size: 17px; }
+.connect-setup .stack { margin-top: 28px; }
+.connect-credentials { border-top: 1px solid var(--line); margin-top: 36px; padding-top: 20px; }
+.connect-credentials a { display: inline-block; margin: 12px 0; }
+.connect-prompt { box-sizing: border-box; width: 100%; min-height: 460px; margin-top: 22px; resize: vertical; font-family: var(--mono); font-size: 13px; line-height: 1.85; }
+.connect-secret { margin-bottom: 30px; padding: 24px; }
+.connect-secret code { display: block; overflow-wrap: anywhere; margin: 18px 0; }
+.connect-layout p { line-height: 1.8; }
+#connection-copy-status { min-height: 1.8em; color: var(--purple); }
+@media (max-width: 850px) { .connect-layout { grid-template-columns: 1fr; } .connect-prompt { min-height: 360px; } }
 /* Elsechord product surfaces: warm paper, ink and a restrained violet accent.
    Dense operational content keeps a sans-serif face; motion signals interaction. */
 @font-face {
@@ -216,6 +248,13 @@ dl.kv { margin: 0; }
 .section-head h2 { margin: 0; }
 .section-head a { font-size: 13px; }
 .incident-register .queue .incident-id { font-size: 17px; }
+.collaboration-run { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 20px; }
+.collaboration-nodes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 20px; }
+.collaboration-node { border-left: 2px solid var(--purple); padding: 0 18px; min-width: 0; }
+.collaboration-node h4 { margin-top: 8px; }
+.collaboration-view p, .collaboration-view blockquote { overflow-wrap: anywhere; white-space: pre-wrap; }
+.collaboration-messages { padding-left: 24px; }
+.collaboration-messages > li { padding: 8px 0; }
 .table-scroll { overflow-x: auto; max-width: 100%; }
 .table-scroll table { min-width: 560px; }
 .layout-2col > div { min-width: 0; }

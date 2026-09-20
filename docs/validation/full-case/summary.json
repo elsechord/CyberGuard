@@ -1,0 +1,53 @@
+{
+  "scope": "Synthetic replay; two consecutive runs on the same configuration, not a production success-rate benchmark. Original reports retained with review caveats.",
+  "runs": [
+    {
+      "attempt": "013",
+      "job_id": "INV-917eca8a27db4258ad7afed415076207",
+      "status": "completed",
+      "elapsed_seconds": 307.2,
+      "manual_messages_after_submission": 0,
+      "semantic_acceptance": "requires_report_review",
+      "key_case_acceptance": true,
+      "usage": {
+        "requests": 50,
+        "charged_input": 1854537,
+        "charged_output": 38505,
+        "known_input": 1854537,
+        "known_output": 38505,
+        "reserved_input": 0,
+        "reserved_output": 0,
+        "concurrency_used": 0
+      },
+      "requests_by_role": {
+        "investigator": 13,
+        "planner": 21,
+        "verifier": 16
+      }
+    },
+    {
+      "attempt": "014",
+      "job_id": "INV-f886e0f0c0054181910e722cd818a545",
+      "status": "completed",
+      "elapsed_seconds": 231.9,
+      "manual_messages_after_submission": 0,
+      "semantic_acceptance": "requires_report_review",
+      "key_case_acceptance": true,
+      "usage": {
+        "requests": 35,
+        "charged_input": 1127317,
+        "charged_output": 30109,
+        "known_input": 1127317,
+        "known_output": 30109,
+        "reserved_input": 0,
+        "reserved_output": 0,
+        "concurrency_used": 0
+      },
+      "requests_by_role": {
+        "investigator": 7,
+        "planner": 17,
+        "verifier": 11
+      }
+    }
+  ]
+}

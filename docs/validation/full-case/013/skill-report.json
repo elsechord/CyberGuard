@@ -1,0 +1,164 @@
+{
+  "investigation_id": "INV-917eca8a27db4258ad7afed415076207",
+  "report": {
+    "findings": [
+      {
+        "citations": [
+          {
+            "material_id": "MAT-45891bd92f013758fd8fecdf94d96d7074abf7367a8c377b3ca03e763b9c8991",
+            "quote": "2026-09-20T01:00:00Z host=build-07 ssh user=deploy result=accepted key_fingerprint=SHA256:fixture-old src=192.0.2.44"
+          },
+          {
+            "material_id": "MAT-45891bd92f013758fd8fecdf94d96d7074abf7367a8c377b3ca03e763b9c8991",
+            "quote": "command=download artifact=https://updates.example.invalid/build-helper.tgz sha256=fixture-package-19"
+          },
+          {
+            "material_id": "MAT-45891bd92f013758fd8fecdf94d96d7074abf7367a8c377b3ca03e763b9c8991",
+            "quote": "installed=/home/deploy/.cache/build-helper/service"
+          },
+          {
+            "material_id": "MAT-45891bd92f013758fd8fecdf94d96d7074abf7367a8c377b3ca03e763b9c8991",
+            "quote": "The owner reports no authorized deployment during 01:00-01:20 UTC."
+          },
+          {
+            "material_id": "MAT-4ada035c81c78060d8d7a6a96be5e853b1941d5ca611d59bc09228e5706431e1",
+            "quote": "2026-09-20T01:02:01Z host=build-07 pid=4120 argv=service --algo=randomx --pool=pool.example.invalid:3333 --wallet=fixture-wallet-42"
+          },
+          {
+            "material_id": "MAT-4ada035c81c78060d8d7a6a96be5e853b1941d5ca611d59bc09228e5706431e1",
+            "quote": "2026-09-20T01:02:05Z host=build-07 user_crontab=deploy entry='* * * * * /home/deploy/.cache/build-helper/service --resume'"
+          },
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "Observation ends at 01:20:00Z. No claim of permanent eradication or other-host clearance is supported."
+          }
+        ],
+        "claim": "观察窗口为 2026-09-20T01:00:00Z–01:20:00Z，事件链为：SSH 登录(deploy)→下载构件→安装落地→矿工进程与矿池连接→deploy crontab 持久化条目；资产所有者否认窗口内有授权部署。",
+        "limitations": "仅为同一主机 build-07 上的连续观测记录；窗口起点是窗口内最早记录(01:00:00Z)，非事件真实起点；下载→安装→矿工执行的完整安装链条无直接日志，不构成已证实的安装序列。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+            "quote": "2026-09-20T01:05:01Z executor proposal=R1 status=success message='process stopped'"
+          },
+          {
+            "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+            "quote": "2026-09-20T01:06:07Z independent_probe host=build-07 miner_process_present=true pid=4189 parent=cron"
+          }
+        ],
+        "claim": "R1 的执行器返回(status=success message='process stopped')与实际观测效果不一致：返回只对应停止 pid 4120 这一动作，01:06Z 独立复查显示主机并未清除。",
+        "limitations": "材料未记录 R1 前矿工 pid 为 4120、复查时变为 4189 的具体重启机制；可观测的是 pid 变化与 crontab 每分钟 --resume 条目一致，但不作更强的重启序列断言。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+            "quote": "2026-09-20T01:06:05Z independent_probe host=build-07 user_crontab=deploy malicious_entry_present=true"
+          },
+          {
+            "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+            "quote": "2026-09-20T01:06:07Z independent_probe host=build-07 miner_process_present=true pid=4189 parent=cron"
+          },
+          {
+            "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+            "quote": "2026-09-20T01:06:09Z independent_probe host=build-07 pool_connection_present=true"
+          },
+          {
+            "material_id": "MAT-20475fa0872fdcdec49f715cfab2eda208af0f552b54bba780cb49e6465c8715",
+            "quote": "Acceptance criteria: no miner process, no malicious persistence, no pool connection; all three must pass."
+          }
+        ],
+        "claim": "R1 未达到清除条件：复查时(01:06:05Z–01:06:09Z)三项验收条件(no miner process / no malicious persistence / no pool connection)全部未通过。",
+        "limitations": "验收条件三项同时通过才算清除，复查在 01:06:05Z–01:06:09Z 三秒内完成，为单次复查快照。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "2026-09-20T01:10:05Z executor proposal=R2 status=success"
+          },
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "2026-09-20T01:12:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false old_deploy_key_accepted=false"
+          },
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "2026-09-20T01:15:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false"
+          },
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "2026-09-20T01:20:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false"
+          }
+        ],
+        "claim": "R2 执行器返回 status=success，且与独立观测效果一致：01:12:00Z、01:15:00Z、01:20:00Z 三次复查三项清除条件均为 false，即在观察窗口内 R2 达到清除条件。",
+        "limitations": "结论限定在观察窗口 01:12:00Z–01:20:00Z 之内；不能外推为永久清除。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "Observation ends at 01:20:00Z. No claim of permanent eradication or other-host clearance is supported."
+          }
+        ],
+        "claim": "证据不支持“永久清除”或“其它主机已清除”：材料自述观察止于 01:20:00Z，且不主张永久清除或其它主机清除。",
+        "limitations": "窗口终点 01:20:00Z 之后是否有复发、以及其它主机是否受影响均无材料覆盖。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-4ada035c81c78060d8d7a6a96be5e853b1941d5ca611d59bc09228e5706431e1",
+            "quote": "The addresses, domain names and wallet are synthetic placeholders. No threat-intelligence attribution data is supplied."
+          },
+          {
+            "material_id": "MAT-45891bd92f013758fd8fecdf94d96d7074abf7367a8c377b3ca03e763b9c8991",
+            "quote": "No records explaining how the deploy private key was obtained are available."
+          }
+        ],
+        "claim": "无证据支持将本次事件归因到某个具体攻击组织：材料未提供任何归因/威胁情报数据。",
+        "limitations": "可支持的仅是观测事实（初始访问使用 deploy 既有密钥指纹、随后同一 deploy 身份下出现下载/安装/矿工/矿池连接）；这不构成对特定攻击组织的归因。",
+        "status": "supported"
+      },
+      {
+        "citations": [
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "2026-09-20T01:12:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false old_deploy_key_accepted=false"
+          },
+          {
+            "material_id": "MAT-105bad2c2adf8c721f8278391d2e91680b95a9385c2885d9cc33bbc6a83a6f1c",
+            "quote": "2026-09-20T01:15:00Z independent_probe host=build-07 miner_process_present=false malicious_persistence_present=false pool_connection_present=false"
+          }
+        ],
+        "claim": "R2 中 disable_fixture_deploy_key 的处置效果在整个观察窗口 01:12:00Z–01:20:00Z 内持续有效（旧 deploy 密钥始终被拒绝）。",
+        "limitations": "old_deploy_key_accepted 字段仅在 01:12:00Z 探测一次；01:15:00Z 与 01:20:00Z 两条复查不含该字段，故单次探测不能外推到整个观察窗口。",
+        "status": "inconclusive"
+      }
+    ],
+    "job_id": "INV-917eca8a27db4258ad7afed415076207",
+    "next_steps": [
+      "补充 deploy 私钥使用/泄露来源记录与 SSH 审计，确定初始访问路径。",
+      "对 updates.example.invalid 与 build-helper.tgz 做供应链与签名验证核查，验证提交者的供应链入侵怀疑。",
+      "延长观察窗口并持续复查密钥拒绝状态与持久化/矿工/矿池连接是否复发，以评估清除是否持续。",
+      "在其它构建主机上排查相同 IoC（crontab 条目、二进制路径、矿池地址）以评估横向影响。",
+      "收集威胁情报数据后再评估是否可归因到具体攻击组织。"
+    ],
+    "role": "verifier",
+    "summary": "合成演练 build-07 挖矿事件独立复核（观察窗口 2026-09-20T01:00:00Z–01:20:00Z）。事件链：01:00:00Z 以 deploy 用户经 SSH 登录成功 → 01:00:08Z 下载构件 → 01:00:12Z 安装落地 → 01:02Z 矿工进程(pid=4120, randomx, 矿池 stratum 连接)与 deploy crontab 持久化条目出现；资产所有者否认授权。R1（stop_process pid=4120）执行器返回 status=success message='process stopped'，但 01:06:05Z–01:06:09Z 独立复查三项清除条件全部未通过（持久化/矿工/矿池连接均为 true，矿工 pid 已变为 4189 parent=cron）→ R1 未达到清除条件。R2 执行器返回 status=success，且 01:12/01:15/01:20 三次独立复查三项条件均为 false → 在观察窗口内 R2 达到清除条件；材料自述不主张永久清除或其它主机清除，密钥处置效果仅 01:12:00Z 探测一次、不外推。材料明确无威胁情报数据，故不支持归因到具体攻击组织。四份材料 source_authenticity 均为 unverified。",
+    "unknowns": [
+      "deploy 用户私钥是如何被获取的（材料明确无相关记录）。",
+      "初始访问来源 192.0.2.44 的真实归属与操作者身份（材料未提供）。",
+      "updates.example.invalid / build-helper.tgz 是否确为初始感染载体：下载与安装为观测事实，但从下载到矿工执行的完整安装链条无直接日志。",
+      "R2 的清除在 01:20:00Z 观察窗口结束之后是否持续（永久清除未证）。",
+      "其它构建主机是否受影响（材料未评估）。",
+      "disable_fixture_deploy_key 的持续效果（仅 01:12:00Z 一次探测）。",
+      "是否存在上游软件仓库或签名验证被篡改的证据（材料未提供）。",
+      "01:00:00Z 之前与 01:20:00Z 之后的活动不在观察窗口内。"
+    ]
+  }
+}

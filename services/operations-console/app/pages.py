@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
 from starlette.concurrency import run_in_threadpool
 
-from . import apikeys, audit, auth, clients, config, db
+from . import apikeys, audit, auth, clients, config, connect, db
 from .api import DECISION_CLASSIFICATIONS, client_ip
 from .render import render
 
@@ -439,6 +439,53 @@ def audit_export(request: Request):
 
 
 # ---------------------------------------------------------------- settings
+
+def connection_page(request: Request, principal, values: dict, *, issue_key=False):
+    agent = values.get("agent") or "codex"
+    incident_id = values.get("incident_id") or ""
+    key_file = (values.get("key_file") or "").strip()
+    purpose = values.get("purpose") or "investigations"
+    incidents = _safe(clients.gateway_incidents, None)
+    origin, prompt, error, new_secret = "", "", None, None
+    try:
+        origin = connect.public_origin(request, config.external_origin())
+        if purpose == "read" and incident_id and (incidents is None or not any(
+                item.get("incident_id") == incident_id for item in incidents)):
+            raise ValueError("所选事件当前不可用；请刷新事件列表，或只验证连接。")
+        prompt = connect.build_prompt(origin, agent, key_file, incident_id, purpose)
+        if issue_key:
+            _, new_secret, _ = apikeys.create_key(
+                name=f"agent-{agent}-{principal.username}"[:128],
+                scopes=(["investigations:read", "investigations:write"] if purpose == "investigations" else ["incidents:read"]), created_by=principal.username,
+                expires_at=apikeys.expiry_from_days(30))
+    except ValueError as exc:
+        error = str(exc)
+    return render(request, "connect.html", principal=principal, agents=connect.AGENTS,
+                  agent=agent, incident_id=incident_id, key_file=key_file, purpose=purpose,
+                  origin=origin, prompt=prompt, error=error, incidents=incidents,
+                  new_secret=new_secret, status_code=422 if error and request.method == "POST" else 200)
+
+
+@router.get("/connect")
+def connect_page(request: Request):
+    principal = page_session(request)
+    return connection_page(request, principal, dict(request.query_params))
+
+
+@router.post("/connect/prompt")
+async def connect_prompt(request: Request):
+    principal = page_session(request)
+    form = await form_of(request)
+    check_csrf(principal, form)
+    return await run_in_threadpool(connection_page, request, principal, form)
+
+
+@router.post("/connect/key")
+async def connect_key(request: Request):
+    principal = auth.require("admin")(request)
+    form = await form_of(request)
+    check_csrf(principal, form)
+    return await run_in_threadpool(connection_page, request, principal, form, issue_key=True)
 
 @router.get("/settings/members")
 def members_page(request: Request):

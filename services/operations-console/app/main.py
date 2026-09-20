@@ -13,7 +13,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import auth, config, db, errors, idempotency
+from . import auth, config, db, errors, idempotency, jobs
+from . import investigation_api
+from . import investigation_pages
 from . import api as api_module
 from . import pages as pages_module
 
@@ -22,6 +24,7 @@ logger = logging.getLogger("cyberguard.console")
 # Import-time initialization matches the repository's other services, so the
 # TestClient can exercise the app without a lifespan context.
 db.init_db()
+jobs.init_db()
 
 
 @asynccontextmanager
@@ -36,7 +39,13 @@ async def lifespan(_app: FastAPI):
     else:
         logger.info("operations console started with %d existing user(s)",
                     auth.user_count())
-    yield
+    stop, worker = jobs.start_dispatcher()
+    try:
+        yield
+    finally:
+        stop.set()
+        if worker:
+            worker.join(timeout=2)
 
 
 app = FastAPI(
@@ -52,6 +61,8 @@ STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.include_router(api_module.router)
 app.include_router(pages_module.router)
+app.include_router(investigation_api.router)
+app.include_router(investigation_pages.router)
 
 CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; "
        "img-src 'self' data:; connect-src 'self'; form-action 'self'; "

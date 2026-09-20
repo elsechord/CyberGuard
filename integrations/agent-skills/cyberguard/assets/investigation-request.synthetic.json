@@ -1,0 +1,22 @@
+{
+  "title": "SYNTHETIC exercise: unexpected process load",
+  "objective": "Compare suspicious execution and authorized workload explanations using only the supplied synthetic materials.",
+  "domain": "security",
+  "materials": [
+    {
+      "source_type": "server_log",
+      "name": "SYNTHETIC process observation",
+      "content": "SYNTHETIC, NOT A REAL INCIDENT: /opt/research/simulation used 87% CPU during one observation.",
+      "media_type": "text/plain",
+      "source_uri": "exercise:process-snapshot",
+      "observed_at": "2026-09-19T00:00:00Z",
+      "interpretation": "High CPU alone does not identify malicious execution."
+    },
+    {
+      "source_type": "other",
+      "name": "SYNTHETIC workload inventory",
+      "content": "SYNTHETIC: inventory lists a research-team simulation job; binary hash was not verified.",
+      "media_type": "text/plain"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "usage": {
+    "requests": 35,
+    "charged_input": 1127317,
+    "charged_output": 30109,
+    "known_input": 1127317,
+    "known_output": 30109,
+    "reserved_input": 0,
+    "reserved_output": 0,
+    "concurrency_used": 0
+  },
+  "requests_by_role": {
+    "investigator": 7,
+    "planner": 17,
+    "verifier": 11
+  }
+}

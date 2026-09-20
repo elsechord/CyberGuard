@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}调查任务 · CyberGuard{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>调查任务</h1><p class="hint">提交材料与调查目标，查看处理状态、原始材料和报告。</p></div><a href="/investigations">刷新列表</a></div>
+{% if error %}<div class="error-banner" role="alert">{{ error }}</div>{% endif %}
+{% if principal.has_role('analyst') %}
+<section class="card"><h2>新建调查</h2>
+<p class="hint">告诉团队你想查明什么，并附上相关文本、日志或数据。</p>
+<form method="post" action="/investigations/new" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+  <input type="hidden" name="idempotency_key" value="{{ idempotency_key }}">
+  <div class="field"><label for="task-title">调查标题</label><input id="task-title" name="title" maxlength="200" value="{{ form.get('title', '') }}" placeholder="例如：核对本周异常登录记录"></div>
+  <div class="field"><label for="task-objective">调查目标</label><textarea id="task-objective" name="objective" rows="3" maxlength="8000" placeholder="希望查明什么？有哪些需要核实的说法？">{{ form.get('objective', '') }}</textarea></div>
+  <div class="field"><label for="task-domain">材料领域</label><select id="task-domain" name="domain">{% for value, label in domains.items() %}<option value="{{ value }}" {% if form.get('domain', 'security') == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><p class="hint">安全调查是默认方向。财务、法律与通用报告为待人工复核的材料审阅草稿。</p></div>
+  <div class="field"><label for="material-source">材料来源</label><select id="material-source" name="source_type">{% for value, label in sources.items() %}<option value="{{ value }}" {% if form.get('source_type', 'other') == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+  <div class="field"><label for="material-name">材料名称</label><input id="material-name" name="name" maxlength="200" value="{{ form.get('name', '') }}" placeholder="例如：服务器登录日志节选"></div>
+  <div class="field"><label for="material-content">原始材料文本</label><textarea id="material-content" name="content" rows="8" spellcheck="false" placeholder="按原样粘贴内容；每份材料最多 128 KiB">{{ form.get('content', '') }}</textarea></div>
+  <div class="field"><label for="material-interpretation">你的解释或已有判断（可选）</label><textarea id="material-interpretation" name="interpretation" rows="3" placeholder="此处内容与原始材料分开保存">{{ form.get('interpretation', '') }}</textarea></div>
+  <details><summary>高级：一次提交多份材料</summary><p class="hint">填写完整请求 JSON 后，以该 JSON 为准，忽略上方简易表单。最多 32 份材料，整个提交最多 1 MiB；来源 URL 仅保存为标签，不自动抓取。</p>
+    <label for="submission-json">完整请求 JSON</label><textarea id="submission-json" name="submission_json" rows="12" spellcheck="false" placeholder='{"title":"材料核对","objective":"比较材料中的说法","domain":"security","materials":[{"source_type":"agent","name":"记录","content":"原始文本","media_type":"text/plain","interpretation":"待验证的解释"}]}'>{{ form.get('submission_json', '') }}</textarea>
+  </details>
+  <details><summary>支持的格式与材料处理</summary><p class="hint">支持文本、JSON、CSV、Markdown；PDF 和 Office 文件请先提取文本。材料会交给本部署配置的模型处理。来源信息由提交者提供，原文和已有判断分别保存。</p></details>
+  <button type="submit" class="primary">提交调查</button>
+</form></section>
+{% else %}<p class="hint">分析员及更高角色可以提交调查。</p>{% endif %}
+<section class="card"><h2>可访问的任务</h2><p class="hint">显示最近 50 个任务。默认仅创建者可查看；管理员会话可查看全部任务。</p>
+{% if jobs %}<div class="table-wrap"><table><thead><tr><th>任务</th><th>领域</th><th>状态</th><th>阶段</th><th>更新时间</th></tr></thead><tbody>
+{% for job in jobs %}<tr><td><a href="/investigations/{{ job.id }}">{{ job.title }}</a></td><td>{{ domains.get(job.domain, job.domain) }}</td><td>{{ statuses.get(job.status, job.status) }}</td><td>{{ stage_label(job.stage) }}</td><td>{{ job.updated_at|ts }}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p>还没有可访问的调查任务。提交材料后，任务会出现在这里。</p>{% endif %}</section>
+{% endblock %}

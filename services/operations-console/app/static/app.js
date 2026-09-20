@@ -13,6 +13,27 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-copy-target]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var target = document.getElementById(button.dataset.copyTarget);
+        var status = document.getElementById("connection-copy-status");
+        var value = target.value === undefined ? target.textContent.trim() : target.value;
+        var fallback = function () {
+          if (target.select) { target.focus(); target.select(); }
+          else {
+            var range = document.createRange(); range.selectNodeContents(target);
+            var selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range);
+          }
+          status.textContent = "请手动复制已选中的文本。";
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(value).then(function () {
+            status.textContent = button.dataset.copyTarget === "connection-prompt"
+              ? "提示词已复制。请在 Agent 中继续配置与验证。" : "密钥已复制，请保存到本机凭据文件。";
+          }, fallback);
+        } else { fallback(); }
+      });
+    });
     var toast = document.getElementById("toast");
     if (toast && toast.getAttribute("data-autoshow") === "1") {
       showToast(toast.getAttribute("data-message") || "", "info");

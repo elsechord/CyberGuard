@@ -8,6 +8,7 @@
   {% if detail %}
   <span class="badge {{ 'warn' if detail.summary.status == 'awaiting_approval' else 'info' }}">
     {{ detail.summary.status | status_label }}</span>
+  <a class="button" href="/connect?purpose=read&amp;incident_id={{ incident_id | urlencode }}">在自己的 Agent 中查看</a>
   {% endif %}
 </div>
 

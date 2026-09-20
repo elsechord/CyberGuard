@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}连接你的 Agent · CyberGuard{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>连接你的 Agent</h1><p class="hint">在原来的对话中提出需求，让后台 AgentTeams 调查，在这里追踪材料和结果。</p></div></div>
+{% if error %}<div class="error-banner" role="alert">{{ error }}</div>{% endif %}
+<div class="connect-layout">
+  <section class="connect-setup">
+    <h2>连接到当前控制台</h2>
+    <p class="connect-origin mono">{{ origin or '尚未配置外部地址' }}</p>
+    <p class="hint">该地址必须能从 Agent 所在机器访问。本机地址不适用于云端 Agent。</p>
+    <form method="post" action="/connect/prompt" class="stack" id="connection-form">
+      <input type="hidden" name="csrf_token" value="{{ principal.csrf }}">
+      <div class="field"><label for="connect-purpose">接入方式</label><select id="connect-purpose" name="purpose"><option value="investigations" {% if purpose == 'investigations' %}selected{% endif %}>委托后台调查（推荐）</option><option value="read" {% if purpose == 'read' %}selected{% endif %}>只读查看已有事件</option></select></div>
+      <div class="field"><label for="connect-agent">使用哪个 Agent</label>
+        <select id="connect-agent" name="agent">{% for value, label in agents.items() %}<option value="{{ value }}" {% if agent == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+      </div>
+      <div class="field"><label for="connect-incident">已有事件（仅用于只读查看）</label>
+        <select id="connect-incident" name="incident_id"><option value="">先验证连接，稍后选择事件</option>
+        {% for item in incidents or [] %}<option value="{{ item.incident_id }}" {% if incident_id == item.incident_id %}selected{% endif %}>{{ item.incident_id }}</option>{% endfor %}</select>
+        {% if incidents is none %}<p class="hint">证据服务当前不可用。可以准备连接配置，实际验证须等待服务恢复。</p>
+        {% elif not incidents %}<p class="hint">当前没有事件。连接检查仍可验证服务访问；接入数据后再发起调查。</p>
+        <p class="hint"><a href="https://github.com/elsechord/CyberGuard/blob/main/docs/INGEST.md" target="_blank" rel="noopener noreferrer">导入安全数据</a> · <a href="https://github.com/elsechord/CyberGuard/blob/main/docs/QUICKSTART.md" target="_blank" rel="noopener noreferrer">载入演练证据</a></p>{% endif %}
+      </div>
+      <div class="field"><label for="connect-file">本机凭据文件路径（可稍后配置）</label>
+        <input id="connect-file" name="key_file" value="{{ key_file }}" maxlength="512" placeholder="例如 /home/me/.config/cyberguard/key" autocomplete="off">
+        <p class="hint">填写 Agent 所在机器上的绝对路径。文件内容只保存 API Key，不能粘贴在这里或聊天中。</p>
+      </div>
+      <button type="submit" class="primary">生成连接提示词</button>
+    </form>
+    <div class="connect-credentials">
+      <h2>准备连接凭据</h2>
+      <p>后台调查需要 <code>investigations:read</code> 和 <code>investigations:write</code>；仅查看已有事件使用 <code>incidents:read</code>。每个 Agent 建议使用独立凭据。</p>
+      {% if principal.role == 'admin' %}
+      <button type="submit" form="connection-form" formaction="/connect/key" {% if not origin %}disabled{% endif %}>为所选方式创建 30 天密钥</button>
+      <a href="/settings/keys">管理与撤销密钥</a>
+      {% else %}<p class="hint">请管理员创建所需范围的凭据，并通过组织认可的渠道交付。</p>{% endif %}
+      <p class="hint">调查密钥仅访问自身提交的任务；管理员可管理本部署全部任务。旧事件只读权限仍覆盖部署内事件。调查权限不含处置审批；提交材料会进入后台模型的处理环境。</p>
+    </div>
+  </section>
+  <section class="connect-instructions">
+    {% if new_secret %}
+    <div class="secret-panel connect-secret"><h2>密钥已创建，仅显示这一次</h2>
+      <p>请在本机保存到仅自己可读取的文件；不要保存到项目仓库或交给聊天模型。</p>
+      <code id="connection-secret">{{ new_secret }}</code>
+      <button type="button" data-copy-target="connection-secret">复制密钥</button>
+      <p class="hint">30 天后过期；可在 API 密钥页面提前撤销。下方连接提示词不含该密钥。</p>
+    </div>
+    {% endif %}
+    <div class="section-head"><h2>交给 Agent 的连接指令</h2>{% if prompt %}<button type="button" data-copy-target="connection-prompt">复制提示词</button>{% endif %}</div>
+    {% if prompt %}<textarea id="connection-prompt" class="connect-prompt" readonly aria-label="不含密钥的 Agent 连接提示词" spellcheck="false">{{ prompt }}</textarea>
+    {% else %}<p>配置有效的控制台地址后，即可生成安装与连接指令。</p>{% endif %}
+    <p id="connection-copy-status" role="status" aria-live="polite"></p>
+    <h2>下一步：在 Agent 中验证</h2>
+    <p>先检查 Skill 并验证连接，再提交你授权的目标与材料。后台任务不依赖当前对话持续在线；后续按任务 ID 获取报告。</p>
+    <p class="hint">此页面不会自动检测你的本机安装或连接状态。认证失败、服务不可达与上游异常应由实际请求分别报告。</p>
+    <a href="https://github.com/elsechord/CyberGuard/blob/main/docs/EXTERNAL_AGENT_SKILL.md" target="_blank" rel="noopener noreferrer">手动安装与排障</a>
+  </section>
+</div>
+{% endblock %}
