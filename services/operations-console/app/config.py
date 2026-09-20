@@ -50,6 +50,14 @@ def cookie_name() -> str:
     return "__Host-cgsession" if cookie_secure() else "cgsession"
 
 
+def cookie_samesite() -> str:
+    # ModelScope embeds the Console on a different site. Cross-site cookies
+    # require Secure and SameSite=None; standalone deployments retain Lax.
+    if cookie_secure() and os.getenv("CYBERGUARD_MODELSCOPE_EMBED", "").strip() == "1":
+        return "none"
+    return "lax"
+
+
 def upstream_timeout() -> float:
     try:
         return float(os.getenv("CYBERGUARD_UPSTREAM_TIMEOUT", "5"))

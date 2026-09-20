@@ -5,6 +5,7 @@ Session + API-key authentication, deny-by-default RBAC, CSRF-protected forms,
 strict security headers and a JSON API v1 with envelope responses.
 """
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -66,18 +67,26 @@ app.include_router(investigation_api.router)
 app.include_router(investigation_pages.router)
 app.include_router(onboarding.router)
 
-CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; "
-       "img-src 'self' data:; connect-src 'self'; form-action 'self'; "
-       "frame-ancestors 'none'; base-uri 'self'")
+def studio_embed_enabled() -> bool:
+    return os.getenv("CYBERGUARD_MODELSCOPE_EMBED", "").strip() == "1"
+
+
+def content_security_policy() -> str:
+    ancestors = ("https://modelscope.cn https://www.modelscope.cn"
+                 if studio_embed_enabled() else "'none'")
+    return ("default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; "
+            "img-src 'self' data:; connect-src 'self'; form-action 'self'; "
+            f"frame-ancestors {ancestors}; base-uri 'self'")
 
 
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
     response = await call_next(request)
-    response.headers["Content-Security-Policy"] = CSP
+    response.headers["Content-Security-Policy"] = content_security_policy()
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
-    response.headers["X-Frame-Options"] = "DENY"
+    if not studio_embed_enabled():
+        response.headers["X-Frame-Options"] = "DENY"
     response.headers["Cache-Control"] = "no-store"
     return response
 

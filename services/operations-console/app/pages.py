@@ -79,7 +79,7 @@ def check_csrf(principal: auth.Principal, form: dict) -> None:
 
 def set_session_cookie(response: Response, sid: str) -> None:
     response.set_cookie(config.cookie_name(), sid, httponly=True,
-                        secure=config.cookie_secure(), samesite="lax", path="/")
+                        secure=config.cookie_secure(), samesite=config.cookie_samesite(), path="/")
 
 
 # ---------------------------------------------------------------- login/logout

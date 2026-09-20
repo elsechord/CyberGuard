@@ -241,6 +241,23 @@ class OperationsConsoleTest(unittest.TestCase):
         self.assertEqual(response.headers["x-content-type-options"], "nosniff")
         self.assertEqual(response.headers["cache-control"], "no-store")
 
+    def test_modelscope_embed_headers_and_cookie(self) -> None:
+        from fastapi.responses import Response
+        from app.pages import set_session_cookie
+        with patch.dict(os.environ, {
+            "CYBERGUARD_MODELSCOPE_EMBED": "1",
+            "CYBERGUARD_COOKIE_SECURE": "true",
+        }):
+            response = self.client.get("/")
+            self.assertIn(
+                "frame-ancestors https://modelscope.cn https://www.modelscope.cn",
+                response.headers["content-security-policy"])
+            self.assertNotIn("x-frame-options", response.headers)
+            cookie_response = Response()
+            set_session_cookie(cookie_response, "test-session")
+            self.assertIn("SameSite=none", cookie_response.headers["set-cookie"])
+            self.assertIn("Secure", cookie_response.headers["set-cookie"])
+
     def test_unauthorized_page_redirects_and_api_keeps_401(self) -> None:
         client = TestClient(app)
         bounced = client.get("/", follow_redirects=False)
