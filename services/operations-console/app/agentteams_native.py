@@ -258,8 +258,23 @@ def advance(job):
                 return result('completed', 'complete', report=report)
         return result('failed', 'native_attention', 'Native project completed without a published report.json')
     except BridgeError as exc:
+        if exc.code == 'matrix_http_404' and state.get('project_id') and state.get('restart_count', 0) < 2:
+            # A Studio restart can keep the Console job while replacing the
+            # local Controller/Matrix databases. Recreate the native case from
+            # its original stored materials instead of leaving a dead pointer.
+            state['restart_count'] = state.get('restart_count', 0) + 1
+            for key in ('project_id', 'request_event_id', 'source_room_id', 'case_uri',
+                        'collaboration_checked_at'):
+                state.pop(key, None)
+            for key in ('workflow', 'request_event_id', 'source_room_id', 'collaboration',
+                        'collaboration_view', 'error_code'):
+                runtime.pop(key, None)
+            return result('running', 'native_dispatch',
+                          'AgentTeams runtime restarted; rebuilding the investigation')
         runtime['error_code'] = exc.code
-        return result('waiting_backend' if exc.retryable else 'failed', 'native_connection', str(exc))
+        error = ('AgentTeams project or room no longer exists' if exc.code == 'matrix_http_404'
+                 else str(exc))
+        return result('waiting_backend' if exc.retryable else 'failed', 'native_connection', error)
 
 
 def pause(job):

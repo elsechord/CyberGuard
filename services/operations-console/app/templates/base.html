@@ -24,7 +24,7 @@
     <a href="/connect" {% if request.url.path.startswith('/connect') %}aria-current="page"{% endif %}>连接 Agent</a>
     {% if nav_principal and nav_principal.role == 'admin' %}
     <a href="/audit" {% if request.url.path.startswith('/audit') %}aria-current="page"{% endif %}>审计</a>
-    <a href="/settings/onboarding" {% if request.url.path.startswith('/settings/onboarding') %}aria-current="page"{% endif %}>部署向导</a>
+    <a href="/settings/onboarding" {% if request.url.path.startswith('/settings/onboarding') %}aria-current="page"{% endif %}>{{ '运行状态' if studio_mode else '部署向导' }}</a>
     <a href="/settings/members" {% if request.url.path.startswith('/settings') and not request.url.path.startswith('/settings/onboarding') %}aria-current="page"{% endif %}>设置</a>
     {% endif %}
   </nav>

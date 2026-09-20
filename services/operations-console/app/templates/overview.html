@@ -11,7 +11,7 @@
   <div class="metric"><div class="value {{ 'info' if active_jobs else '' }}">{{ active_jobs|length }}</div><div class="label">进行中的调查</div></div>
   <div class="metric">
     <div class="value {{ 'warn' if open_count else '' }}">{{ open_count }}</div>
-    <div class="label">未结事件</div>
+    <div class="label">未结安全事件</div>
   </div>
   <div class="metric">
     <div class="value {{ 'danger' if pending_count else '' }}">{{ pending_count }}</div>
@@ -33,8 +33,9 @@
 </div>
 
 {% include "_active_investigations.html" %}
+{% include "_failed_investigations.html" %}
 <section class="section incident-register">
-  <div class="section-head"><h2>最近事件</h2><a href="/incidents">全部事件</a></div>
+  <div class="section-head"><h2>最近安全事件</h2><a href="/incidents">全部事件</a></div>
   {% if incidents %}
   <ul class="queue">
     {% for incident in incidents %}
@@ -55,7 +56,7 @@
   {% else %}
   <div class="empty">
     <h2>暂无安全事件</h2>
-    <p>接入告警或导入事件后，在这里查看证据与调查进度。</p>
+    <p>这里统计接入的安全告警。单独提交的调查任务在上方显示。</p>
     <a class="button" href="/incidents">前往事件队列</a>
   </div>
   {% endif %}

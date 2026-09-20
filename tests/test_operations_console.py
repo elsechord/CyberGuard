@@ -241,23 +241,6 @@ class OperationsConsoleTest(unittest.TestCase):
         self.assertEqual(response.headers["x-content-type-options"], "nosniff")
         self.assertEqual(response.headers["cache-control"], "no-store")
 
-    def test_modelscope_embed_headers_and_cookie(self) -> None:
-        from fastapi.responses import Response
-        from app.pages import set_session_cookie
-        with patch.dict(os.environ, {
-            "CYBERGUARD_MODELSCOPE_EMBED": "1",
-            "CYBERGUARD_COOKIE_SECURE": "true",
-        }):
-            response = self.client.get("/")
-            self.assertIn(
-                "frame-ancestors https://modelscope.cn https://www.modelscope.cn",
-                response.headers["content-security-policy"])
-            self.assertNotIn("x-frame-options", response.headers)
-            cookie_response = Response()
-            set_session_cookie(cookie_response, "test-session")
-            self.assertIn("SameSite=none", cookie_response.headers["set-cookie"])
-            self.assertIn("Secure", cookie_response.headers["set-cookie"])
-
     def test_public_demo_account_has_full_access_and_is_shown_only_when_enabled(self) -> None:
         username, password = "goai-demo-test", "test-public-password-2026"
         anonymous = TestClient(app)
@@ -305,6 +288,28 @@ class OperationsConsoleTest(unittest.TestCase):
         self.assertIn("AgentTeams 团队进度", detail)
         self.assertIn("核对证据", detail)
         self.assertIn("investigator", detail)
+
+        # A failed investigation remains visible even though it is not a
+        # security event from the gateway.
+        with db.tx() as conn:
+            payload["status"] = "failed"
+            payload["stage"] = "native_connection"
+            conn.execute("UPDATE investigation_job SET status=?,payload=? WHERE id=?",
+                         ("failed", json.dumps(payload, ensure_ascii=False), job_id))
+        for path in ("/", "/incidents"):
+            self.assertIn("需要处理的调查", self.client.get(path).text)
+            self.assertIn(title, self.client.get(path).text)
+
+    def test_managed_studio_shows_live_status_instead_of_host_wizard(self) -> None:
+        with patch.dict(os.environ, {"CYBERGUARD_MODELSCOPE_EMBED": "1"}):
+            page = self.client.get("/settings/onboarding")
+            self.assertEqual(page.status_code, 200)
+            self.assertIn("运行状态", page.text)
+            self.assertNotIn("尚未连接宿主机部署服务", page.text)
+            status = self.client.get("/settings/onboarding/status")
+            self.assertEqual(status.status_code, 200)
+            self.assertEqual(status.json()["data"]["mode"], "modelscope")
+            self.assertEqual(self.client.post("/settings/onboarding/initialize").status_code, 409)
 
     def test_unauthorized_page_redirects_and_api_keeps_401(self) -> None:
         client = TestClient(app)

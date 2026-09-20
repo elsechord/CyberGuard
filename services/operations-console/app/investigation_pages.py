@@ -37,6 +37,8 @@ MESSAGES = {
     "AgentTeams connection is not configured": "尚未配置 AgentTeams 连接，请联系管理员。",
     "AgentTeams is unavailable": "AgentTeams 暂时不可用。",
     "AgentTeams rejected the connection": "AgentTeams 拒绝了连接，请管理员检查凭据与权限。",
+    "AgentTeams project or room no longer exists": "AgentTeams 项目或会话已不存在。请检查运行环境是否重启；此任务需要重新提交。",
+    "AgentTeams runtime restarted; rebuilding the investigation": "AgentTeams 运行环境已重启，正在从原始材料恢复调查。",
     "Materials exceed the AgentTeams message size limit": "材料超过后端单次消息大小限制。",
     "Worker report failed evidence citation validation": "Worker 报告未通过材料引用校验。",
 }

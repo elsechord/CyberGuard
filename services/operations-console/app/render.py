@@ -1,4 +1,5 @@
 """Jinja2 rendering with auto-escaping. All templates live in app/templates."""
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -52,6 +53,7 @@ NOTICES = {
 
 
 def render(request, template: str, status_code: int = 200, **context):
+    context.setdefault("studio_mode", os.getenv("CYBERGUARD_MODELSCOPE_EMBED", "").strip() == "1")
     context.setdefault(
         "nav_principal",
         auth.session_principal(request.cookies.get(config.cookie_name(), "")))

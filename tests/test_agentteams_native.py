@@ -108,6 +108,23 @@ class NativeTasks(unittest.TestCase):
             self.assertEqual(http.call_args.args[1], 'POST')
             self.assertIn('/pause?', http.call_args.args[2])
 
+    def test_missing_native_project_rebuilds_after_studio_restart(self):
+        self.job['bridge_state'] = dict(backend='native', project_id='cg-inv-test',
+                                        request_event_id='$sent', source_room_id='!old:matrix',
+                                        case_uri='mxc://old/case')
+        with patch.object(native, 'controller', side_effect=BridgeError('not found', 'matrix_http_404')):
+            update = native.advance(self.job)
+        self.assertEqual(update['state'], 'running')
+        self.assertEqual(update['stage'], 'native_dispatch')
+        self.assertEqual(update['bridge_state']['restart_count'], 1)
+        self.assertNotIn('project_id', update['bridge_state'])
+        self.assertNotIn('request_event_id', update['bridge_state'])
+        self.checkpoint(update)
+        with patch.object(native, 'controller', return_value={}):
+            retry = native.advance(self.job)
+        self.assertEqual(retry['state'], 'running')
+        self.assertEqual(retry['bridge_state']['project_id'], 'cg-inv-test')
+
 
 class NativeCollaborationObservation(unittest.TestCase):
     def test_case_room_includes_team_so_assignments_can_be_received(self):

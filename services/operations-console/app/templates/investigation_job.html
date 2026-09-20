@@ -11,7 +11,7 @@
 <div><dt>创建时间</dt><dd>{{ job.created_at|ts }}</dd></div>
 <div><dt>更新时间</dt><dd>{{ job.updated_at|ts }}</dd></div>
 </dl><h3>调查目标</h3><p class="investigation-text">{{ job.objective }}</p>
-{% if job.error %}<div class="error-banner" role="alert">{{ message_label(job.error) }}</div>{% endif %}
+{% if job.error %}<div class="error-banner" role="alert">{{ 'AgentTeams 项目或会话已不存在。运行环境重启后，该调查需重新提交。' if job.runtime.get('error_code') == 'matrix_http_404' else message_label(job.error) }}</div>{% endif %}
 {% if job.status == 'waiting_backend' %}<p>任务已保存，等待团队连接恢复后继续。</p>{% endif %}
 {% if job.status in ['queued', 'running', 'waiting_backend'] %}<p class="hint">进度每 8 秒更新。</p>
 {% if principal.has_role('analyst') %}<form method="post" action="/investigations/{{ job.id }}/cancel"><input type="hidden" name="csrf_token" value="{{ principal.csrf }}"><p class="hint">取消会停止后续阶段；已经运行的远程请求可能继续完成。</p><button type="submit">取消任务</button></form>{% endif %}{% endif %}

@@ -1,0 +1,8 @@
+{% if failed_jobs %}
+<section class="card" aria-label="需要处理的调查">
+  <div class="section-head"><h2>需要处理的调查</h2><a href="/investigations">查看全部调查</a></div>
+  <div class="table-wrap"><table><thead><tr><th>任务</th><th>阶段</th><th>更新时间</th></tr></thead><tbody>
+  {% for job in failed_jobs %}<tr><td><a href="/investigations/{{ job.id }}">{{ job.title }}</a></td><td>{{ stage_label(job.stage) }}</td><td>{{ job.updated_at|ts }}</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endif %}

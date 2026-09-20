@@ -19,6 +19,42 @@ from .render import render
 router = APIRouter(include_in_schema=False)
 
 
+def studio_mode():
+    return os.getenv("CYBERGUARD_MODELSCOPE_EMBED", "").strip() == "1"
+
+
+def studio_status():
+    """Read the managed Studio services without the self-host deployment bridge."""
+    from . import clients
+    from .agentteams_native import config as native_config, controller
+    from .agentteams_bridge import BridgeError as NativeError, _http
+
+    guard = clients.guard_status()
+    result = {"mode": "modelscope", "model": (guard.get("run") or {}).get("model", ""),
+              "guard": bool(guard.get("available")), "armed": bool(guard.get("armed")),
+              "controller": False, "matrix": False, "team": False, "workers": 0,
+              "errors": []}
+    try:
+        cfg = native_config()
+    except NativeError:
+        result["errors"].append("AgentTeams 尚未配置。")
+        return result
+    try:
+        team = controller(cfg, "GET", "/teams/" + cfg["TEAM_ID"])
+        result["controller"] = result["team"] = True
+        result["workers"] = len(team.get("workerMembers") or [])
+    except NativeError as exc:
+        result["errors"].append("Controller 或调查团队不可达（" + exc.code + "）。")
+    try:
+        account = _http(cfg, "GET", "/_matrix/client/v3/account/whoami", token=cfg["MATRIX_TOKEN"])
+        result["matrix"] = bool(account.get("user_id"))
+    except NativeError as exc:
+        result["errors"].append("Matrix 通信不可达（" + exc.code + "）。")
+    if not result["guard"]:
+        result["errors"].append("模型预算服务不可达。")
+    return result
+
+
 class BridgeError(Exception):
     def __init__(self, message, status=503):
         self.message, self.status = message, status
@@ -139,12 +175,17 @@ def public_status(value):
 @router.get("/settings/onboarding")
 def page(request: Request):
     principal = admin(request)
+    if studio_mode():
+        return render(request, "studio_status.html", principal=principal,
+                      state=studio_status())
     return render(request, "onboarding.html", principal=principal, connected=configured())
 
 
 @router.get("/settings/onboarding/status")
 async def status(request: Request):
     admin(request)
+    if studio_mode():
+        return {"data": studio_status()}
     try:
         return {"data": public_status(await run_in_threadpool(bridge, "GET", "status"))}
     except BridgeError as exc:
@@ -154,6 +195,8 @@ async def status(request: Request):
 @router.post("/settings/onboarding/{action}")
 async def action(request: Request, action: str):
     principal = admin(request)
+    if studio_mode():
+        return JSONResponse({"error": {"message": "此创空间由魔搭运行环境托管；模型与团队配置通过创空间设置更新。"}}, status_code=409)
     if action not in {"test", "save", "apply", "initialize", "enable"}:
         raise HTTPException(404)
     body = await request.body()
