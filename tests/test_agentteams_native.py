@@ -24,6 +24,9 @@ class NativeTasks(unittest.TestCase):
         observe = patch.object(native, "observe_collaboration")
         observe.start()
         self.addCleanup(observe.stop)
+        room_observer = patch.object(native, "observe_room")
+        room_observer.start()
+        self.addCleanup(room_observer.stop)
         packet = patch.object(native, 'publish_case', return_value='mxc://matrix/case')
         packet.start()
         self.addCleanup(packet.stop)
@@ -167,6 +170,39 @@ class NativeCollaborationObservation(unittest.TestCase):
             native.observe_collaboration({'TEAM_ID': 'team'}, {'id': 'INV-a'},
                 {'tasks_detail': [{'task_id': 'task-a'}]}, runtime, state)
         self.assertEqual(runtime['collaboration'], [])
+
+    def test_matrix_room_activity_is_normalized_and_element_linked(self):
+        cfg = {'MATRIX_TOKEN': 'secret', 'ELEMENT_URL': 'http://127.0.0.1:18088'}
+        runtime = {'source_room_id': '!case:matrix'}
+        response = {'chunk': [
+            {'type': 'm.room.message', 'sender': '@case-verifier:matrix',
+             'event_id': '$2', 'origin_server_ts': 2000,
+             'content': {'body': 'TASK_COMPLETED independent verification'}},
+            {'type': 'm.room.message', 'sender': '@console:matrix',
+             'event_id': '$1', 'origin_server_ts': 1000,
+             'content': {'body': 'CyberGuard investigation INV-a. internal assignment'}},
+        ]}
+        with patch.object(native, '_http', return_value=response):
+            native.observe_room(cfg, runtime)
+        self.assertEqual([item['kind'] for item in runtime['room_activity']],
+                         ['dispatch', 'completion'])
+        self.assertEqual(runtime['room_activity'][0]['actor'], 'CyberGuard')
+        self.assertEqual(runtime['room_activity'][1]['actor'], '复核 Agent')
+        self.assertNotIn('internal assignment', runtime['room_activity'][0]['body'])
+        self.assertEqual(runtime['element_room_url'],
+                         'http://127.0.0.1:18088/#/room/!case:matrix')
+
+    def test_room_activity_compacts_tools_and_hides_scratch_narration(self):
+        tool = native._activity({'type': 'm.room.message', 'sender': '@planner:matrix',
+            'content': {'body': '🔧 **teamharness__projectflow** ``` {"action":"resolve_project"} ```'}})
+        self.assertEqual(tool['body'], '读取 AgentTeams 项目与任务状态')
+        self.assertEqual(tool['initial'], 'P')
+        scratch = native._activity({'type': 'm.room.message', 'sender': '@planner:matrix',
+            'content': {'body': 'Let me inspect the project and think through every detail.'}})
+        self.assertIsNone(scratch)
+        completion = native._activity({'type': 'm.room.message', 'sender': '@case-verifier:matrix',
+            'content': {'body': '@leader TASK_COMPLETED: task-02 - Result: shared/tasks/task-02/report.json'}})
+        self.assertEqual(completion['body'], '任务完成，已提交产物 · report.json')
 
 
 if __name__ == '__main__':

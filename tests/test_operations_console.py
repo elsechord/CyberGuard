@@ -285,9 +285,9 @@ class OperationsConsoleTest(unittest.TestCase):
             conn.execute("UPDATE investigation_job SET payload=? WHERE id=?",
                          (json.dumps(payload, ensure_ascii=False), job_id))
         detail = self.client.get(detail_url).text
-        self.assertIn("AgentTeams 团队进度", detail)
+        self.assertIn("协作现场", detail)
         self.assertIn("核对证据", detail)
-        self.assertIn("investigator", detail)
+        self.assertIn("取证 Agent", detail)
 
         # A failed investigation remains visible even though it is not a
         # security event from the gateway.

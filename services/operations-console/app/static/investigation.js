@@ -16,3 +16,20 @@ document.addEventListener("click", (event) => {
 });
 window.addEventListener("hashchange", revealInvestigationMaterial);
 revealInvestigationMaterial();
+
+function renderRoomTimes(root = document) {
+  root.querySelectorAll("time[data-epoch-ms]").forEach((node) => {
+    const value = Number(node.dataset.epochMs);
+    if (!Number.isFinite(value)) return;
+    const date = new Date(value);
+    node.textContent = new Intl.DateTimeFormat("zh-CN", {
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+    }).format(date);
+    node.dateTime = date.toISOString();
+  });
+}
+
+renderRoomTimes();
+document.body.addEventListener("htmx:afterSwap", (event) => {
+  renderRoomTimes(event.detail.target || document);
+});

@@ -1,6 +1,7 @@
 """Submit once to TeamHarness; observe native Project/Task state and artifacts."""
 import json
 import os
+import re
 import time
 from urllib.parse import quote, urlencode
 from urllib.request import Request, build_opener, ProxyHandler
@@ -12,7 +13,8 @@ def config():
     prefix = 'CYBERGUARD_AGENTTEAMS_'
     values = {key: os.getenv(prefix + key, '') for key in
               ('CONTROLLER_URL', 'CONTROLLER_TOKEN', 'TEAM_ID', 'LEADER_ROOM_ID',
-               'LEADER_USER_ID', 'MATRIX_URL', 'MATRIX_HOST', 'MATRIX_TOKEN')}
+               'LEADER_USER_ID', 'MATRIX_URL', 'MATRIX_HOST', 'MATRIX_TOKEN',
+               'ELEMENT_URL')}
     if any(not values[key] for key in ('CONTROLLER_URL', 'CONTROLLER_TOKEN', 'TEAM_ID', 'LEADER_ROOM_ID', 'LEADER_USER_ID', 'MATRIX_URL', 'MATRIX_TOKEN')):
         raise BridgeError('Configure an AgentTeams team and its controller connection', 'not_configured', True)
     return values
@@ -180,6 +182,125 @@ def observe_collaboration(cfg, job, workflow, runtime, state):
     runtime['collaboration_view'] = normalize(runtime.get('collaboration', []), workflow=workflow)
 
 
+def _activity(event):
+    """Return the small, human-readable part of a Matrix room event."""
+    if not isinstance(event, dict) or event.get('type') != 'm.room.message':
+        return None
+    content = event.get('content')
+    sender = event.get('sender')
+    if not isinstance(content, dict) or not isinstance(sender, str):
+        return None
+    body = content.get('body')
+    if not isinstance(body, str) or not body.strip():
+        return None
+    body = body.strip()
+    if body.startswith('Task acknowledged.'):
+        body = '任务已确认，案件材料包校验通过，开始独立复核。'
+    elif body.startswith('Task ') and ' completed.' in body:
+        body = '规划 Agent 已收到复核结果，正在检查交付物。'
+    elif body.startswith('Verification deliverables are in.'):
+        body = '规划 Agent 正在独立校验复核交付物。'
+    elif body.startswith(('Everything checks out.', 'Check passed independently')):
+        body = '独立校验通过，复核结果已接受。'
+    elif body.startswith('Both nodes completed.'):
+        body = '调查与独立复核均已完成，正在发布最终报告。'
+    elif body.startswith('Everything is done.'):
+        body = '原生项目完成，最终报告已发布。'
+    if body.startswith(('Let me ', "I'll ", 'Now I ', 'I need ', 'Good. Now ',
+                        'Now let ', 'Now run ', 'Now submit', 'Now publish ', 'The completion line ')) or 'How do I send ' in body:
+        return None
+    kind = 'message'
+    if body.startswith('CyberGuard investigation '):
+        body, kind = '案件材料和调查目标已送达，团队开始规划。', 'dispatch'
+    elif 'TASK_COMPLETED' in body:
+        result = re.search(r'Result:\s*([^\s"`]+)', body)
+        body = '任务完成，已提交产物' + ((' · ' + result.group(1).rsplit('/', 1)[-1]) if result else '')
+        kind = 'completion'
+    elif any(word in body for word in ('delegate', '委派', 'assigned', '分配')):
+        kind = 'delegation'
+    elif body.startswith('处理中'):
+        body, kind = '已接收任务，正在读取项目与案件材料。', 'status'
+    elif body.startswith('🔧'):
+        kind = 'tool'
+        skill = re.search(r'"skill"\s*:\s*"([^"]+)"', body)
+        if skill:
+            body = '加载协作能力 · ' + skill.group(1)
+        elif 'teamharness__projectflow' in body:
+            body = '读取 AgentTeams 项目与任务状态'
+        elif 'teamharness__roomflow' in body:
+            body = '核对原生协作房间与成员'
+        elif 'teamharness__health' in body:
+            body = '检查 AgentTeams 运行状态'
+        elif 'case_packet.py fetch' in body:
+            body = '获取并校验案件材料包'
+        elif '**read_file**' in body and 'case.json' in body:
+            body = '读取案件材料与报告契约'
+        elif 'native_collaboration.py' in body:
+            body = '检查按需扩展的临时 Agent 能力'
+        elif 'teamharness__filesync' in body:
+            body = '同步任务材料与产物'
+        elif 'teamharness__taskflow' in body:
+            body = '更新 AgentTeams 原生任务状态'
+        elif '**read_file**' in body:
+            body = '读取任务材料'
+        elif '**execute_shell_command**' in body:
+            body = '运行受控分析步骤'
+        elif '**write_file**' in body:
+            body = '编写结构化调查产物'
+        elif 'teamharness__artifact' in body:
+            body = '向协作房间发布最终报告'
+        else:
+            tool = re.search(r'\*\*([^*]+)\*\*', body)
+            body = '调用 ' + (tool.group(1) if tool else '原生工具')
+    elif re.fullmatch(r'[^\s]+\.(?:md|json|txt|py)', body):
+        body, kind = '发布调查产物 · ' + body.rsplit('/', 1)[-1], 'artifact'
+    elif (len(body) > 260 or body.startswith(('Task submitted ', 'Now submit '))):
+        # Element retains the complete room transcript. The product view shows
+        # auditable actions rather than raw model scratch narration.
+        return None
+    if len(body) > 260:
+        body = body[:257].rstrip() + '…'
+    local = sender.split(':', 1)[0].lstrip('@') or sender
+    if 'planner' in local:
+        actor, initial = '规划 Agent', 'P'
+    elif 'investigator' in local or 'forensics' in local:
+        actor, initial = '取证 Agent', 'I'
+    elif 'verifier' in local:
+        actor, initial = '复核 Agent', 'V'
+    else:
+        actor, initial = local, local[:1].upper()
+    if kind == 'dispatch':
+        actor, initial = 'CyberGuard', 'C'
+    return {'event_id': event.get('event_id', ''), 'sender': sender,
+            'actor': actor, 'initial': initial, 'body': body, 'kind': kind,
+            'timestamp': event.get('origin_server_ts')}
+
+
+def observe_room(cfg, runtime):
+    """Expose recent native Matrix activity without leaking Matrix credentials."""
+    room_id = runtime.get('source_room_id')
+    if not isinstance(room_id, str) or not room_id.startswith('!'):
+        return
+    try:
+        path = ('/_matrix/client/v3/rooms/' + quote(room_id, safe='') +
+                '/messages?' + urlencode({'dir': 'b', 'limit': 40}))
+        response = _http(cfg, 'GET', path, token=cfg['MATRIX_TOKEN'])
+        activity = list(reversed([item for item in
+                                  (_activity(event) for event in response.get('chunk', [])) if item]))
+        compact = []
+        for item in activity:
+            if compact and item['actor'] == compact[-1]['actor'] and item['body'] == compact[-1]['body']:
+                continue
+            compact.append(item)
+        runtime['room_activity'] = compact[-16:]
+    except BridgeError:
+        # Project state remains authoritative if chat history is briefly unavailable.
+        runtime.setdefault('room_activity', [])
+    element = cfg.get('ELEMENT_URL', '').rstrip('/')
+    if element:
+        runtime['element_room_url'] = element + '/#/room/' + quote(room_id, safe='!:@')
+
+
 def advance(job):
     state = dict(job.get('bridge_state') or {})
     project_id = state.get('project_id', 'cg-' + job['id'].lower())
@@ -233,6 +354,7 @@ def advance(job):
         workflow = controller(cfg, 'GET', project_path(cfg, project_id))
         runtime.update(workflow=workflow, team_id=cfg['TEAM_ID'])
         observe_collaboration(cfg, job, workflow, runtime, state)
+        observe_room(cfg, runtime)
         tasks = workflow.get('tasks_detail', [])
         nodes = workflow.get('nodes', [])
         accepted = bool(nodes) and all(node.get('status') == 'completed' for node in nodes)

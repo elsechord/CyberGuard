@@ -16,11 +16,14 @@
 {% if job.status in ['queued', 'running', 'waiting_backend'] %}<p class="hint">进度每 8 秒更新。</p>
 {% if principal.has_role('analyst') %}<form method="post" action="/investigations/{{ job.id }}/cancel"><input type="hidden" name="csrf_token" value="{{ principal.csrf }}"><p class="hint">取消会停止后续阶段；已经运行的远程请求可能继续完成。</p><button type="submit">取消任务</button></form>{% endif %}{% endif %}
 </section>
-{% if job.runtime.get('project_id') %}<section class="card"><h2>AgentTeams 团队进度</h2><p class="hint mono">{{ job.runtime.project_id }}</p>
+{% if job.runtime.get('project_id') %}<section class="card agentteams-live"><div class="section-head"><div><p class="live-kicker"><span class="live-dot"></span> AGENTTEAMS LIVE</p><h2>协作现场</h2></div>{% if job.runtime.get('element_room_url') %}<a class="button" href="{{ job.runtime.element_room_url }}" target="_blank" rel="noopener">进入 Element 房间 ↗</a>{% endif %}</div><p class="hint mono">{{ job.runtime.project_id }}</p>
 {% if job.runtime.get('workflow') %}<dl class="investigation-meta"><div><dt>项目状态</dt><dd>{{ {'active':'进行中','completed':'已完成','paused':'已暂停','blocked':'受阻'}.get(job.runtime.workflow.status, job.runtime.workflow.status) }}</dd></div><div><dt>原生任务数</dt><dd>{{ job.runtime.workflow.get('nodes', [])|length }}</dd></div></dl>{% endif %}
-{% if job.runtime.get('workflow', {}).get('nodes') %}<div class="table-wrap"><table><thead><tr><th>任务</th><th>负责人</th><th>状态</th></tr></thead><tbody>
-{% for node in job.runtime.workflow.get('nodes', []) %}<tr><td>{{ node.name or node.id }}</td><td>{{ node.assignee or '待分配' }}</td><td>{{ {'pending':'待开始','delegated':'已委派','in-progress':'进行中','completed':'已完成','revision':'待修改','blocked':'受阻'}.get(node.status,node.status) }}</td></tr>{% endfor %}
-</tbody></table></div>{% else %}<p>任务已交给团队，等待原生任务分配。</p>{% endif %}
+{% if job.runtime.get('workflow', {}).get('nodes') %}<div class="agent-task-flow">
+{% for node in job.runtime.workflow.get('nodes', []) %}<article class="agent-task agent-task-{{ node.status }}"><div class="agent-task-index">{{ '%02d'|format(loop.index) }}</div><div><p class="agent-task-owner">{{ ('取证 Agent' if 'investigator' in node.assignee else '复核 Agent' if 'verifier' in node.assignee else '规划 Agent' if 'planner' in node.assignee else node.assignee) if node.assignee else '等待分配' }}</p><h3>{{ node.name or node.id }}</h3><p class="agent-task-state">{{ {'pending':'待开始','delegated':'已委派','in-progress':'进行中','completed':'已完成','revision':'待修改','blocked':'受阻'}.get(node.status,node.status) }}</p></div></article>{% endfor %}
+</div>{% else %}<div class="agent-empty"><span class="live-pulse"></span><p>Leader 正在拆解案件，任务分工将实时出现。</p></div>{% endif %}
+{% if job.runtime.get('room_activity') %}<div class="room-stream"><div class="room-stream-head"><h3>原生协作消息</h3><span>{{ job.runtime.room_activity|length }} 条最近动态</span></div><ol>
+{% for message in job.runtime.room_activity %}<li class="room-message room-message-{{ message.kind }}"><div class="room-avatar">{{ message.initial }}</div><div><p class="room-byline"><strong>{{ message.actor }}</strong>{% if message.timestamp %}<time data-epoch-ms="{{ message.timestamp }}">{{ message.timestamp }}</time>{% endif %}</p><p>{{ message.body }}</p></div></li>{% endfor %}
+</ol></div>{% else %}<div class="agent-empty"><span class="live-pulse"></span><p>等待团队在原生房间中回应。</p></div>{% endif %}
 {% if job.runtime.get('workflow', {}).get('interrupts') %}<p>团队有待处理的问题，详情见运行记录。</p>{% endif %}</section>{% endif %}
 {% set collaboration = job.runtime.get('collaboration_view', {}) %}
 {% if collaboration.get('runs') %}<section class="card collaboration-view"><h2>协作过程</h2>
@@ -61,5 +64,5 @@
 </details>{% endfor %}
 </section>
 </div>
-<script src="/static/investigation.js" defer></script>
+<script src="/static/investigation.js?v=2" defer></script>
 {% endblock %}
