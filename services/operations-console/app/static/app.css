@@ -354,3 +354,11 @@ dl.kv { margin: 0; }
   @keyframes surface-enter { from { opacity: .7; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   .page-head, .auth-card { animation: surface-enter .24s ease-out both; }
 }
+
+/* Homepage collaboration snapshot */
+.live-collaboration .agent-task-flow.compact { margin-top: 10px; }
+.live-collaboration .agent-task h3 { font-size: 13px; }
+.room-stream.compact { margin-top: 18px; padding-top: 12px; }
+.room-stream.compact ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 8px 22px; }
+.room-stream.compact .room-message { align-items: flex-start; }
+.room-stream.compact .room-message p { font-size: 12.5px; }

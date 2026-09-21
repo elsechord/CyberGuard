@@ -1,0 +1,35 @@
+{% if live_case %}
+<section class="section live-collaboration">
+  <div class="section-head">
+    <div>
+      <p class="live-kicker"><span class="live-dot"></span> AGENTTEAMS LIVE</p>
+      <h2>协作现场</h2>
+    </div>
+    <a href="/investigations/{{ live_case.id }}">查看完整协作现场 →</a>
+  </div>
+  <p class="hint">{{ live_case.title }} · <span class="mono">{{ live_case.id }}</span></p>
+  <div class="agent-task-flow compact">
+    {% for node in live_case.nodes %}
+    <article class="agent-task agent-task-{{ node.status }}"><div class="agent-task-index">{{ '%02d'|format(loop.index) }}</div><div>
+      <p class="agent-task-owner">{{ ('取证 Agent' if 'investigator' in (node.assignee or '') else '复核 Agent' if 'verifier' in (node.assignee or '') else '规划 Agent' if 'planner' in (node.assignee or '') else (node.assignee or '等待分配')) }}</p>
+      <h3>{{ (node.name or node.id)|truncate(42) }}</h3>
+      <p class="agent-task-state">{{ {'pending':'待开始','delegated':'已委派','in-progress':'进行中','completed':'已完成','revision':'待修改','blocked':'受阻'}.get(node.status, node.status) }}</p>
+    </div></article>
+    {% endfor %}
+  </div>
+  {% if live_case.messages %}
+  <div class="room-stream compact">
+    <div class="room-stream-head"><h3>原生协作动态</h3><span>最近 {{ live_case.messages|length }} 条</span></div>
+    <ol>
+      {% for m in live_case.messages %}
+      <li class="room-message room-message-{{ m.kind }}"><div class="room-avatar">{{ m.initial }}</div><div>
+        <p class="room-byline"><strong>{{ m.actor }}</strong></p><p>{{ m.body }}</p>
+      </div></li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% else %}
+  <p class="hint">原生协作动态将在调查运行后展示。</p>
+  {% endif %}
+</section>
+{% endif %}

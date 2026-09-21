@@ -225,7 +225,18 @@ def overview(request: Request):
     evidence_total = sum(int(item.get("evidence_count") or 0) for item in incidents)
     pending = _safe(lambda: len(clients.executor_pending_proposals()), 0)
     usage = _safe(clients.usage_summary, {"available": False})
-    return render(request, "overview.html", principal=None,
+    live_case = None
+    for item in list(active_jobs) + list(completed_jobs):
+        runtime = item.get("runtime") or {}
+        nodes = (runtime.get("workflow") or {}).get("nodes") or []
+        if not nodes:
+            continue
+        activity = runtime.get("room_activity") or []
+        live_case = {"id": item["id"], "title": item["title"],
+                     "status": item["status"], "nodes": nodes,
+                     "messages": activity[-4:]}
+        break
+    return render(request, "overview.html", principal=None, live_case=live_case,
                   incidents=incidents[:10], open_count=open_count,
                   pending_count=pending, evidence_total=evidence_total,
                   usage=usage, upstream_ok=bool(config.gateway_url()),
