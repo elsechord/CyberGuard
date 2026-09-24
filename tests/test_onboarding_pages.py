@@ -15,6 +15,10 @@ from app import auth, db, onboarding
 with tempfile.TemporaryDirectory() as import_dir:
     with patch.dict(os.environ, {"CYBERGUARD_CONSOLE_DB": str(Path(import_dir) / "import.db")}):
         from app.main import app
+        # Release the import-time SQLite handle before deleting its directory
+        # (Windows does not allow unlinking an open database).
+        db.connection().close()
+        db._LOCAL.conn = None
 
 
 class OnboardingTest(unittest.TestCase):

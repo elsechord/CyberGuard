@@ -38,7 +38,7 @@ def main():
             os.replace(temp,target)
         subprocess.run(['docker','stop','cyberguard-native-model-guard'],check=True,stdout=subprocess.DEVNULL)
         subprocess.run(['docker','rm','cyberguard-native-model-guard'],check=True,stdout=subprocess.DEVNULL)
-        subprocess.run(['docker','run','-d','--name','cyberguard-native-model-guard','--network','agentteams-net',
+        subprocess.run(['docker','run','-d','--restart','unless-stopped','--name','cyberguard-native-model-guard','--network','agentteams-net',
             '--network-alias','native-model-guard.agentteams.local','--env-file',str(args.private_dir/'model-guard.env'),
             '-e','CYBERGUARD_DATA_DIR=/data','-v','cyberguard-native-model-budget:/data','-p','127.0.0.1:18112:8080',
             '--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--tmpfs','/tmp:rw,noexec,nosuid,size=32m',

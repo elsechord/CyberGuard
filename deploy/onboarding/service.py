@@ -143,7 +143,7 @@ class Service:
                     raise Failure("active_investigations", "Finish or cancel pending investigations before changing deployment.")
 
     def start_guard(self):
-        self.command(["docker", "run", "-d", "--name", "cyberguard-native-model-guard", "--network", "agentteams-net",
+        self.command(["docker", "run", "-d", "--restart", "unless-stopped", "--name", "cyberguard-native-model-guard", "--network", "agentteams-net",
             "--network-alias", "native-model-guard.agentteams.local", "--env-file", str(self.private / "model-guard.env"),
             "-e", "CYBERGUARD_DATA_DIR=/data", "-v", "cyberguard-native-model-budget:/data", "-p", "127.0.0.1:18112:8080",
             "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges:true",
